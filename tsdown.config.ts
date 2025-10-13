@@ -13,6 +13,7 @@ export default defineConfig({
 			plugins: [tailwind()],
 			extract: 'index.css',
 			sourceMap: false,
+			minimize: true,
 		}),
 	],
 });
