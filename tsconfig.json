@@ -5,7 +5,7 @@
 			"@mirai-ui/*": ["./src/*"]
 		},
 		"target": "esnext",
-		"jsx": "react",
+		"jsx": "react-jsx",
 		"lib": ["es2023"],
 		"moduleDetection": "force",
 		"module": "preserve",
@@ -21,5 +21,5 @@
 		"verbatimModuleSyntax": true,
 		"skipLibCheck": true
 	},
-	"include": ["src"]
+	"include": ["src", "playground"]
 }

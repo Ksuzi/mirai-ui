@@ -1,2 +1,3 @@
-export { MyButton } from './MyButton';
-export type { ButtonProps, ButtonRef } from './components/Button';
+import './styles/global.css';
+
+export * from './components';
