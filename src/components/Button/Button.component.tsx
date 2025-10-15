@@ -1,13 +1,40 @@
 import React from 'react';
 import { mergeClassNames } from '@mirai-ui/utils';
-import { buttonVariants } from './Button.variants';
+import { buttonVariants, iconSizes, iconSpacing, type IconSize } from './Button.variants';
 import type { ButtonProps } from './Button.types';
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 	(
-		{ variant, size, fullWidth, loading = false, leftIcon, rightIcon, children, className, disabled, ...props },
+		{
+			variant,
+			size = 'md',
+			fullWidth,
+			loading = false,
+			leftIcon,
+			rightIcon,
+			iconSize,
+			children,
+			className,
+			disabled,
+			...props
+		},
 		ref
 	) => {
+		const effectiveIconSize = iconSize || size;
+		const iconSizeClass = iconSizes[effectiveIconSize as IconSize];
+
+		const leftIconSpacing = iconSpacing.left[size as IconSize];
+		const rightIconSpacing = iconSpacing.right[size as IconSize];
+
+		const handleKeyDown = (event: React.KeyboardEvent<HTMLButtonElement>) => {
+			if (event.key === 'Enter' || event.key === ' ') {
+				event.preventDefault();
+				if (!disabled && !loading && props.onClick) {
+					props.onClick(event as any);
+				}
+			}
+		};
+
 		return (
 			<button
 				ref={ref}
@@ -21,10 +48,20 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 					className
 				)}
 				disabled={Boolean(disabled || loading)}
+				aria-disabled={Boolean(disabled || loading)}
+				aria-busy={Boolean(loading)}
+				onKeyDown={handleKeyDown}
 				{...props}
 			>
 				{loading && (
-					<svg className="animate-spin -ml-1 mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24">
+					<svg
+						className={mergeClassNames('animate-spin', leftIconSpacing, iconSizeClass)}
+						fill="none"
+						viewBox="0 0 24 24"
+						aria-hidden="true"
+						role="img"
+						aria-label="Loading"
+					>
 						<circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
 						<path
 							className="opacity-75"
@@ -34,14 +71,15 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 					</svg>
 				)}
 
-				{/* Ліва іконка */}
-				{leftIcon && !loading && <span className="mr-2">{leftIcon}</span>}
+				{leftIcon && !loading && (
+					<span className={mergeClassNames('flex items-center', leftIconSpacing, iconSizeClass)}>{leftIcon}</span>
+				)}
 
-				{/* Контент */}
 				{children}
 
-				{/* Права іконка */}
-				{rightIcon && <span className="ml-2">{rightIcon}</span>}
+				{rightIcon && (
+					<span className={mergeClassNames('flex items-center', rightIconSpacing, iconSizeClass)}>{rightIcon}</span>
+				)}
 			</button>
 		);
 	}
