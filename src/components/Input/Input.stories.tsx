@@ -35,6 +35,17 @@ export const Default: Story = {
 	},
 };
 
+export const AllVariants: Story = {
+	render: () => (
+		<div className="flex flex-wrap gap-4">
+			<Input variant="outlined" placeholder="Outlined" />
+			<Input variant="filled" placeholder="Filled" />
+			<Input variant="borderless" placeholder="Borderless" />
+			<Input variant="underlined" placeholder="Underlined" />
+		</div>
+	),
+};
+
 export const WithLabel: Story = {
 	args: {
 		label: 'Email Address',
@@ -98,7 +109,7 @@ export const WithIcons: Story = {
 	),
 };
 
-export const AllVariants: Story = {
+export const AllVariantsWithError: Story = {
 	render: () => (
 		<div className="space-y-4">
 			<Input variant="default" placeholder="Default variant" label="Default" />

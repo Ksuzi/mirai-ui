@@ -8,11 +8,7 @@ export const inputVariants = cva(
 		'border',
 		'font-medium',
 		'focus:outline-none',
-		'focus:ring-2',
-		'focus:ring-offset-2',
 		'focus-visible:outline-none',
-		'focus-visible:ring-2',
-		'focus-visible:ring-offset-2',
 		'transition-all',
 		'duration-200',
 		'disabled:opacity-50',
@@ -23,6 +19,27 @@ export const inputVariants = cva(
 		variants: {
 			variant: {
 				default: ['border-gray-300', 'bg-white', 'text-gray-900', 'focus:border-primary-500', 'focus:ring-primary-500'],
+				outlined: [
+					'border-2',
+					'border-gray-300',
+					'bg-transparent',
+					'text-gray-900',
+					'focus:border-primary-500',
+					'focus:ring-primary-500',
+				],
+				filled: ['border-0', 'bg-gray-100', 'text-gray-900', 'focus:bg-gray-50', 'focus:ring-primary-500'],
+				borderless: ['border-0', 'bg-transparent', 'text-gray-900', 'focus:ring-primary-500', 'focus:ring-offset-0'],
+				underlined: [
+					'border-0',
+					'border-b-2',
+					'border-gray-300',
+					'bg-transparent',
+					'text-gray-900',
+					'rounded-none',
+					'focus:border-primary-500',
+					'focus:ring-0',
+					'focus:ring-offset-0',
+				],
 				error: ['border-error-300', 'bg-white', 'text-gray-900', 'focus:border-error-500', 'focus:ring-error-500'],
 				success: [
 					'border-success-300',
@@ -68,6 +85,23 @@ export const inputVariants = cva(
 				variant: 'warning',
 				size: 'sm',
 				class: 'border-2',
+			},
+			// Error state overrides for new variants
+			{
+				variant: 'outlined',
+				class: 'border-2',
+			},
+			{
+				variant: 'filled',
+				class: 'border border-transparent',
+			},
+			{
+				variant: 'borderless',
+				class: 'border-b border-transparent',
+			},
+			{
+				variant: 'underlined',
+				class: 'border-b-2',
 			},
 		],
 
