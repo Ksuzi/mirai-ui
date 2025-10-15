@@ -1,0 +1,139 @@
+# Component Creation Guide
+
+## 📁 File Structure
+
+```
+ComponentName/
+├── ComponentName.component.tsx
+├── ComponentName.types.ts
+├── ComponentName.variants.ts
+├── ComponentName.stories.tsx
+└── index.ts
+```
+
+## 🚀 Quick Start
+
+### 1. Variants (`ComponentName.variants.ts`)
+
+```typescript
+import { cva, type VariantProps } from 'class-variance-authority';
+
+export const componentNameVariants = cva(['inline-flex', 'items-center', 'justify-center', 'font-medium'], {
+	variants: {
+		variant: {
+			primary: ['bg-primary-600', 'text-white'],
+			secondary: ['bg-secondary-600', 'text-white'],
+			outline: ['border-2', 'border-primary-600', 'text-primary-600'],
+		},
+		size: {
+			sm: ['px-3', 'py-1.5', 'text-sm'],
+			md: ['px-4', 'py-2', 'text-base'],
+			lg: ['px-6', 'py-3', 'text-lg'],
+		},
+	},
+	defaultVariants: { variant: 'primary', size: 'md' },
+});
+
+export type ComponentNameVariantProps = VariantProps<typeof componentNameVariants>;
+```
+
+### 2. Types (`ComponentName.types.ts`)
+
+```typescript
+import type { ComponentNameVariantProps } from './ComponentName.variants';
+
+export interface ComponentNameProps extends React.HTMLAttributes<HTMLElement>, ComponentNameVariantProps {
+	// Add component-specific props here
+}
+```
+
+### 3. Component (`ComponentName.component.tsx`)
+
+```typescript
+import React from 'react';
+import { mergeClassNames } from '@mirai-ui/utils';
+import { componentNameVariants } from './ComponentName.variants';
+import type { ComponentNameProps } from './ComponentName.types';
+
+export const ComponentName = React.forwardRef<HTMLElement, ComponentNameProps>(
+	({ variant, size, className, children, ...props }, ref) => {
+		return (
+			<element ref={ref} className={mergeClassNames(componentNameVariants({ variant, size }), className)} {...props}>
+				{children}
+			</element>
+		);
+	}
+);
+
+ComponentName.displayName = 'ComponentName';
+```
+
+### 4. Stories (`ComponentName.stories.tsx`)
+
+```typescript
+import type { Meta, StoryObj } from '@storybook/react-vite';
+import { ComponentName } from './ComponentName.component';
+
+const meta: Meta<typeof ComponentName> = {
+	title: 'Components/ComponentName',
+	component: ComponentName,
+	tags: ['autodocs'],
+};
+
+export default meta;
+type Story = StoryObj<typeof ComponentName>;
+
+export const Default: Story = {
+	args: { children: 'ComponentName' },
+};
+
+export const AllVariants: Story = {
+	render: () => (
+		<div className="flex gap-4">
+			<ComponentName variant="primary">Primary</ComponentName>
+			<ComponentName variant="secondary">Secondary</ComponentName>
+			<ComponentName variant="outline">Outline</ComponentName>
+		</div>
+	),
+};
+```
+
+### 5. Export (`index.ts`)
+
+```typescript
+export * from './ComponentName.component';
+export * from './ComponentName.types';
+```
+
+## 🎨 Standards
+
+### Colors
+
+- `primary` - Main brand (`primary-600`)
+- `secondary` - Secondary brand (`secondary-600`)
+- `success` - Green (`success-600`)
+- `warning` - Yellow (`warning-600`)
+- `error` - Red (`error-600`)
+
+### Sizes
+
+- `sm` - `px-3 py-1.5 text-sm`
+- `md` - `px-4 py-2 text-base` (default)
+- `lg` - `px-6 py-3 text-lg`
+- `xl` - `px-8 py-4 text-xl`
+
+## ✅ Checklist
+
+- [ ] Use `React.forwardRef` + `displayName`
+- [ ] CVA for all styling
+- [ ] Extend HTML interfaces in types
+- [ ] Use `mergeClassNames` utility
+- [ ] Add accessibility attributes
+- [ ] Create Storybook stories
+- [ ] Export from main `src/components/index.ts`
+
+## 🔧 Key Utilities
+
+- `mergeClassNames` - Combines Tailwind classes intelligently
+- `cva` - Class Variance Authority for variants
+- `VariantProps` - TypeScript types from CVA
