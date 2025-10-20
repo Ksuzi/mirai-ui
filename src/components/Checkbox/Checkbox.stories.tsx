@@ -12,6 +12,10 @@ const meta: Meta<typeof Checkbox> = {
 			control: { type: 'select' },
 			options: ['sm', 'md', 'lg', 'xl'],
 		},
+		color: {
+			control: { type: 'select' },
+			options: ['base', 'primary', 'secondary'],
+		},
 		disabled: {
 			control: { type: 'boolean' },
 		},
@@ -67,6 +71,23 @@ export const AllSizes: Story = {
 	),
 };
 
+export const ColorVariants: Story = {
+	render: () => (
+		<div className="flex flex-col gap-4">
+			<div className="flex items-center gap-4">
+				<Checkbox color="base" label="Base" defaultChecked />
+				<Checkbox color="primary" label="Primary" defaultChecked />
+				<Checkbox color="secondary" label="Secondary" defaultChecked />
+			</div>
+			<div className="flex items-center gap-4">
+				<Checkbox color="base" label="Base Unchecked" />
+				<Checkbox color="primary" label="Primary Unchecked" />
+				<Checkbox color="secondary" label="Secondary Unchecked" />
+			</div>
+		</div>
+	),
+};
+
 export const Interactive: Story = {
 	render: () => {
 		const [checked, setChecked] = React.useState(false);
@@ -91,13 +112,18 @@ export const WithCustomStyling: Story = {
 				<h3 className="text-lg font-semibold mb-2">Custom Wrapper Styling</h3>
 				<Checkbox
 					label="Checkbox with custom wrapper"
+					color="primary"
 					wrapperClassName="p-4 bg-gray-100 rounded-lg border-2 border-dashed border-gray-300"
-					className="mr-4 transform scale-110"
 				/>
 			</div>
 			<div>
 				<h3 className="text-lg font-semibold mb-2">Block Layout</h3>
-				<Checkbox label="Block checkbox with margin" className="block mb-2" wrapperClassName="flex-col items-start" />
+				<Checkbox
+					label="Block checkbox with margin"
+					color="secondary"
+					className="block mb-2"
+					wrapperClassName="flex-col items-start"
+				/>
 			</div>
 		</div>
 	),

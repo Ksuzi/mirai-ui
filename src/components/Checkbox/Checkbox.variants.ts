@@ -2,27 +2,37 @@ import { cva, type VariantProps } from 'class-variance-authority';
 
 export const checkboxVariants = cva(
 	[
+		'relative',
 		'inline-flex',
 		'items-center',
 		'justify-center',
 		'border-2',
 		'rounded',
-		'transition-colors',
+		'transition-all',
+		'duration-200',
 		'focus:outline-none',
 		'cursor-pointer',
 		'disabled:cursor-not-allowed',
 		'disabled:opacity-50',
+		'appearance-none',
+		'bg-white',
+		'checked:border-transparent',
 	],
 	{
 		variants: {
 			size: {
-				sm: ['w-4', 'h-4', 'text-xs'],
-				md: ['w-5', 'h-5', 'text-sm'],
-				lg: ['w-6', 'h-6', 'text-base'],
-				xl: ['w-7', 'h-7', 'text-lg'],
+				sm: ['w-4', 'h-4'],
+				md: ['w-5', 'h-5'],
+				lg: ['w-6', 'h-6'],
+				xl: ['w-7', 'h-7'],
+			},
+			color: {
+				base: ['border-blue-400', 'checked:bg-blue-500', 'hover:border-blue-300'],
+				primary: ['border-primary-400', 'checked:bg-primary-500', 'hover:border-primary-300'],
+				secondary: ['border-gray-400', 'checked:bg-gray-500', 'hover:border-gray-300'],
 			},
 		},
-		defaultVariants: { size: 'md' },
+		defaultVariants: { size: 'md', color: 'base' },
 	}
 );
 

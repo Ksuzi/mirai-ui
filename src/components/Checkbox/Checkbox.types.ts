@@ -4,6 +4,7 @@ export interface CheckboxProps extends Omit<React.InputHTMLAttributes<HTMLInputE
 	label?: string;
 	/** Additional CSS classes for the wrapper div */
 	wrapperClassName?: string;
+	color?: 'base' | 'primary' | 'secondary';
 }
 
 export interface CheckboxRootProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -14,6 +15,7 @@ export interface CheckboxInputProps
 	extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'>,
 		CheckboxVariantProps {
 	className?: string;
+	color?: 'base' | 'primary' | 'secondary';
 }
 
 export interface CheckboxLabelProps

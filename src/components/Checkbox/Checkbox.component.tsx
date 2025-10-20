@@ -1,6 +1,9 @@
 import React from 'react';
 import { mergeClassNames } from '@mirai-ui/utils';
+
 import { checkboxVariants, checkboxLabelVariants } from './Checkbox.variants';
+import { CheckboxIcon } from './CheckboxIcon';
+
 import type { CheckboxProps, CheckboxRootProps, CheckboxInputProps, CheckboxLabelProps } from './Checkbox.types';
 
 export const CheckboxRoot = React.forwardRef<HTMLDivElement, CheckboxRootProps>(({ className, ...props }, ref) => (
@@ -8,9 +11,32 @@ export const CheckboxRoot = React.forwardRef<HTMLDivElement, CheckboxRootProps>(
 ));
 
 export const CheckboxInput = React.forwardRef<HTMLInputElement, CheckboxInputProps>(
-	({ size, className, ...props }, ref) => (
-		<input ref={ref} type="checkbox" className={mergeClassNames(checkboxVariants({ size }), className)} {...props} />
-	)
+	({ size, color, className, ...props }, ref) => {
+		const [checked, setChecked] = React.useState(props.defaultChecked || false);
+		const isControlled = props.checked !== undefined;
+		const checkboxChecked = isControlled ? props.checked : checked;
+
+		const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+			if (!isControlled) {
+				setChecked(e.target.checked);
+			}
+			props.onChange?.(e);
+		};
+
+		return (
+			<div className="relative inline-flex">
+				<input
+					ref={ref}
+					type="checkbox"
+					className={mergeClassNames(checkboxVariants({ size, color }), className)}
+					{...props}
+					checked={checkboxChecked}
+					onChange={handleChange}
+				/>
+				<CheckboxIcon size={size || 'md'} checked={checkboxChecked || false} />
+			</div>
+		);
+	}
 );
 
 export const CheckboxLabel = React.forwardRef<HTMLLabelElement, CheckboxLabelProps>(
@@ -20,13 +46,21 @@ export const CheckboxLabel = React.forwardRef<HTMLLabelElement, CheckboxLabelPro
 );
 
 export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
-	({ size, className, wrapperClassName, label, disabled, id, ...props }, ref) => {
+	({ size, color, className, wrapperClassName, label, disabled, id, ...props }, ref) => {
 		const checkboxId = id || `checkbox-${Math.random().toString(36).substring(2, 9)}`;
 
 		if (label) {
 			return (
 				<CheckboxRoot className={wrapperClassName}>
-					<CheckboxInput ref={ref} id={checkboxId} size={size} disabled={disabled} className={className} {...props} />
+					<CheckboxInput
+						ref={ref}
+						id={checkboxId}
+						size={size}
+						color={color}
+						disabled={disabled}
+						className={className}
+						{...props}
+					/>
 					<CheckboxLabel htmlFor={checkboxId} size={size} disabled={disabled}>
 						{label}
 					</CheckboxLabel>
@@ -36,7 +70,15 @@ export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
 
 		return (
 			<CheckboxRoot className={wrapperClassName}>
-				<CheckboxInput ref={ref} id={checkboxId} size={size} disabled={disabled} className={className} {...props} />
+				<CheckboxInput
+					ref={ref}
+					id={checkboxId}
+					size={size}
+					color={color}
+					disabled={disabled}
+					className={className}
+					{...props}
+				/>
 			</CheckboxRoot>
 		);
 	}
