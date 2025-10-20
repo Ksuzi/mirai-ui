@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Checkbox } from './Checkbox.component';
 import React from 'react';
+import { Button } from '@mirai-ui/components';
 
 const meta: Meta<typeof Checkbox> = {
 	title: 'Components/Checkbox',
@@ -71,18 +72,13 @@ export const Interactive: Story = {
 		const [checked, setChecked] = React.useState(false);
 
 		return (
-			<div className="flex flex-col gap-4">
+			<div className="flex flex-col w-2xs gap-4">
 				<Checkbox
 					label={`Checkbox is ${checked ? 'checked' : 'unchecked'}`}
 					checked={checked}
 					onChange={(e: React.ChangeEvent<HTMLInputElement>) => setChecked(e.target.checked)}
 				/>
-				<button
-					onClick={() => setChecked((prev) => !prev)}
-					className="px-4 py-2 bg-primary-600 text-white rounded hover:bg-primary-700"
-				>
-					Toggle programmatically
-				</button>
+				<Button onClick={() => setChecked((prev) => !prev)}>Toggle programmatically</Button>
 			</div>
 		);
 	},
