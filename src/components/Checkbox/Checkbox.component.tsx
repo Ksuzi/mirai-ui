@@ -8,13 +8,8 @@ export const CheckboxRoot = React.forwardRef<HTMLDivElement, CheckboxRootProps>(
 ));
 
 export const CheckboxInput = React.forwardRef<HTMLInputElement, CheckboxInputProps>(
-	({ variant, size, className, ...props }, ref) => (
-		<input
-			ref={ref}
-			type="checkbox"
-			className={mergeClassNames(checkboxVariants({ variant, size }), className)}
-			{...props}
-		/>
+	({ size, className, ...props }, ref) => (
+		<input ref={ref} type="checkbox" className={mergeClassNames(checkboxVariants({ size }), className)} {...props} />
 	)
 );
 
@@ -25,21 +20,13 @@ export const CheckboxLabel = React.forwardRef<HTMLLabelElement, CheckboxLabelPro
 );
 
 export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
-	({ variant, size, className, wrapperClassName, label, disabled, id, ...props }, ref) => {
+	({ size, className, wrapperClassName, label, disabled, id, ...props }, ref) => {
 		const checkboxId = id || `checkbox-${Math.random().toString(36).substring(2, 9)}`;
 
 		if (label) {
 			return (
 				<CheckboxRoot className={wrapperClassName}>
-					<CheckboxInput
-						ref={ref}
-						id={checkboxId}
-						variant={variant}
-						size={size}
-						disabled={disabled}
-						className={className}
-						{...props}
-					/>
+					<CheckboxInput ref={ref} id={checkboxId} size={size} disabled={disabled} className={className} {...props} />
 					<CheckboxLabel htmlFor={checkboxId} size={size} disabled={disabled}>
 						{label}
 					</CheckboxLabel>
@@ -49,15 +36,7 @@ export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
 
 		return (
 			<CheckboxRoot className={wrapperClassName}>
-				<CheckboxInput
-					ref={ref}
-					id={checkboxId}
-					variant={variant}
-					size={size}
-					disabled={disabled}
-					className={className}
-					{...props}
-				/>
+				<CheckboxInput ref={ref} id={checkboxId} size={size} disabled={disabled} className={className} {...props} />
 			</CheckboxRoot>
 		);
 	}
