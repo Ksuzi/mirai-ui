@@ -118,12 +118,7 @@ export const WithCustomStyling: Story = {
 			</div>
 			<div>
 				<h3 className="text-lg font-semibold mb-2">Block Layout</h3>
-				<Checkbox
-					label="Block checkbox with margin"
-					color="secondary"
-					className="block mb-2"
-					wrapperClassName="flex-col items-start"
-				/>
+				<Checkbox label="Block checkbox with margin" color="secondary" wrapperClassName="flex-col items-start" />
 			</div>
 		</div>
 	),
