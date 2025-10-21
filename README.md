@@ -12,6 +12,10 @@ A modern React UI components library built with Tailwind CSS and TypeScript. Des
 - 🧪 **Well Tested** - Comprehensive test coverage with Vitest
 - 📖 **Storybook** - Interactive component documentation
 
+## Documentation
+
+View the live interactive component documentation on [GitHub Pages](https://ksuzi.github.io/mirai-ui/).
+
 ## Components
 
 - **Button** - Customizable button component with multiple variants
@@ -71,10 +75,16 @@ pnpm run test
 pnpm run build
 ```
 
-- **Start Storybook:**
+- **Start Storybook (Development):**
 
 ```bash
 pnpm run storybook
+```
+
+- **Build Storybook:**
+
+```bash
+pnpm run build-storybook
 ```
 
 - **Type checking:**
