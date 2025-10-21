@@ -1,6 +1,9 @@
 import React from 'react';
+
 import { mergeClassNames } from '@mirai-ui/utils';
+
 import { textVariants } from './Text.variants';
+
 import type { TextProps } from './Text.types';
 
 export const Text = React.forwardRef<

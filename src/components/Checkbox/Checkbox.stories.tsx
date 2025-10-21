@@ -1,7 +1,10 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
-import { Checkbox } from './Checkbox.component';
 import React from 'react';
+
 import { Button } from '@mirai-ui/components';
+
+import { Checkbox } from './Checkbox.component';
+
+import type { Meta, StoryObj } from '@storybook/react-vite';
 
 const meta: Meta<typeof Checkbox> = {
 	title: 'Components/Checkbox',
@@ -88,21 +91,23 @@ export const ColorVariants: Story = {
 	),
 };
 
-export const Interactive: Story = {
-	render: () => {
-		const [checked, setChecked] = React.useState(false);
+const InteractiveStory = () => {
+	const [checked, setChecked] = React.useState(false);
 
-		return (
-			<div className="flex flex-col w-2xs gap-4">
-				<Checkbox
-					label={`Checkbox is ${checked ? 'checked' : 'unchecked'}`}
-					checked={checked}
-					onChange={(e: React.ChangeEvent<HTMLInputElement>) => setChecked(e.target.checked)}
-				/>
-				<Button onClick={() => setChecked((prev) => !prev)}>Toggle programmatically</Button>
-			</div>
-		);
-	},
+	return (
+		<div className="flex flex-col w-2xs gap-4">
+			<Checkbox
+				label={`Checkbox is ${checked ? 'checked' : 'unchecked'}`}
+				checked={checked}
+				onChange={(e: React.ChangeEvent<HTMLInputElement>) => setChecked(e.target.checked)}
+			/>
+			<Button onClick={() => setChecked((prev) => !prev)}>Toggle programmatically</Button>
+		</div>
+	);
+};
+
+export const Interactive: Story = {
+	render: () => <InteractiveStory />,
 };
 
 export const WithCustomStyling: Story = {

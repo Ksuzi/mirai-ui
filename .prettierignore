@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+pnpm-lock.yaml
+
+# Build output
+dist/
+build/
+coverage/
+
+# Storybook
+storybook-static/
+.storybook/
+
+# Config files
+*.config.js
+*.config.ts
+
+# Misc
+.DS_Store
+*.log
+*.cache
+

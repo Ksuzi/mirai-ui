@@ -1,6 +1,9 @@
 import React from 'react';
+
 import { mergeClassNames } from '@mirai-ui/utils';
+
 import { inputVariants, labelVariants, helperTextVariants } from './Input.variants';
+
 import type { InputProps } from './Input.types';
 
 export const Input = React.forwardRef<HTMLInputElement, InputProps>(
@@ -21,14 +24,19 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
 		},
 		ref
 	) => {
-		const inputId = id || `input-${Math.random().toString(36).substring(2, 11)}`;
+		const inputId = id ?? `input-${Math.random().toString(36).substring(2, 11)}`;
 		const helperTextId = `${inputId}-helper`;
 		const errorId = `${inputId}-error`;
 
 		const effectiveVariant = error ? 'error' : variant;
 		const helperVariant = error ? 'error' : 'default';
 
-		const displayHelperText = error || helperText;
+		const displayHelperText = error ?? helperText;
+
+		let ariaDescribedBy: string | undefined;
+		if (displayHelperText) {
+			ariaDescribedBy = error ? errorId : helperTextId;
+		}
 
 		return (
 			<div className="w-full">
@@ -68,7 +76,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
 						)}
 						required={required}
 						aria-invalid={Boolean(error)}
-						aria-describedby={displayHelperText ? (error ? errorId : helperTextId) : undefined}
+						aria-describedby={ariaDescribedBy}
 						{...props}
 					/>
 

@@ -1,5 +1,5 @@
 import { Button } from '@mirai-ui/components';
 
-export function App() {
+export const App = () => {
 	return <Button variant="secondary">my button</Button>;
-}
+};

@@ -1,5 +1,6 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Input } from './Input.component';
+
+import type { Meta, StoryObj } from '@storybook/react-vite';
 
 const meta: Meta<typeof Input> = {
 	title: 'Components/Input',
@@ -145,7 +146,7 @@ export const FullWidthToggle: Story = {
 		<div className="space-y-4">
 			<div>
 				<h3 className="text-lg font-medium mb-2">Full Width (default)</h3>
-				<Input placeholder="Full width input" fullWidth={true} />
+				<Input placeholder="Full width input" fullWidth />
 			</div>
 			<div>
 				<h3 className="text-lg font-medium mb-2">Auto Width</h3>

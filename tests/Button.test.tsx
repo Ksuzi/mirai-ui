@@ -1,5 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { expect, test, vi } from 'vitest';
+
 import { Button } from '@mirai-ui/components';
 
 test('renders button with text', () => {

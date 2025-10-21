@@ -1,7 +1,11 @@
 import React from 'react';
+
 import { mergeClassNames } from '@mirai-ui/utils';
-import { buttonVariants, iconSizes, iconSpacing, type IconSize } from './Button.variants';
+
+import { buttonVariants, iconSizes, iconSpacing } from './Button.variants';
+
 import type { ButtonProps } from './Button.types';
+import type { IconSize } from './Button.variants';
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 	(
@@ -20,7 +24,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 		},
 		ref
 	) => {
-		const effectiveIconSize = iconSize || size;
+		const effectiveIconSize = iconSize ?? size;
 		const iconSizeClass = iconSizes[effectiveIconSize as IconSize];
 
 		const leftIconSpacing = iconSpacing.left[size as IconSize];
@@ -30,7 +34,22 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 			if (event.key === 'Enter' || event.key === ' ') {
 				event.preventDefault();
 				if (!disabled && !loading && props.onClick) {
-					props.onClick(event as any);
+					// Simulate a mouse event for keyboard activation
+					const syntheticEvent = {
+						...event,
+						button: 0,
+						buttons: 1,
+						clientX: 0,
+						clientY: 0,
+						movementX: 0,
+						movementY: 0,
+						screenX: 0,
+						screenY: 0,
+						pageX: 0,
+						pageY: 0,
+						relatedTarget: null,
+					} as unknown as React.MouseEvent<HTMLButtonElement>;
+					props.onClick(syntheticEvent);
 				}
 			}
 		};
@@ -47,8 +66,8 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 					}),
 					className
 				)}
-				disabled={Boolean(disabled || loading)}
-				aria-disabled={Boolean(disabled || loading)}
+				disabled={Boolean(disabled ?? loading)}
+				aria-disabled={Boolean(disabled ?? loading)}
 				aria-busy={Boolean(loading)}
 				onKeyDown={handleKeyDown}
 				{...props}

@@ -1,6 +1,9 @@
 import React from 'react';
+
 import { mergeClassNames } from '@mirai-ui/utils';
+
 import { headingVariants } from './Heading.variants';
+
 import type { HeadingProps } from './Heading.types';
 
 export const Heading = React.forwardRef<HTMLHeadingElement, HeadingProps>(
