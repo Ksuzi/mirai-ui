@@ -1,17 +1,11 @@
-name: Unit Test
+name: Coverage Check
 
 on:
-  push:
-    branches: [main, develop]
   pull_request:
     branches: [main, develop]
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
 jobs:
-  test:
+  coverage:
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
@@ -33,24 +27,12 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Lint
-        run: pnpm lint
-
-      - name: Typecheck
-        run: pnpm typecheck
-
-      - name: Build
-        run: pnpm build
-
-      - name: Run tests
-        run: pnpm test:run
-
       - name: Run tests with coverage
         run: pnpm test:coverage
 
       - name: Upload coverage artifact
         uses: actions/upload-artifact@v4
         with:
-          name: coverage-report
+          name: pr-coverage-report
           path: coverage/
-          retention-days: 7
+          retention-days: 3

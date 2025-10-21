@@ -5,3 +5,8 @@ dist
 
 *storybook.log
 storybook-static
+
+# Test coverage
+coverage
+.nyc_output
+*.lcov
