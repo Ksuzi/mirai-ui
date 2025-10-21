@@ -59,12 +59,6 @@ pnpm install
 
 ### Available Scripts
 
-- **Development playground:**
-
-```bash
-pnpm run playground
-```
-
 - **Run tests:**
 
 ```bash

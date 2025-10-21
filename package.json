@@ -42,7 +42,6 @@
 		"build": "tsdown",
 		"dev": "tsdown --watch",
 		"type-check": "tsc --noEmit",
-		"playground": "vite --config playground/vite.config.ts",
 		"test": "vitest run",
 		"test:watch": "vitest",
 		"test:ui": "vitest --ui",
