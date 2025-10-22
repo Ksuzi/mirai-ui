@@ -1,6 +1,5 @@
 import { defineConfig } from 'tsdown';
 import postcss from 'rollup-plugin-postcss';
-import nodeResolve from '@rollup/plugin-node-resolve';
 import tailwind from '@tailwindcss/postcss';
 
 export default defineConfig({
@@ -8,7 +7,6 @@ export default defineConfig({
 	dts: true,
 	outDir: 'dist',
 	plugins: [
-		nodeResolve({ extensions: ['.mjs', '.js', '.ts', '.tsx', '.css'] }),
 		postcss({
 			plugins: [tailwind()],
 			extract: 'index.css',
