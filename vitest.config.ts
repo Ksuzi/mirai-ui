@@ -30,6 +30,12 @@ export default defineConfig({
         '**/index.ts',
       ],
       include: ['src/**/*.{ts,tsx}'],
+      thresholds: {
+        lines: 70,
+        functions: 75,
+        branches: 65,
+        statements: 70,
+      },
     },
     include: ['src/**/*.test.{ts,tsx}'],
     exclude: ['node_modules', 'dist', 'playground'],
