@@ -181,6 +181,18 @@ describe('Checkbox', () => {
 			const label = screen.getByText('Disabled checkbox');
 			expect(label).toBeInTheDocument();
 		});
+
+		test('supports aria-label for checkboxes without visible labels', () => {
+			render(<Checkbox aria-label="Accept terms" />);
+			const checkbox = screen.getByLabelText('Accept terms');
+			expect(checkbox).toBeInTheDocument();
+		});
+
+		test('checkbox icon is hidden from screen readers', () => {
+			const { container } = render(<Checkbox defaultChecked />);
+			const icon = container.querySelector('svg');
+			expect(icon).toHaveAttribute('aria-hidden', 'true');
+		});
 	});
 
 	describe('Variants', () => {

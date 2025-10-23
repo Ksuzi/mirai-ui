@@ -32,8 +32,10 @@ describe('Button', () => {
 		});
 
 		test('shows loading spinner when loading', () => {
-			render(<Button loading>Loading</Button>);
-			expect(screen.getByLabelText('Loading')).toBeInTheDocument();
+			const { container } = render(<Button loading>Loading</Button>);
+			const spinner = container.querySelector('svg.animate-spin');
+			expect(spinner).toBeInTheDocument();
+			expect(spinner).toHaveAttribute('aria-hidden', 'true');
 		});
 
 		test('applies custom className', () => {
