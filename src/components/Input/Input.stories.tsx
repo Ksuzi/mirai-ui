@@ -9,6 +9,10 @@ const meta: Meta<typeof Input> = {
 	argTypes: {
 		variant: {
 			control: 'select',
+			options: ['default', 'outlined', 'filled', 'borderless', 'underlined'],
+		},
+		state: {
+			control: 'select',
 			options: ['default', 'error', 'success', 'warning'],
 		},
 		size: {
@@ -38,11 +42,12 @@ export const Default: Story = {
 
 export const AllVariants: Story = {
 	render: () => (
-		<div className="flex flex-wrap gap-4">
-			<Input variant="outlined" placeholder="Outlined" />
-			<Input variant="filled" placeholder="Filled" />
-			<Input variant="borderless" placeholder="Borderless" />
-			<Input variant="underlined" placeholder="Underlined" />
+		<div className="space-y-4">
+			<Input variant="default" placeholder="Default" label="Default" />
+			<Input variant="outlined" placeholder="Outlined" label="Outlined" />
+			<Input variant="filled" placeholder="Filled" label="Filled" />
+			<Input variant="borderless" placeholder="Borderless" label="Borderless" />
+			<Input variant="underlined" placeholder="Underlined" label="Underlined" />
 		</div>
 	),
 };
@@ -110,13 +115,46 @@ export const WithIcons: Story = {
 	),
 };
 
-export const AllVariantsWithError: Story = {
+export const AllStates: Story = {
 	render: () => (
 		<div className="space-y-4">
-			<Input variant="default" placeholder="Default variant" label="Default" />
-			<Input variant="error" placeholder="Error variant" label="Error" error="This field has an error" />
-			<Input variant="success" placeholder="Success variant" label="Success" />
-			<Input variant="warning" placeholder="Warning variant" label="Warning" />
+			<Input label="Default State" placeholder="Enter text..." helperText="This is a helper text" />
+			<Input label="Error State" placeholder="Enter text..." error="This field has an error" />
+			<Input label="Success State" placeholder="Enter text..." success="Looks good!" />
+			<Input label="Warning State" placeholder="Enter text..." warning="Please double check" />
+		</div>
+	),
+};
+
+export const CombinedVariantsAndStates: Story = {
+	render: () => (
+		<div className="space-y-6">
+			<div>
+				<h3 className="text-sm font-medium mb-3 text-muted-700">Default Variant</h3>
+				<div className="space-y-3">
+					<Input variant="default" placeholder="Default" helperText="Normal state" />
+					<Input variant="default" placeholder="Error" error="Error message" />
+					<Input variant="default" placeholder="Success" success="Success message" />
+				</div>
+			</div>
+
+			<div>
+				<h3 className="text-sm font-medium mb-3 text-muted-700">Outlined Variant</h3>
+				<div className="space-y-3">
+					<Input variant="outlined" placeholder="Default" helperText="Normal state" />
+					<Input variant="outlined" placeholder="Error" error="Error message" />
+					<Input variant="outlined" placeholder="Success" success="Success message" />
+				</div>
+			</div>
+
+			<div>
+				<h3 className="text-sm font-medium mb-3 text-muted-700">Filled Variant</h3>
+				<div className="space-y-3">
+					<Input variant="filled" placeholder="Default" helperText="Normal state" />
+					<Input variant="filled" placeholder="Error" error="Error message" />
+					<Input variant="filled" placeholder="Success" success="Success message" />
+				</div>
+			</div>
 		</div>
 	),
 };

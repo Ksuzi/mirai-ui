@@ -4,57 +4,33 @@ export const inputVariants = cva(
 	[
 		'block',
 		'w-full',
-		'rounded',
-		'border',
-		'font-medium',
-		'focus:outline-none',
-		'focus-visible:outline-none',
+		'rounded-md',
+		'font-normal',
 		'transition-all',
 		'duration-200',
+		'focus:outline-none',
+		'focus-visible:outline-none',
 		'disabled:opacity-50',
 		'disabled:cursor-not-allowed',
-		'placeholder:text-gray-400',
+		'disabled:bg-disabled',
+		'disabled:text-disabled-foreground',
+		'placeholder:text-muted-400',
 	],
 	{
 		variants: {
 			variant: {
-				default: ['border-gray-300', 'bg-white', 'text-gray-900', 'focus:border-primary-500', 'focus:ring-primary-500'],
-				outlined: [
-					'border-2',
-					'border-gray-300',
-					'bg-transparent',
-					'text-gray-900',
-					'focus:border-primary-500',
-					'focus:ring-primary-500',
-				],
-				filled: ['border-0', 'bg-gray-100', 'text-gray-900', 'focus:bg-gray-50', 'focus:ring-primary-500'],
-				borderless: ['border-0', 'bg-transparent', 'text-gray-900', 'focus:ring-primary-500', 'focus:ring-offset-0'],
-				underlined: [
-					'border-0',
-					'border-b-2',
-					'border-gray-300',
-					'bg-transparent',
-					'text-gray-900',
-					'rounded-none',
-					'focus:border-primary-500',
-					'focus:ring-0',
-					'focus:ring-offset-0',
-				],
-				error: ['border-error-300', 'bg-white', 'text-gray-900', 'focus:border-error-500', 'focus:ring-error-500'],
-				success: [
-					'border-success-300',
-					'bg-white',
-					'text-gray-900',
-					'focus:border-success-500',
-					'focus:ring-success-500',
-				],
-				warning: [
-					'border-warning-300',
-					'bg-white',
-					'text-gray-900',
-					'focus:border-warning-500',
-					'focus:ring-warning-500',
-				],
+				default: ['border', 'bg-input', 'shadow-xs'],
+				outlined: ['border-1', 'bg-transparent', 'shadow-xs'],
+				filled: ['border', 'border-transparent', 'shadow-xs'],
+				borderless: ['border-0', 'bg-transparent', 'shadow-none'],
+				underlined: ['border-0', 'border-b-2', 'bg-transparent', 'rounded-none', 'shadow-none', 'px-0'],
+			},
+
+			state: {
+				default: [],
+				error: [],
+				success: [],
+				warning: [],
 			},
 
 			size: {
@@ -64,6 +40,7 @@ export const inputVariants = cva(
 				xl: ['px-8', 'py-4', 'text-xl'],
 			},
 
+			// UTILITIES
 			fullWidth: {
 				true: 'w-full',
 				false: 'w-auto',
@@ -71,49 +48,123 @@ export const inputVariants = cva(
 		},
 
 		compoundVariants: [
+			// ========== DEFAULT VARIANT + STATES ==========
 			{
-				variant: 'error',
-				size: 'sm',
-				class: 'border-2',
+				variant: 'default',
+				state: 'default',
+				class: 'border-input-border text-foreground focus:border-primary-500',
 			},
 			{
-				variant: 'success',
-				size: 'sm',
-				class: 'border-2',
+				variant: 'default',
+				state: 'error',
+				class: 'border-error-500 text-foreground focus:border-error-600',
 			},
 			{
-				variant: 'warning',
-				size: 'sm',
-				class: 'border-2',
+				variant: 'default',
+				state: 'success',
+				class: 'border-success-500 text-foreground focus:border-success-600',
 			},
-			// Error state overrides for new variants
+			{
+				variant: 'default',
+				state: 'warning',
+				class: 'border-warning-500 text-foreground focus:border-warning-600',
+			},
+
 			{
 				variant: 'outlined',
-				class: 'border-2',
+				state: 'default',
+				class: 'border-input-border text-foreground focus:border-primary-500',
+			},
+			{
+				variant: 'outlined',
+				state: 'error',
+				class: 'border-error-500 text-foreground focus:border-error-600',
+			},
+			{
+				variant: 'outlined',
+				state: 'success',
+				class: 'border-success-500 text-foreground focus:border-success-600',
+			},
+			{
+				variant: 'outlined',
+				state: 'warning',
+				class: 'border-warning-500 text-foreground focus:border-warning-600',
+			},
+
+			{
+				variant: 'filled',
+				state: 'default',
+				class: 'bg-muted-100 text-foreground hover:bg-muted-50 focus:bg-input',
 			},
 			{
 				variant: 'filled',
-				class: 'border border-transparent',
+				state: 'error',
+				class: 'bg-error-50 text-foreground border-error-500 focus:bg-input',
+			},
+			{
+				variant: 'filled',
+				state: 'success',
+				class: 'bg-success-50 text-foreground border-success-500 focus:bg-input',
+			},
+			{
+				variant: 'filled',
+				state: 'warning',
+				class: 'bg-warning-50 text-foreground border-warning-500 focus:bg-input',
+			},
+
+			{
+				variant: 'borderless',
+				state: 'default',
+				class: 'text-foreground',
 			},
 			{
 				variant: 'borderless',
-				class: 'border-b border-transparent',
+				state: 'error',
+				class: 'text-error-600',
+			},
+			{
+				variant: 'borderless',
+				state: 'success',
+				class: 'text-success-600',
+			},
+			{
+				variant: 'borderless',
+				state: 'warning',
+				class: 'text-warning-600',
+			},
+
+			{
+				variant: 'underlined',
+				state: 'default',
+				class: 'border-input-border text-foreground focus:border-primary-500',
 			},
 			{
 				variant: 'underlined',
-				class: 'border-b-2',
+				state: 'error',
+				class: 'border-error-500 text-foreground focus:border-error-600',
+			},
+			{
+				variant: 'underlined',
+				state: 'success',
+				class: 'border-success-500 text-foreground focus:border-success-600',
+			},
+			{
+				variant: 'underlined',
+				state: 'warning',
+				class: 'border-warning-500 text-foreground focus:border-warning-600',
 			},
 		],
 
 		defaultVariants: {
 			variant: 'default',
+			state: 'default',
 			size: 'md',
 			fullWidth: true,
 		},
 	}
 );
 
-export const labelVariants = cva(['block', 'font-medium', 'text-gray-700'], {
+export const labelVariants = cva(['block', 'font-medium', 'text-foreground'], {
 	variants: {
 		size: {
 			sm: ['text-sm', 'mb-1'],
@@ -132,7 +183,7 @@ export const labelVariants = cva(['block', 'font-medium', 'text-gray-700'], {
 	},
 });
 
-export const helperTextVariants = cva(['text-gray-600'], {
+export const helperTextVariants = cva(['text-foreground-muted'], {
 	variants: {
 		size: {
 			sm: ['text-xs', 'mt-1'],
@@ -140,8 +191,8 @@ export const helperTextVariants = cva(['text-gray-600'], {
 			lg: ['text-base', 'mt-2'],
 			xl: ['text-lg', 'mt-2.5'],
 		},
-		variant: {
-			default: 'text-gray-600',
+		state: {
+			default: 'text-foreground-muted',
 			error: 'text-error-600',
 			success: 'text-success-600',
 			warning: 'text-warning-600',
@@ -149,7 +200,7 @@ export const helperTextVariants = cva(['text-gray-600'], {
 	},
 	defaultVariants: {
 		size: 'md',
-		variant: 'default',
+		state: 'default',
 	},
 });
 

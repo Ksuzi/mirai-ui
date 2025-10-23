@@ -3,6 +3,7 @@ import React from 'react';
 import { mergeClassNames } from '@mirai-ui/utils';
 
 import { inputVariants, labelVariants, helperTextVariants } from './Input.variants';
+import { inputUtils } from './utils';
 
 import type { InputProps } from './Input.types';
 
@@ -10,11 +11,14 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
 	(
 		{
 			variant = 'default',
+			state,
 			size = 'md',
 			fullWidth = true,
 			label,
 			helperText,
 			error,
+			success,
+			warning,
 			leftIcon,
 			rightIcon,
 			className,
@@ -24,19 +28,12 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
 		},
 		ref
 	) => {
-		const inputId = id ?? `input-${Math.random().toString(36).substring(2, 11)}`;
-		const helperTextId = `${inputId}-helper`;
-		const errorId = `${inputId}-error`;
+		const inputId = inputUtils.getInputId(id);
+		const messageId = `${inputId}-message`;
 
-		const effectiveVariant = error ? 'error' : variant;
-		const helperVariant = error ? 'error' : 'default';
-
-		const displayHelperText = error ?? helperText;
-
-		let ariaDescribedBy: string | undefined;
-		if (displayHelperText) {
-			ariaDescribedBy = error ? errorId : helperTextId;
-		}
+		const effectiveState = inputUtils.getInputState({ state, error, success, warning });
+		const displayMessage = inputUtils.getInputMessage({ error, success, warning, helperText });
+		const ariaDescribedBy = inputUtils.getAriaDescribedBy(inputId, Boolean(displayMessage));
 
 		return (
 			<div className="w-full">
@@ -57,7 +54,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
 				<div className="relative">
 					{leftIcon && (
 						<div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-							<span className="text-gray-400">{leftIcon}</span>
+							<span className="text-muted-400">{leftIcon}</span>
 						</div>
 					)}
 
@@ -66,7 +63,8 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
 						id={inputId}
 						className={mergeClassNames(
 							inputVariants({
-								variant: effectiveVariant,
+								variant,
+								state: effectiveState,
 								size,
 								fullWidth,
 							}),
@@ -75,31 +73,31 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
 							className
 						)}
 						required={required}
-						aria-invalid={Boolean(error)}
+						aria-invalid={effectiveState === 'error'}
 						aria-describedby={ariaDescribedBy}
 						{...props}
 					/>
 
 					{rightIcon && (
 						<div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-							<span className="text-gray-400">{rightIcon}</span>
+							<span className="text-muted-400">{rightIcon}</span>
 						</div>
 					)}
 				</div>
 
-				{displayHelperText && (
+				{displayMessage && (
 					<p
-						id={error ? errorId : helperTextId}
+						id={messageId}
 						className={mergeClassNames(
 							helperTextVariants({
 								size,
-								variant: helperVariant,
+								state: effectiveState,
 							})
 						)}
-						role={error ? 'alert' : undefined}
-						aria-live={error ? 'polite' : undefined}
+						role={effectiveState === 'error' ? 'alert' : undefined}
+						aria-live={effectiveState === 'error' ? 'polite' : undefined}
 					>
-						{displayHelperText}
+						{displayMessage}
 					</p>
 				)}
 			</div>

@@ -121,6 +121,49 @@ describe('Input', () => {
 	});
 
 	describe('Variants', () => {
+		test('renders different input styles', () => {
+			const { rerender } = render(<Input variant="default" placeholder="Default" />);
+			expect(screen.getByRole('textbox')).toBeInTheDocument();
+
+			rerender(<Input variant="outlined" placeholder="Outlined" />);
+			expect(screen.getByRole('textbox')).toBeInTheDocument();
+
+			rerender(<Input variant="filled" placeholder="Filled" />);
+			expect(screen.getByRole('textbox')).toBeInTheDocument();
+
+			rerender(<Input variant="borderless" placeholder="Borderless" />);
+			expect(screen.getByRole('textbox')).toBeInTheDocument();
+
+			rerender(<Input variant="underlined" placeholder="Underlined" />);
+			expect(screen.getByRole('textbox')).toBeInTheDocument();
+		});
+
+		test('renders different states via messages', () => {
+			const { rerender } = render(<Input helperText="Helper text" />);
+			expect(screen.getByText('Helper text')).toBeInTheDocument();
+
+			rerender(<Input error="Error message" />);
+			expect(screen.getByRole('alert')).toHaveTextContent('Error message');
+			expect(screen.getByRole('textbox')).toHaveAttribute('aria-invalid', 'true');
+
+			rerender(<Input success="Success message" />);
+			expect(screen.getByText('Success message')).toBeInTheDocument();
+
+			rerender(<Input warning="Warning message" />);
+			expect(screen.getByText('Warning message')).toBeInTheDocument();
+		});
+
+		test('combines variant and state', () => {
+			const { rerender } = render(<Input variant="outlined" error="Error" />);
+			expect(screen.getByRole('alert')).toHaveTextContent('Error');
+
+			rerender(<Input variant="filled" success="Success" />);
+			expect(screen.getByText('Success')).toBeInTheDocument();
+
+			rerender(<Input variant="underlined" warning="Warning" />);
+			expect(screen.getByText('Warning')).toBeInTheDocument();
+		});
+
 		test('applies different sizes', () => {
 			const { rerender } = render(<Input size="sm" data-testid="input" />);
 			expect(screen.getByTestId('input')).toBeInTheDocument();
