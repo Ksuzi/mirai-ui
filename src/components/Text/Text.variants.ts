@@ -1,20 +1,70 @@
 import { cva, type VariantProps } from 'class-variance-authority';
 
-export const textVariants = cva(['text-gray-900'], {
+export const textVariants = cva([], {
 	variants: {
-		textStyle: {
-			xs: ['text-xs', 'leading-4'],
-			sm: ['text-sm', 'leading-5'],
-			md: ['text-base', 'leading-6'],
-			lg: ['text-lg', 'leading-7'],
-			xl: ['text-xl', 'leading-7'],
-			'2xl': ['text-2xl', 'leading-8'],
-			'3xl': ['text-3xl', 'leading-9'],
-			'4xl': ['text-4xl', 'leading-10'],
-			'5xl': ['text-5xl', 'leading-none'],
-			'6xl': ['text-6xl', 'leading-none'],
-			'7xl': ['text-7xl', 'leading-none'],
+		// SEMANTIC TEXT STYLES (use design tokens)
+		variant: {
+			'body-lg': [
+				'text-[length:var(--font-size-body-lg)]',
+				'font-[number:var(--font-weight-body-lg)]',
+				'leading-[var(--line-height-body-lg)]',
+			],
+			body: [
+				'text-[length:var(--font-size-body)]',
+				'font-[number:var(--font-weight-body)]',
+				'leading-[var(--line-height-body)]',
+			],
+			'body-sm': [
+				'text-[length:var(--font-size-body-sm)]',
+				'font-[number:var(--font-weight-body-sm)]',
+				'leading-[var(--line-height-body-sm)]',
+			],
+			caption: [
+				'text-[length:var(--font-size-caption)]',
+				'font-[number:var(--font-weight-caption)]',
+				'leading-[var(--line-height-caption)]',
+			],
+			overline: [
+				'text-[length:var(--font-size-overline)]',
+				'font-[number:var(--font-weight-overline)]',
+				'leading-[var(--line-height-overline)]',
+				'tracking-[var(--letter-spacing-overline)]',
+				'uppercase',
+			],
+			label: [
+				'text-[length:var(--font-size-label)]',
+				'font-[number:var(--font-weight-label)]',
+				'leading-[var(--line-height-label)]',
+			],
+			button: [
+				'text-[length:var(--font-size-button)]',
+				'font-[number:var(--font-weight-button)]',
+				'leading-[var(--line-height-button)]',
+			],
+			code: [
+				'text-[length:var(--font-size-code)]',
+				'font-[number:var(--font-weight-code)]',
+				'leading-[var(--line-height-code)]',
+				'font-mono',
+			],
+			link: ['font-[number:var(--font-weight-link)]', 'underline', 'underline-offset-2', 'hover:no-underline'],
 		},
+
+		// SEMANTIC COLORS (Use design system tokens)
+		colorScheme: {
+			default: ['text-foreground'],
+			muted: ['text-foreground-muted'],
+			primary: ['text-primary-600'],
+			secondary: ['text-secondary-600'],
+			success: ['text-success-600'],
+			warning: ['text-warning-600'],
+			error: ['text-error-600'],
+			info: ['text-info-600'],
+			accent: ['text-accent-600'],
+			disabled: ['text-disabled-foreground'],
+		},
+
+		// FONT WEIGHT (Utility - can override variant defaults)
 		fontWeight: {
 			light: ['font-light'],
 			normal: ['font-normal'],
@@ -22,9 +72,12 @@ export const textVariants = cva(['text-gray-900'], {
 			semibold: ['font-semibold'],
 			bold: ['font-bold'],
 		},
+
+		// TEXT UTILITIES (Not semantic - helper utilities)
 		truncate: {
 			true: ['truncate'],
 		},
+
 		lineClamp: {
 			1: ['line-clamp-1'],
 			2: ['line-clamp-2'],
@@ -33,24 +86,18 @@ export const textVariants = cva(['text-gray-900'], {
 			5: ['line-clamp-5'],
 			6: ['line-clamp-6'],
 		},
-		colorPalette: {
-			gray: ['text-gray-800'],
-			red: ['text-red-600'],
-			orange: ['text-orange-600'],
-			yellow: ['text-yellow-600'],
-			green: ['text-green-600'],
-			teal: ['text-teal-600'],
-			blue: ['text-blue-600'],
-			cyan: ['text-cyan-600'],
-			purple: ['text-purple-600'],
-			pink: ['text-pink-600'],
-			muted: ['text-gray-600'],
+
+		// TEXT ALIGNMENT (Utility)
+		align: {
+			left: ['text-left'],
+			center: ['text-center'],
+			right: ['text-right'],
+			justify: ['text-justify'],
 		},
 	},
 	defaultVariants: {
-		textStyle: 'md',
-		fontWeight: 'normal',
-		colorPalette: 'gray',
+		variant: 'body',
+		colorScheme: 'default',
 	},
 });
 

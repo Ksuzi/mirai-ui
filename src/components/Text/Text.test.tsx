@@ -42,18 +42,41 @@ describe('Text', () => {
 	});
 
 	describe('Variants', () => {
-		test('renders with different text styles', () => {
-			const { rerender } = render(<Text textStyle="xs">Extra Small</Text>);
-			expect(screen.getByText('Extra Small')).toBeInTheDocument();
+		test('renders with different semantic variants', () => {
+			const { rerender } = render(<Text variant="body-lg">Body Large</Text>);
+			expect(screen.getByText('Body Large')).toBeInTheDocument();
 
-			rerender(<Text textStyle="sm">Small</Text>);
-			expect(screen.getByText('Small')).toBeInTheDocument();
+			rerender(<Text variant="body">Body</Text>);
+			expect(screen.getByText('Body')).toBeInTheDocument();
 
-			rerender(<Text textStyle="md">Medium</Text>);
-			expect(screen.getByText('Medium')).toBeInTheDocument();
+			rerender(<Text variant="body-sm">Body Small</Text>);
+			expect(screen.getByText('Body Small')).toBeInTheDocument();
 
-			rerender(<Text textStyle="lg">Large</Text>);
-			expect(screen.getByText('Large')).toBeInTheDocument();
+			rerender(<Text variant="caption">Caption</Text>);
+			expect(screen.getByText('Caption')).toBeInTheDocument();
+
+			rerender(<Text variant="label">Label</Text>);
+			expect(screen.getByText('Label')).toBeInTheDocument();
+
+			rerender(<Text variant="overline">Overline</Text>);
+			expect(screen.getByText('Overline')).toBeInTheDocument();
+		});
+
+		test('renders with different color schemes', () => {
+			const { rerender } = render(<Text colorScheme="default">Default</Text>);
+			expect(screen.getByText('Default')).toBeInTheDocument();
+
+			rerender(<Text colorScheme="primary">Primary</Text>);
+			expect(screen.getByText('Primary')).toBeInTheDocument();
+
+			rerender(<Text colorScheme="success">Success</Text>);
+			expect(screen.getByText('Success')).toBeInTheDocument();
+
+			rerender(<Text colorScheme="error">Error</Text>);
+			expect(screen.getByText('Error')).toBeInTheDocument();
+
+			rerender(<Text colorScheme="muted">Muted</Text>);
+			expect(screen.getByText('Muted')).toBeInTheDocument();
 		});
 
 		test('renders with different font weights', () => {
@@ -80,9 +103,9 @@ describe('Text', () => {
 			expect(screen.getByText('Clamped text')).toBeInTheDocument();
 		});
 
-		test('renders with color palette', () => {
-			render(<Text colorPalette="blue">Colored text</Text>);
-			expect(screen.getByText('Colored text')).toBeInTheDocument();
+		test('renders with text alignment', () => {
+			render(<Text align="center">Centered text</Text>);
+			expect(screen.getByText('Centered text')).toBeInTheDocument();
 		});
 	});
 
