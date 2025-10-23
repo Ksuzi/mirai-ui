@@ -7,13 +7,13 @@ const meta: Meta<typeof Heading> = {
 	component: Heading,
 	tags: ['autodocs'],
 	argTypes: {
-		size: {
+		variant: {
 			control: 'select',
-			options: ['xs', 'sm', 'md', 'lg', 'xl', '2xl', '3xl', '4xl', '5xl', '6xl', '7xl'],
+			options: ['display', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
 		},
-		colorPalette: {
+		colorScheme: {
 			control: 'select',
-			options: ['gray', 'red', 'orange', 'yellow', 'green', 'teal', 'blue', 'cyan', 'purple', 'pink'],
+			options: ['default', 'muted', 'primary', 'secondary', 'success', 'warning', 'error', 'info', 'accent'],
 		},
 		as: {
 			control: 'select',
@@ -31,37 +31,32 @@ export const Default: Story = {
 	},
 };
 
-export const AllSizes: Story = {
+export const AllVariants: Story = {
 	render: () => (
 		<div className="space-y-4">
-			<Heading size="xs">Heading (xs)</Heading>
-			<Heading size="sm">Heading (sm)</Heading>
-			<Heading size="md">Heading (md)</Heading>
-			<Heading size="lg">Heading (lg)</Heading>
-			<Heading size="xl">Heading (xl)</Heading>
-			<Heading size="2xl">Heading (2xl)</Heading>
-			<Heading size="3xl">Heading (3xl)</Heading>
-			<Heading size="4xl">Heading (4xl)</Heading>
-			<Heading size="5xl">Heading (5xl)</Heading>
-			<Heading size="6xl">Heading (6xl)</Heading>
-			<Heading size="7xl">Heading (7xl)</Heading>
+			<Heading variant="display">Display Heading</Heading>
+			<Heading variant="h1">H1 Heading</Heading>
+			<Heading variant="h2">H2 Heading</Heading>
+			<Heading variant="h3">H3 Heading</Heading>
+			<Heading variant="h4">H4 Heading</Heading>
+			<Heading variant="h5">H5 Heading</Heading>
+			<Heading variant="h6">H6 Heading</Heading>
 		</div>
 	),
 };
 
-export const ColorPalettes: Story = {
+export const ColorSchemes: Story = {
 	render: () => (
 		<div className="space-y-4">
-			<Heading colorPalette="gray">Gray Heading</Heading>
-			<Heading colorPalette="red">Red Heading</Heading>
-			<Heading colorPalette="orange">Orange Heading</Heading>
-			<Heading colorPalette="yellow">Yellow Heading</Heading>
-			<Heading colorPalette="green">Green Heading</Heading>
-			<Heading colorPalette="teal">Teal Heading</Heading>
-			<Heading colorPalette="blue">Blue Heading</Heading>
-			<Heading colorPalette="cyan">Cyan Heading</Heading>
-			<Heading colorPalette="purple">Purple Heading</Heading>
-			<Heading colorPalette="pink">Pink Heading</Heading>
+			<Heading colorScheme="default">Default Heading</Heading>
+			<Heading colorScheme="muted">Muted Heading</Heading>
+			<Heading colorScheme="primary">Primary Heading</Heading>
+			<Heading colorScheme="secondary">Secondary Heading</Heading>
+			<Heading colorScheme="success">Success Heading</Heading>
+			<Heading colorScheme="warning">Warning Heading</Heading>
+			<Heading colorScheme="error">Error Heading</Heading>
+			<Heading colorScheme="info">Info Heading</Heading>
+			<Heading colorScheme="accent">Accent Heading</Heading>
 		</div>
 	),
 };
@@ -69,22 +64,22 @@ export const ColorPalettes: Story = {
 export const SemanticElements: Story = {
 	render: () => (
 		<div className="space-y-4">
-			<Heading as="h1" size="4xl">
+			<Heading as="h1" variant="h1">
 				Level 1 Heading
 			</Heading>
-			<Heading as="h2" size="3xl">
+			<Heading as="h2" variant="h2">
 				Level 2 Heading
 			</Heading>
-			<Heading as="h3" size="2xl">
+			<Heading as="h3" variant="h3">
 				Level 3 Heading
 			</Heading>
-			<Heading as="h4" size="xl">
+			<Heading as="h4" variant="h4">
 				Level 4 Heading
 			</Heading>
-			<Heading as="h5" size="lg">
+			<Heading as="h5" variant="h5">
 				Level 5 Heading
 			</Heading>
-			<Heading as="h6" size="md">
+			<Heading as="h6" variant="h6">
 				Level 6 Heading
 			</Heading>
 		</div>
@@ -94,8 +89,8 @@ export const SemanticElements: Story = {
 export const WithCustomStyles: Story = {
 	args: {
 		children: 'Custom Styled Heading',
-		size: '3xl',
-		colorPalette: 'teal',
-		className: 'font-bold underline',
+		variant: 'h2',
+		colorScheme: 'accent',
+		className: 'underline',
 	},
 };
