@@ -7,11 +7,12 @@ import { headingVariants } from './Heading.variants';
 import type { HeadingProps } from './Heading.types';
 
 export const Heading = React.forwardRef<HTMLHeadingElement, HeadingProps>(
-	({ size, colorPalette, className, children, as = 'h2', ...props }, ref) => {
+	({ variant, colorScheme, className, children, as = 'h2', ...props }, ref) => {
 		const Component = as;
+		const variantClasses = headingVariants({ variant, colorScheme });
 
 		return (
-			<Component ref={ref} className={mergeClassNames(headingVariants({ size, colorPalette }), className)} {...props}>
+			<Component ref={ref} className={mergeClassNames(variantClasses, className)} {...props}>
 				{children}
 			</Component>
 		);

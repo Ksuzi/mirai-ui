@@ -7,17 +7,28 @@ const meta: Meta<typeof Text> = {
 	component: Text,
 	tags: ['autodocs'],
 	argTypes: {
-		textStyle: {
+		variant: {
 			control: 'select',
-			options: ['xs', 'sm', 'md', 'lg', 'xl', '2xl', '3xl', '4xl', '5xl', '6xl', '7xl'],
+			options: ['body-lg', 'body', 'body-sm', 'caption', 'overline', 'label', 'button', 'code', 'link'],
+		},
+		colorScheme: {
+			control: 'select',
+			options: [
+				'default',
+				'muted',
+				'primary',
+				'secondary',
+				'success',
+				'warning',
+				'error',
+				'info',
+				'accent',
+				'disabled',
+			],
 		},
 		fontWeight: {
 			control: 'select',
 			options: ['light', 'normal', 'medium', 'semibold', 'bold'],
-		},
-		colorPalette: {
-			control: 'select',
-			options: ['gray', 'red', 'orange', 'yellow', 'green', 'teal', 'blue', 'cyan', 'purple', 'pink', 'muted'],
 		},
 		as: {
 			control: 'select',
@@ -29,6 +40,10 @@ const meta: Meta<typeof Text> = {
 		lineClamp: {
 			control: 'select',
 			options: [1, 2, 3, 4, 5, 6],
+		},
+		align: {
+			control: 'select',
+			options: ['left', 'center', 'right', 'justify'],
 		},
 	},
 };
@@ -42,20 +57,17 @@ export const Default: Story = {
 	},
 };
 
-export const TextStyles: Story = {
+export const AllVariants: Story = {
 	render: () => (
-		<div className="space-y-2">
-			<Text textStyle="xs">Mirai Text (xs)</Text>
-			<Text textStyle="sm">Mirai Text (sm)</Text>
-			<Text textStyle="md">Mirai Text (md)</Text>
-			<Text textStyle="lg">Mirai Text (lg)</Text>
-			<Text textStyle="xl">Mirai Text (xl)</Text>
-			<Text textStyle="2xl">Mirai Text (2xl)</Text>
-			<Text textStyle="3xl">Mirai Text (3xl)</Text>
-			<Text textStyle="4xl">Mirai Text (4xl)</Text>
-			<Text textStyle="5xl">Mirai Text (5xl)</Text>
-			<Text textStyle="6xl">Mirai Text (6xl)</Text>
-			<Text textStyle="7xl">Mirai Text (7xl)</Text>
+		<div className="space-y-4">
+			<Text variant="body-lg">Body Large: Sphinx of black quartz, judge my vow.</Text>
+			<Text variant="body">Body: Sphinx of black quartz, judge my vow.</Text>
+			<Text variant="body-sm">Body Small: Sphinx of black quartz, judge my vow.</Text>
+			<Text variant="caption">Caption: Sphinx of black quartz, judge my vow.</Text>
+			<Text variant="overline">Overline: Category</Text>
+			<Text variant="label">Label: Form label text</Text>
+			<Text variant="button">Button: Click me</Text>
+			<Text variant="code">Code: const example = true;</Text>
 		</div>
 	),
 };
@@ -72,20 +84,19 @@ export const FontWeights: Story = {
 	),
 };
 
-export const ColorPalettes: Story = {
+export const ColorSchemes: Story = {
 	render: () => (
 		<div className="space-y-2">
-			<Text colorPalette="gray">Gray text</Text>
-			<Text colorPalette="red">Red text</Text>
-			<Text colorPalette="orange">Orange text</Text>
-			<Text colorPalette="yellow">Yellow text</Text>
-			<Text colorPalette="green">Green text</Text>
-			<Text colorPalette="teal">Teal text</Text>
-			<Text colorPalette="blue">Blue text</Text>
-			<Text colorPalette="cyan">Cyan text</Text>
-			<Text colorPalette="purple">Purple text</Text>
-			<Text colorPalette="pink">Pink text</Text>
-			<Text colorPalette="muted">Muted text</Text>
+			<Text colorScheme="default">Default text</Text>
+			<Text colorScheme="muted">Muted text</Text>
+			<Text colorScheme="primary">Primary text</Text>
+			<Text colorScheme="secondary">Secondary text</Text>
+			<Text colorScheme="success">Success text</Text>
+			<Text colorScheme="warning">Warning text</Text>
+			<Text colorScheme="error">Error text</Text>
+			<Text colorScheme="info">Info text</Text>
+			<Text colorScheme="accent">Accent text</Text>
+			<Text colorScheme="disabled">Disabled text</Text>
 		</div>
 	),
 };

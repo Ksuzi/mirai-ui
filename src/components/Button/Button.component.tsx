@@ -11,6 +11,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 	(
 		{
 			variant,
+			colorScheme,
 			size = 'md',
 			fullWidth,
 			loading = false,
@@ -60,6 +61,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 				className={mergeClassNames(
 					buttonVariants({
 						variant,
+						colorScheme,
 						size,
 						fullWidth,
 						loading,

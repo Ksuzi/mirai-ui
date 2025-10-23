@@ -1,0 +1,118 @@
+/**
+ * Mirai UI - Typography Tokens
+ * Semantic typography tokens for design system
+ */
+
+@theme {
+	/* ============================================
+	   FONT FAMILIES
+	   ============================================ */
+
+	--font-family-sans:
+		'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, 'Noto Sans', sans-serif,
+		'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+
+	--font-family-serif: 'Georgia', Cambria, 'Times New Roman', Times, serif;
+
+	--font-family-mono: 'Fira Code', 'JetBrains Mono', 'Consolas', 'Monaco', 'Courier New', monospace;
+
+	--font-family-display: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+	/* ============================================
+	   NOTE: Font sizes, weights, line heights are already in Tailwind!
+	   Use Tailwind classes directly: text-xs, font-bold, leading-tight, etc.
+	   
+	   Below are SEMANTIC tokens for your design system.
+	   ============================================ */
+
+	/* ============================================
+	   SEMANTIC TYPOGRAPHY TOKENS
+	   Use these in your component variants
+	   ============================================ */
+
+	/* DISPLAY - Hero headings, landing pages */
+	--font-size-display: 3.75rem; /* 60px */
+	--font-weight-display: 700;
+	--line-height-display: 1;
+	--letter-spacing-display: -0.025em;
+
+	/* H1 - Main page heading */
+	--font-size-h1: 3rem; /* 48px */
+	--font-weight-h1: 700;
+	--line-height-h1: 1.25;
+	--letter-spacing-h1: -0.025em;
+
+	/* H2 - Section heading */
+	--font-size-h2: 2.25rem; /* 36px */
+	--font-weight-h2: 700;
+	--line-height-h2: 1.25;
+	--letter-spacing-h2: -0.025em;
+
+	/* H3 - Subsection heading */
+	--font-size-h3: 1.875rem; /* 30px */
+	--font-weight-h3: 600;
+	--line-height-h3: 1.375;
+	--letter-spacing-h3: 0;
+
+	/* H4 - Component heading */
+	--font-size-h4: 1.5rem; /* 24px */
+	--font-weight-h4: 600;
+	--line-height-h4: 1.375;
+	--letter-spacing-h4: 0;
+
+	/* H5 - Small heading */
+	--font-size-h5: 1.25rem; /* 20px */
+	--font-weight-h5: 600;
+	--line-height-h5: 1.5;
+	--letter-spacing-h5: 0;
+
+	/* H6 - Tiny heading */
+	--font-size-h6: 1.125rem; /* 18px */
+	--font-weight-h6: 600;
+	--line-height-h6: 1.5;
+	--letter-spacing-h6: 0;
+
+	/* BODY-LG - Important paragraphs */
+	--font-size-body-lg: 1.125rem; /* 18px */
+	--font-weight-body-lg: 400;
+	--line-height-body-lg: 1.625;
+
+	/* BODY - Default body text */
+	--font-size-body: 1rem; /* 16px */
+	--font-weight-body: 400;
+	--line-height-body: 1.5;
+
+	/* BODY-SM - Secondary text */
+	--font-size-body-sm: 0.875rem; /* 14px */
+	--font-weight-body-sm: 400;
+	--line-height-body-sm: 1.5;
+
+	/* CAPTION - Small supporting text */
+	--font-size-caption: 0.75rem; /* 12px */
+	--font-weight-caption: 400;
+	--line-height-caption: 1.5;
+
+	/* OVERLINE - Labels above content */
+	--font-size-overline: 0.75rem; /* 12px */
+	--font-weight-overline: 600;
+	--line-height-overline: 1.5;
+	--letter-spacing-overline: 0.1em;
+
+	/* LABEL - Form labels */
+	--font-size-label: 0.875rem; /* 14px */
+	--font-weight-label: 500;
+	--line-height-label: 1.5;
+
+	/* BUTTON - Button text */
+	--font-size-button: 1rem; /* 16px */
+	--font-weight-button: 500;
+	--line-height-button: 1;
+
+	/* CODE - Inline code */
+	--font-size-code: 0.875rem; /* 14px */
+	--font-weight-code: 400;
+	--line-height-code: 1.5;
+
+	/* LINK - Hyperlinks */
+	--font-weight-link: 500;
+}
