@@ -78,8 +78,6 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 						fill="none"
 						viewBox="0 0 24 24"
 						aria-hidden="true"
-						role="img"
-						aria-label="Loading"
 					>
 						<circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
 						<path

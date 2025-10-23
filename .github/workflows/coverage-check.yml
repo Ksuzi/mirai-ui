@@ -2,6 +2,7 @@ name: Coverage Check
 
 on:
   pull_request:
+    types: [ready_for_review, synchronize]
     branches: [main, develop]
 
 jobs:
