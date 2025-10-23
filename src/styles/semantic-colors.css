@@ -2,9 +2,16 @@
  * Mirai UI - Semantic Colors
  * Semantic color aliases for component library
  * These reference the base colors from colors.css
+ * 
+ * STRUCTURE:
+ * 1. State Colors: primary, secondary, success, warning, error, info
+ * 2. Utility Colors: muted, accent
+ * 3. UI Element Colors: foreground, border, ring, input, disabled, card, popover
  */
 
 @theme {
+	/* STATE COLORS */
+
 	/* PRIMARY */
 	--color-primary: var(--color-indigo);
 	--color-primary-50: var(--color-indigo-50);
@@ -74,4 +81,79 @@
 	--color-error-800: var(--color-red-800);
 	--color-error-900: var(--color-red-900);
 	--color-error-950: var(--color-red-950);
+
+	/* INFO */
+	--color-info: var(--color-blue);
+	--color-info-50: var(--color-blue-50);
+	--color-info-100: var(--color-blue-100);
+	--color-info-200: var(--color-blue-200);
+	--color-info-300: var(--color-blue-300);
+	--color-info-400: var(--color-blue-400);
+	--color-info-500: var(--color-blue-500);
+	--color-info-600: var(--color-blue-600);
+	--color-info-700: var(--color-blue-700);
+	--color-info-800: var(--color-blue-800);
+	--color-info-900: var(--color-blue-900);
+	--color-info-950: var(--color-blue-950);
+
+	/* UTILITY COLORS */
+
+	/* MUTED */
+	--color-muted: var(--color-gray);
+	--color-muted-50: var(--color-gray-50);
+	--color-muted-100: var(--color-gray-100);
+	--color-muted-200: var(--color-gray-200);
+	--color-muted-300: var(--color-gray-300);
+	--color-muted-400: var(--color-gray-400);
+	--color-muted-500: var(--color-gray-500);
+	--color-muted-600: var(--color-gray-600);
+	--color-muted-700: var(--color-gray-700);
+	--color-muted-800: var(--color-gray-800);
+	--color-muted-900: var(--color-gray-900);
+	--color-muted-950: var(--color-gray-950);
+
+	/* ACCENT */
+	--color-accent: var(--color-violet);
+	--color-accent-50: var(--color-violet-50);
+	--color-accent-100: var(--color-violet-100);
+	--color-accent-200: var(--color-violet-200);
+	--color-accent-300: var(--color-violet-300);
+	--color-accent-400: var(--color-violet-400);
+	--color-accent-500: var(--color-violet-500);
+	--color-accent-600: var(--color-violet-600);
+	--color-accent-700: var(--color-violet-700);
+	--color-accent-800: var(--color-violet-800);
+	--color-accent-900: var(--color-violet-900);
+	--color-accent-950: var(--color-violet-950);
+
+	/* UI ELEMENT COLORS */
+
+	/* FOREGROUND - Main text color */
+	--color-foreground: var(--color-slate-950);
+	--color-foreground-muted: var(--color-slate-600);
+
+	/* BORDER - Default border color */
+	--color-border: var(--color-slate-200);
+	--color-border-light: var(--color-slate-100);
+	--color-border-strong: var(--color-slate-300);
+
+	/* RING - Focus ring color */
+	--color-ring: var(--color-primary-500);
+	--color-ring-offset: var(--color-white);
+
+	/* INPUT - Input field colors */
+	--color-input: var(--color-white);
+	--color-input-border: var(--color-border);
+
+	/* DISABLED - Disabled state */
+	--color-disabled: var(--color-gray-300);
+	--color-disabled-foreground: var(--color-gray-500);
+
+	/* CARD - Card background */
+	--color-card: var(--color-white);
+	--color-card-foreground: var(--color-foreground);
+
+	/* POPOVER - Popover/Dropdown background */
+	--color-popover: var(--color-white);
+	--color-popover-foreground: var(--color-foreground);
 }
