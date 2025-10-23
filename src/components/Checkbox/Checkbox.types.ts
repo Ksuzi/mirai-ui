@@ -5,6 +5,7 @@ export type CheckboxProps = {
 	/** Additional CSS classes for the wrapper div */
 	wrapperClassName?: string;
 	color?: 'base' | 'primary' | 'secondary';
+	['aria-label']?: string;
 } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'> &
 	CheckboxVariantProps;
 
@@ -15,6 +16,7 @@ export type CheckboxRootProps = {
 export type CheckboxInputProps = {
 	className?: string;
 	color?: 'base' | 'primary' | 'secondary';
+	['aria-label']?: string;
 } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'> &
 	CheckboxVariantProps;
 

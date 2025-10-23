@@ -1,9 +1,10 @@
-import { render, screen, fireEvent } from '@testing-library/react';
-import { expect, test, describe, vi } from 'vitest';
+import { describe, expect, test, vi } from 'vitest';
 
-import { Input } from '@mirai-ui/components';
+import { render, screen, userEvent } from '@mirai-ui/test';
 
-describe('Input Component', () => {
+import { Input } from './Input.component';
+
+describe('Input', () => {
 	describe('Rendering', () => {
 		test('renders input element', () => {
 			render(<Input />);
@@ -24,6 +25,16 @@ describe('Input Component', () => {
 			render(<Input error="Email is required" />);
 			const errorMessage = screen.getByRole('alert');
 			expect(errorMessage).toHaveTextContent('Email is required');
+		});
+
+		test('renders with left icon', () => {
+			render(<Input leftIcon={<span data-testid="left-icon">@</span>} />);
+			expect(screen.getByTestId('left-icon')).toBeInTheDocument();
+		});
+
+		test('renders with right icon', () => {
+			render(<Input rightIcon={<span data-testid="right-icon">✓</span>} />);
+			expect(screen.getByTestId('right-icon')).toBeInTheDocument();
 		});
 	});
 
@@ -49,40 +60,72 @@ describe('Input Component', () => {
 			const errorMessage = screen.getByRole('alert');
 			expect(errorMessage).toHaveAttribute('aria-live', 'polite');
 		});
+
+		test('associates helper text with input via aria-describedby', () => {
+			render(<Input helperText="Enter your email" id="email-input" />);
+			const input = screen.getByRole('textbox');
+			const helperTextId = input.getAttribute('aria-describedby');
+			expect(helperTextId).toBeTruthy();
+			expect(screen.getByText('Enter your email')).toHaveAttribute('id', helperTextId);
+		});
+
+		test('associates error with input via aria-describedby', () => {
+			render(<Input error="Invalid email" id="email-input" />);
+			const input = screen.getByRole('textbox');
+			const errorId = input.getAttribute('aria-describedby');
+			expect(errorId).toBeTruthy();
+			expect(screen.getByRole('alert')).toHaveAttribute('id', errorId);
+		});
 	});
 
 	describe('Interaction', () => {
-		test('handles user input', () => {
+		test('handles user input', async () => {
+			const user = userEvent.setup();
 			render(<Input />);
 			const input = screen.getByRole('textbox');
-			fireEvent.change(input, { target: { value: 'test@example.com' } });
+
+			await user.type(input, 'test@example.com');
 			expect(input).toHaveValue('test@example.com');
 		});
 
-		test('calls onChange handler', () => {
+		test('calls onChange handler', async () => {
+			const user = userEvent.setup();
 			const handleChange = vi.fn();
 			render(<Input onChange={handleChange} />);
 			const input = screen.getByRole('textbox');
 
-			fireEvent.change(input, { target: { value: 'test' } });
-
-			expect(handleChange).toHaveBeenCalledTimes(1);
+			await user.type(input, 'test');
+			expect(handleChange).toHaveBeenCalled();
 		});
 
-		test('calls onFocus handler', () => {
+		test('calls onFocus handler', async () => {
+			const user = userEvent.setup();
 			const handleFocus = vi.fn();
 			render(<Input onFocus={handleFocus} />);
 			const input = screen.getByRole('textbox');
 
-			fireEvent.focus(input);
-
+			await user.click(input);
 			expect(handleFocus).toHaveBeenCalledTimes(1);
+		});
+
+		test('calls onBlur handler', async () => {
+			const user = userEvent.setup();
+			const handleBlur = vi.fn();
+			render(<Input onBlur={handleBlur} />);
+			const input = screen.getByRole('textbox');
+
+			await user.click(input);
+			await user.tab();
+			expect(handleBlur).toHaveBeenCalledTimes(1);
 		});
 	});
 
 	describe('Variants', () => {
 		test('applies different sizes', () => {
 			const { rerender } = render(<Input size="sm" data-testid="input" />);
+			expect(screen.getByTestId('input')).toBeInTheDocument();
+
+			rerender(<Input size="md" data-testid="input" />);
 			expect(screen.getByTestId('input')).toBeInTheDocument();
 
 			rerender(<Input size="lg" data-testid="input" />);
@@ -94,9 +137,15 @@ describe('Input Component', () => {
 			const input = screen.getByTestId('input');
 			expect(input).toHaveClass('custom-class');
 		});
+
+		test('applies fullWidth by default', () => {
+			const { container } = render(<Input />);
+			const wrapper = container.querySelector('.w-full');
+			expect(wrapper).toBeInTheDocument();
+		});
 	});
 
-	describe('Ref forwarding', () => {
+	describe('Ref Forwarding', () => {
 		test('forwards ref to input element', () => {
 			const ref = { current: null as HTMLInputElement | null };
 			render(<Input ref={ref} />);
