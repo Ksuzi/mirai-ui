@@ -2,7 +2,7 @@
 	"name": "@ksuzi/mirai-ui",
 	"version": "0.2.0",
 	"type": "module",
-	"license": "MIT",
+	"license": "MIT License",
 	"description": "A modern React UI components library built with Tailwind CSS",
 	"keywords": [
 		"react",
@@ -11,7 +11,7 @@
 		"tailwind",
 		"typescript"
 	],
-	"author": "Your Name <your.email@example.com>",
+	"author": "Kseniia Terenko <kseniia.terenko@gmail.com>",
 	"homepage": "https://github.com/ksuzi/mirai-ui#readme",
 	"bugs": {
 		"url": "https://github.com/ksuzi/mirai-ui/issues"
