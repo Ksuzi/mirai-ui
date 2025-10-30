@@ -2,7 +2,6 @@ import { cva, type VariantProps } from 'class-variance-authority';
 
 export const textVariants = cva([], {
 	variants: {
-		// SEMANTIC TEXT STYLES (use design tokens)
 		variant: {
 			'body-lg': [
 				'text-[length:var(--font-size-body-lg)]',
@@ -50,7 +49,6 @@ export const textVariants = cva([], {
 			link: ['font-[number:var(--font-weight-link)]', 'underline', 'underline-offset-2', 'hover:no-underline'],
 		},
 
-		// SEMANTIC COLORS (Use design system tokens)
 		colorScheme: {
 			default: ['text-foreground'],
 			muted: ['text-foreground-muted'],
@@ -64,7 +62,6 @@ export const textVariants = cva([], {
 			disabled: ['text-disabled-foreground'],
 		},
 
-		// FONT WEIGHT (Utility - can override variant defaults)
 		fontWeight: {
 			light: ['font-light'],
 			normal: ['font-normal'],
@@ -73,7 +70,6 @@ export const textVariants = cva([], {
 			bold: ['font-bold'],
 		},
 
-		// TEXT UTILITIES (Not semantic - helper utilities)
 		truncate: {
 			true: ['truncate'],
 		},
@@ -87,7 +83,6 @@ export const textVariants = cva([], {
 			6: ['line-clamp-6'],
 		},
 
-		// TEXT ALIGNMENT (Utility)
 		align: {
 			left: ['text-left'],
 			center: ['text-center'],

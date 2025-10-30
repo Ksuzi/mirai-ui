@@ -138,7 +138,7 @@ describe('Input', () => {
 			expect(screen.getByRole('textbox')).toBeInTheDocument();
 		});
 
-		test('renders different states via messages', () => {
+		test('renders helper and error messages; success/warning via state only', () => {
 			const { rerender } = render(<Input helperText="Helper text" />);
 			expect(screen.getByText('Helper text')).toBeInTheDocument();
 
@@ -146,21 +146,22 @@ describe('Input', () => {
 			expect(screen.getByRole('alert')).toHaveTextContent('Error message');
 			expect(screen.getByRole('textbox')).toHaveAttribute('aria-invalid', 'true');
 
-			rerender(<Input success="Success message" />);
-			expect(screen.getByText('Success message')).toBeInTheDocument();
+			// success/warning do not accept message props; use helperText with state
+			rerender(<Input state="success" helperText="Looks good" />);
+			expect(screen.getByText('Looks good')).toBeInTheDocument();
 
-			rerender(<Input warning="Warning message" />);
-			expect(screen.getByText('Warning message')).toBeInTheDocument();
+			rerender(<Input state="warning" helperText="Be careful" />);
+			expect(screen.getByText('Be careful')).toBeInTheDocument();
 		});
 
 		test('combines variant and state', () => {
 			const { rerender } = render(<Input variant="outlined" error="Error" />);
 			expect(screen.getByRole('alert')).toHaveTextContent('Error');
 
-			rerender(<Input variant="filled" success="Success" />);
+			rerender(<Input variant="filled" state="success" helperText="Success" />);
 			expect(screen.getByText('Success')).toBeInTheDocument();
 
-			rerender(<Input variant="underlined" warning="Warning" />);
+			rerender(<Input variant="underlined" state="warning" helperText="Warning" />);
 			expect(screen.getByText('Warning')).toBeInTheDocument();
 		});
 

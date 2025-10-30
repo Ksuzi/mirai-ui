@@ -13,7 +13,8 @@ const meta: Meta<typeof Input> = {
 		},
 		state: {
 			control: 'select',
-			options: ['default', 'error', 'success', 'warning'],
+			options: ['success', 'warning'],
+			description: 'Visual-only state. Use error prop for error state with message.',
 		},
 		size: {
 			control: 'select',
@@ -120,8 +121,8 @@ export const AllStates: Story = {
 		<div className="space-y-4">
 			<Input label="Default State" placeholder="Enter text..." helperText="This is a helper text" />
 			<Input label="Error State" placeholder="Enter text..." error="This field has an error" />
-			<Input label="Success State" placeholder="Enter text..." success="Looks good!" />
-			<Input label="Warning State" placeholder="Enter text..." warning="Please double check" />
+			<Input label="Success State" placeholder="Enter text..." state="success" helperText="Looks good!" />
+			<Input label="Warning State" placeholder="Enter text..." state="warning" helperText="Please double check" />
 		</div>
 	),
 };
@@ -134,7 +135,8 @@ export const CombinedVariantsAndStates: Story = {
 				<div className="space-y-3">
 					<Input variant="default" placeholder="Default" helperText="Normal state" />
 					<Input variant="default" placeholder="Error" error="Error message" />
-					<Input variant="default" placeholder="Success" success="Success message" />
+					<Input variant="default" placeholder="Success" state="success" helperText="Success message" />
+					<Input variant="default" placeholder="Warning" state="warning" helperText="Warning message" />
 				</div>
 			</div>
 
@@ -143,7 +145,8 @@ export const CombinedVariantsAndStates: Story = {
 				<div className="space-y-3">
 					<Input variant="outlined" placeholder="Default" helperText="Normal state" />
 					<Input variant="outlined" placeholder="Error" error="Error message" />
-					<Input variant="outlined" placeholder="Success" success="Success message" />
+					<Input variant="outlined" placeholder="Success" state="success" helperText="Success message" />
+					<Input variant="outlined" placeholder="Warning" state="warning" helperText="Warning message" />
 				</div>
 			</div>
 
@@ -152,7 +155,8 @@ export const CombinedVariantsAndStates: Story = {
 				<div className="space-y-3">
 					<Input variant="filled" placeholder="Default" helperText="Normal state" />
 					<Input variant="filled" placeholder="Error" error="Error message" />
-					<Input variant="filled" placeholder="Success" success="Success message" />
+					<Input variant="filled" placeholder="Success" state="success" helperText="Success message" />
+					<Input variant="filled" placeholder="Warning" state="warning" helperText="Warning message" />
 				</div>
 			</div>
 		</div>

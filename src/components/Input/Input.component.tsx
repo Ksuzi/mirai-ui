@@ -17,8 +17,6 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
 			label,
 			helperText,
 			error,
-			success,
-			warning,
 			leftIcon,
 			rightIcon,
 			className,
@@ -31,8 +29,8 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
 		const inputId = inputUtils.getInputId(id);
 		const messageId = `${inputId}-message`;
 
-		const effectiveState = inputUtils.getInputState({ state, error, success, warning });
-		const displayMessage = inputUtils.getInputMessage({ error, success, warning, helperText });
+		const effectiveState = inputUtils.getInputState({ state, error });
+		const displayMessage = inputUtils.getInputMessage({ error, helperText });
 		const ariaDescribedBy = inputUtils.getAriaDescribedBy(inputId, Boolean(displayMessage));
 
 		return (

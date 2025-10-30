@@ -12,50 +12,20 @@ describe('Input Utils', () => {
 			expect(inputUtils.getInputState({ error: 'Error message' })).toBe('error');
 		});
 
-		test('returns success when success is present', () => {
-			expect(inputUtils.getInputState({ success: 'Success message' })).toBe('success');
+		test('returns success when state is success', () => {
+			expect(inputUtils.getInputState({ state: 'success' })).toBe('success');
 		});
 
-		test('returns warning when warning is present', () => {
-			expect(inputUtils.getInputState({ warning: 'Warning message' })).toBe('warning');
+		test('returns warning when state is warning', () => {
+			expect(inputUtils.getInputState({ state: 'warning' })).toBe('warning');
 		});
 
-		test('respects priority: state > error', () => {
-			expect(
-				inputUtils.getInputState({
-					state: 'success',
-					error: 'Error',
-				})
-			).toBe('success');
+		test('respects priority: error > state', () => {
+			expect(inputUtils.getInputState({ state: 'success', error: 'Error' })).toBe('error');
 		});
 
-		test('respects priority: error > success', () => {
-			expect(
-				inputUtils.getInputState({
-					error: 'Error',
-					success: 'Success',
-				})
-			).toBe('error');
-		});
-
-		test('respects priority: success > warning', () => {
-			expect(
-				inputUtils.getInputState({
-					success: 'Success',
-					warning: 'Warning',
-				})
-			).toBe('success');
-		});
-
-		test('explicit state overrides all messages', () => {
-			expect(
-				inputUtils.getInputState({
-					state: 'default',
-					error: 'Error',
-					success: 'Success',
-					warning: 'Warning',
-				})
-			).toBe('default');
+		test('respects priority: error > state', () => {
+			expect(inputUtils.getInputState({ error: 'Error', state: 'success' })).toBe('error');
 		});
 	});
 
@@ -68,45 +38,8 @@ describe('Input Utils', () => {
 			expect(inputUtils.getInputMessage({ error: 'Error!' })).toBe('Error!');
 		});
 
-		test('returns success message when success is present', () => {
-			expect(inputUtils.getInputMessage({ success: 'Success!' })).toBe('Success!');
-		});
-
-		test('returns warning message when warning is present', () => {
-			expect(inputUtils.getInputMessage({ warning: 'Warning!' })).toBe('Warning!');
-		});
-
 		test('returns helper text when no status messages', () => {
 			expect(inputUtils.getInputMessage({ helperText: 'Helper text' })).toBe('Helper text');
-		});
-
-		test('respects priority: error > success', () => {
-			expect(
-				inputUtils.getInputMessage({
-					error: 'Error',
-					success: 'Success',
-				})
-			).toBe('Error');
-		});
-
-		test('respects priority: error > success > warning', () => {
-			expect(
-				inputUtils.getInputMessage({
-					error: 'Error',
-					success: 'Success',
-					warning: 'Warning',
-				})
-			).toBe('Error');
-		});
-
-		test('respects priority: success > warning > helperText', () => {
-			expect(
-				inputUtils.getInputMessage({
-					success: 'Success',
-					warning: 'Warning',
-					helperText: 'Helper',
-				})
-			).toBe('Success');
 		});
 
 		test('respects priority: error > helperText', () => {

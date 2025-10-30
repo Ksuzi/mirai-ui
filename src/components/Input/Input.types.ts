@@ -1,7 +1,7 @@
 import type { InputVariantProps } from './Input.variants';
 
 export type InputProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'> &
-	InputVariantProps & {
+	Omit<InputVariantProps, 'state'> & {
 		/**
 		 * Label text for the input
 		 */
@@ -13,19 +13,14 @@ export type InputProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size
 		helperText?: string;
 
 		/**
-		 * Error message (takes priority over success/warning/helperText)
+		 * Error message (enables error state and overrides helperText)
 		 */
 		error?: string;
 
 		/**
-		 * Success message
+		 * Visual state (non-error). Use for success/warning styles only.
 		 */
-		success?: string;
-
-		/**
-		 * Warning message
-		 */
-		warning?: string;
+		state?: 'success' | 'warning';
 
 		/**
 		 * Icon displayed on the left side
