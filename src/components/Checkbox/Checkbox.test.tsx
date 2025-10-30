@@ -208,10 +208,15 @@ describe('Checkbox', () => {
 		});
 
 		test('renders different colors', () => {
-			const { rerender } = render(<Checkbox color="primary" />);
+			const { rerender } = render(<Checkbox colorScheme="primary" />);
 			expect(screen.getByRole('checkbox')).toBeInTheDocument();
 
-			rerender(<Checkbox color="secondary" />);
+			rerender(<Checkbox colorScheme="secondary" />);
+			expect(screen.getByRole('checkbox')).toBeInTheDocument();
+		});
+
+		test('supports deprecated color prop for backward compatibility', () => {
+			render(<Checkbox color="primary" />);
 			expect(screen.getByRole('checkbox')).toBeInTheDocument();
 		});
 	});

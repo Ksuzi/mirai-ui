@@ -15,9 +15,9 @@ const meta: Meta<typeof Checkbox> = {
 			control: { type: 'select' },
 			options: ['sm', 'md', 'lg', 'xl'],
 		},
-		color: {
+		colorScheme: {
 			control: { type: 'select' },
-			options: ['base', 'primary', 'secondary'],
+			options: ['primary', 'secondary', 'success', 'warning', 'error', 'info', 'muted'],
 		},
 		disabled: {
 			control: { type: 'boolean' },
@@ -78,14 +78,22 @@ export const ColorVariants: Story = {
 	render: () => (
 		<div className="flex flex-col gap-4">
 			<div className="flex items-center gap-4">
-				<Checkbox color="base" label="Base" defaultChecked />
-				<Checkbox color="primary" label="Primary" defaultChecked />
-				<Checkbox color="secondary" label="Secondary" defaultChecked />
+				<Checkbox colorScheme="primary" label="Primary" defaultChecked />
+				<Checkbox colorScheme="secondary" label="Secondary" defaultChecked />
+				<Checkbox colorScheme="success" label="Success" defaultChecked />
+				<Checkbox colorScheme="warning" label="Warning" defaultChecked />
+				<Checkbox colorScheme="error" label="Error" defaultChecked />
+				<Checkbox colorScheme="info" label="Info" defaultChecked />
+				<Checkbox colorScheme="muted" label="Muted" defaultChecked />
 			</div>
 			<div className="flex items-center gap-4">
-				<Checkbox color="base" label="Base Unchecked" />
-				<Checkbox color="primary" label="Primary Unchecked" />
-				<Checkbox color="secondary" label="Secondary Unchecked" />
+				<Checkbox colorScheme="primary" label="Primary Unchecked" />
+				<Checkbox colorScheme="secondary" label="Secondary Unchecked" />
+				<Checkbox colorScheme="success" label="Success Unchecked" />
+				<Checkbox colorScheme="warning" label="Warning Unchecked" />
+				<Checkbox colorScheme="error" label="Error Unchecked" />
+				<Checkbox colorScheme="info" label="Info Unchecked" />
+				<Checkbox colorScheme="muted" label="Muted Unchecked" />
 			</div>
 		</div>
 	),
@@ -117,13 +125,13 @@ export const WithCustomStyling: Story = {
 				<h3 className="text-lg font-semibold mb-2">Custom Wrapper Styling</h3>
 				<Checkbox
 					label="Checkbox with custom wrapper"
-					color="primary"
+					colorScheme="primary"
 					wrapperClassName="p-4 bg-gray-100 rounded-lg border-2 border-dashed border-gray-300"
 				/>
 			</div>
 			<div>
 				<h3 className="text-lg font-semibold mb-2">Block Layout</h3>
-				<Checkbox label="Block checkbox with margin" color="secondary" wrapperClassName="flex-col items-start" />
+				<Checkbox label="Block checkbox with margin" colorScheme="secondary" wrapperClassName="flex-col items-start" />
 			</div>
 		</div>
 	),

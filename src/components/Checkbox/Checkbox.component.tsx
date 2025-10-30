@@ -12,7 +12,7 @@ export const CheckboxRoot = React.forwardRef<HTMLDivElement, CheckboxRootProps>(
 ));
 
 export const CheckboxInput = React.forwardRef<HTMLInputElement, CheckboxInputProps>(
-	({ size, color, className, ...props }, ref) => {
+	({ size, colorScheme, className, ...props }, ref) => {
 		const [checked, setChecked] = React.useState(props.defaultChecked ?? false);
 		const isControlled = props.checked !== undefined;
 		const checkboxChecked = isControlled ? props.checked : checked;
@@ -24,17 +24,20 @@ export const CheckboxInput = React.forwardRef<HTMLInputElement, CheckboxInputPro
 			props.onChange?.(e);
 		};
 
+		const checkboxCheckedBoolean = Boolean(checkboxChecked);
+
 		return (
 			<div className="relative inline-flex">
 				<input
 					ref={ref}
 					type="checkbox"
-					className={mergeClassNames(checkboxVariants({ size, color }), className)}
+					className={mergeClassNames(checkboxVariants({ size, colorScheme }), className)}
 					{...props}
 					checked={checkboxChecked}
 					onChange={handleChange}
+					aria-checked={checkboxCheckedBoolean}
 				/>
-				<CheckboxIcon size={size ?? 'md'} checked={checkboxChecked ?? false} />
+				<CheckboxIcon size={size ?? 'md'} checked={checkboxCheckedBoolean} />
 			</div>
 		);
 	}
@@ -49,7 +52,7 @@ export const CheckboxLabel = React.forwardRef<HTMLLabelElement, CheckboxLabelPro
 );
 
 export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
-	({ size, color, className, wrapperClassName, label, disabled, id, ...props }, ref) => {
+	({ size, colorScheme, className, wrapperClassName, label, disabled, id, ...props }, ref) => {
 		const checkboxId = id ?? `checkbox-${Math.random().toString(36).substring(2, 9)}`;
 
 		if (label) {
@@ -59,7 +62,7 @@ export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
 						ref={ref}
 						id={checkboxId}
 						size={size}
-						color={color}
+						colorScheme={colorScheme}
 						disabled={disabled}
 						className={className}
 						{...props}
@@ -77,7 +80,7 @@ export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
 					ref={ref}
 					id={checkboxId}
 					size={size}
-					color={color}
+					colorScheme={colorScheme}
 					disabled={disabled}
 					className={className}
 					{...props}
