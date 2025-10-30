@@ -1,0 +1,149 @@
+## Semantic Tokens in Mirai UI
+
+This document explains the semantic design token system used in Mirai UI and how components should consume it.
+
+### Layers
+
+- Base palette: defined in `src/styles/colors.css` using OKLCH scales (e.g., `--color-indigo-600`).
+- Semantic aliases: defined in `src/styles/semantic-colors.css`, mapping design intents to base tokens (e.g., `--color-primary-600` → `--color-indigo-600`).
+- Typography: semantic typography tokens and utilities in `src/styles/typography.css` (e.g., `typo-body`, `typo-h1`).
+
+### Semantic Color Families
+
+- primary, secondary, success, warning, error, info
+- utility: muted, accent
+- ui tokens: foreground, border, ring, input, disabled, card, popover
+
+Each family provides the full `-50` … `-950` scale (e.g., `--color-primary-600`).
+
+### UI Tokens
+
+- foreground, foreground-muted
+- border, border-light, border-strong
+- ring, ring-offset
+- input, input-border
+- disabled, disabled-foreground
+- card, card-foreground
+- popover, popover-foreground
+
+These tokens are consumed via Tailwind classes (thanks to CSS variables):
+
+- `text-foreground`, `text-primary-600`
+- `bg-input`, `bg-primary-600`
+- `border-border`, `border-primary-600`
+
+### Typography Tokens
+
+Semantic typography tokens are exposed as utilities:
+
+- Block text: `typo-body-lg`, `typo-body`, `typo-body-sm`, `typo-caption`, `typo-overline`, `typo-code`
+- Headings: `typo-display`, `typo-h1` … `typo-h6`
+
+Use these utilities via CVA in components (see examples below).
+
+### Component Consumption Patterns
+
+Use CVA with a clear separation of:
+
+- `variant`: structure/visual style (e.g., `solid`, `outline`, `ghost`, `link`)
+- `colorScheme`: semantic color family (`primary`, `success`, etc.)
+- `size`: spacing/typography scale
+- utilities: `fullWidth`, `loading`, state flags, etc.
+
+#### Button example
+
+```ts
+// src/components/Button/Button.variants.ts (excerpt)
+export const buttonVariants = cva(
+	[
+		'inline-flex',
+		'items-center',
+		'justify-center',
+		'rounded-md',
+		'transition-all',
+		'duration-300',
+		'focus-visible:outline-none',
+	],
+	{
+		variants: {
+			variant: { solid: [], outline: [], ghost: [], link: [] },
+			colorScheme: { primary: [], secondary: [], success: [], warning: [], error: [], info: [], muted: [] },
+			size: { sm: ['px-3', 'py-1.5', 'text-sm'], md: ['px-4', 'py-2', 'text-base'] },
+		},
+		compoundVariants: [
+			{ variant: 'solid', colorScheme: 'primary', class: 'bg-primary-600 hover:bg-primary-500 text-white' },
+			{
+				variant: 'outline',
+				colorScheme: 'primary',
+				class: 'border-primary-600 text-primary-600 hover:bg-primary-600 hover:text-white',
+			},
+			{ variant: 'ghost', colorScheme: 'primary', class: 'text-primary-600 hover:bg-primary-50' },
+			{ variant: 'link', colorScheme: 'primary', class: 'text-primary-600 hover:text-primary-500' },
+		],
+		defaultVariants: { variant: 'solid', colorScheme: 'primary', size: 'md' },
+	}
+);
+```
+
+#### Input example
+
+```ts
+// src/components/Input/Input.variants.ts (excerpt)
+export const inputVariants = cva(
+	[
+		'w-full',
+		'rounded-md',
+		'transition-all',
+		'duration-200',
+		'focus-visible:outline-none',
+		'disabled:opacity-50',
+		'placeholder:text-muted-400',
+	],
+	{
+		variants: {
+			variant: {
+				default: ['border', 'bg-input'],
+				outlined: ['border-1', 'bg-transparent'],
+				filled: ['border', 'border-transparent', 'shadow-xs'],
+			},
+			state: { default: [], error: [], success: [], warning: [] },
+			size: { sm: ['px-3', 'py-1.5', 'text-sm'], md: ['px-4', 'py-2', 'text-base'] },
+		},
+		compoundVariants: [
+			{ variant: 'default', state: 'default', class: 'border-input-border text-foreground focus:border-primary-500' },
+			{ variant: 'default', state: 'error', class: 'border-error-500 text-foreground focus:border-error-600' },
+		],
+	}
+);
+```
+
+#### Typography components
+
+```ts
+// src/components/Text/Text.variants.ts (excerpt)
+export const textVariants = cva([], {
+	variants: {
+		variant: { body: ['typo-body'], 'body-sm': ['typo-body-sm'], caption: ['typo-caption'] },
+		colorScheme: { default: ['text-foreground'], muted: ['text-foreground-muted'], primary: ['text-primary-600'] },
+	},
+	defaultVariants: { variant: 'body', colorScheme: 'default' },
+});
+```
+
+### Adding or Changing Tokens
+
+1. Update base colors in `src/styles/colors.css` if you need new hues/scales.
+2. Expose them via semantic aliases in `src/styles/semantic-colors.css`.
+3. Use only semantic tokens inside components (no direct base color usage).
+4. For typography scales, add semantic variables/utilities in `src/styles/typography.css`.
+
+### Do / Don’t
+
+- Do use `text-foreground`, `bg-input` in components.
+- Do map colors via `colorScheme` variants and `compoundVariants`.
+- Don’t hardcode base palette classes directly (e.g., avoid `text-indigo-600` in components).
+
+### Related
+
+- See `docs/component-creation.mdx` for recommended CVA structure.
+- See `docs/storybook-guidelines.mdx` for documenting variants and states.
