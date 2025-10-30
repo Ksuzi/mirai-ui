@@ -65,8 +65,6 @@ export const AllVariants: Story = {
 			<Text variant="body-sm">Body Small: Sphinx of black quartz, judge my vow.</Text>
 			<Text variant="caption">Caption: Sphinx of black quartz, judge my vow.</Text>
 			<Text variant="overline">Overline: Category</Text>
-			<Text variant="label">Label: Form label text</Text>
-			<Text variant="button">Button: Click me</Text>
 			<Text variant="code">Code: const example = true;</Text>
 		</div>
 	),

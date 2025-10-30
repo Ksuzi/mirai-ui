@@ -11,11 +11,8 @@
 	--font-family-sans:
 		'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, 'Noto Sans', sans-serif,
 		'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
-
 	--font-family-serif: 'Georgia', Cambria, 'Times New Roman', Times, serif;
-
 	--font-family-mono: 'Fira Code', 'JetBrains Mono', 'Consolas', 'Monaco', 'Courier New', monospace;
-
 	--font-family-display: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 
 	/* ============================================
@@ -98,21 +95,82 @@
 	--line-height-overline: 1.5;
 	--letter-spacing-overline: 0.1em;
 
-	/* LABEL - Form labels */
-	--font-size-label: 0.875rem; /* 14px */
-	--font-weight-label: 500;
-	--line-height-label: 1.5;
-
-	/* BUTTON - Button text */
-	--font-size-button: 1rem; /* 16px */
-	--font-weight-button: 500;
-	--line-height-button: 1;
-
 	/* CODE - Inline code */
 	--font-size-code: 0.875rem; /* 14px */
 	--font-weight-code: 400;
 	--line-height-code: 1.5;
+}
 
-	/* LINK - Hyperlinks */
-	--font-weight-link: 500;
+@utility typo-body-lg {
+	font-size: var(--font-size-body-lg);
+	font-weight: var(--font-weight-body-lg);
+	line-height: var(--line-height-body-lg);
+}
+@utility typo-body {
+	font-size: var(--font-size-body);
+	font-weight: var(--font-weight-body);
+	line-height: var(--line-height-body);
+}
+@utility typo-body-sm {
+	font-size: var(--font-size-body-sm);
+	font-weight: var(--font-weight-body-sm);
+	line-height: var(--line-height-body-sm);
+}
+@utility typo-caption {
+	font-size: var(--font-size-caption);
+	font-weight: var(--font-weight-caption);
+	line-height: var(--line-height-caption);
+}
+@utility typo-overline {
+	font-size: var(--font-size-overline);
+	font-weight: var(--font-weight-overline);
+	line-height: var(--line-height-overline);
+	letter-spacing: var(--letter-spacing-overline);
+}
+@utility typo-code {
+	font-size: var(--font-size-code);
+	font-weight: var(--font-weight-code);
+	line-height: var(--line-height-code);
+}
+@utility typo-display {
+	font-size: var(--font-size-display);
+	font-weight: var(--font-weight-display);
+	line-height: var(--line-height-display);
+	letter-spacing: var(--letter-spacing-display);
+}
+@utility typo-h1 {
+	font-size: var(--font-size-h1);
+	font-weight: var(--font-weight-h1);
+	line-height: var(--line-height-h1);
+	letter-spacing: var(--letter-spacing-h1);
+}
+@utility typo-h2 {
+	font-size: var(--font-size-h2);
+	font-weight: var(--font-weight-h2);
+	line-height: var(--line-height-h2);
+	letter-spacing: var(--letter-spacing-h2);
+}
+@utility typo-h3 {
+	font-size: var(--font-size-h3);
+	font-weight: var(--font-weight-h3);
+	line-height: var(--line-height-h3);
+	letter-spacing: var(--letter-spacing-h3);
+}
+@utility typo-h4 {
+	font-size: var(--font-size-h4);
+	font-weight: var(--font-weight-h4);
+	line-height: var(--line-height-h4);
+	letter-spacing: var(--letter-spacing-h4);
+}
+@utility typo-h5 {
+	font-size: var(--font-size-h5);
+	font-weight: var(--font-weight-h5);
+	line-height: var(--line-height-h5);
+	letter-spacing: var(--letter-spacing-h5);
+}
+@utility typo-h6 {
+	font-size: var(--font-size-h6);
+	font-weight: var(--font-weight-h6);
+	line-height: var(--line-height-h6);
+	letter-spacing: var(--letter-spacing-h6);
 }
