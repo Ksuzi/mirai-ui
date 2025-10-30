@@ -68,6 +68,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 					}),
 					className
 				)}
+				type={props.type ?? 'button'}
 				disabled={Boolean(disabled ?? loading)}
 				aria-disabled={Boolean(disabled ?? loading)}
 				aria-busy={Boolean(loading)}

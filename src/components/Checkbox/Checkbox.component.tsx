@@ -36,6 +36,7 @@ export const CheckboxInput = React.forwardRef<HTMLInputElement, CheckboxInputPro
 					checked={checkboxChecked}
 					onChange={handleChange}
 					aria-checked={checkboxCheckedBoolean}
+					aria-disabled={props.disabled ? true : undefined}
 				/>
 				<CheckboxIcon size={size ?? 'md'} checked={checkboxCheckedBoolean} />
 			</div>

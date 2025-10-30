@@ -71,6 +71,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
 							className
 						)}
 						required={required}
+						aria-required={required ? true : undefined}
 						aria-invalid={effectiveState === 'error'}
 						aria-describedby={ariaDescribedBy}
 						{...props}
