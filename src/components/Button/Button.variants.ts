@@ -243,16 +243,16 @@ export const iconSizes = {
 
 export const iconSpacing = {
 	left: {
-		sm: 'mr-1.5',
-		md: 'mr-2',
-		lg: 'mr-2.5',
-		xl: 'mr-3',
+		sm: 'mr-0.25',
+		md: 'mr-0.5',
+		lg: 'mr-1',
+		xl: 'mr-1.5',
 	},
 	right: {
-		sm: 'ml-1.5',
-		md: 'ml-2',
-		lg: 'ml-2.5',
-		xl: 'ml-3',
+		sm: 'ml-0.25',
+		md: 'ml-0.5',
+		lg: 'ml-1',
+		xl: 'ml-1.5',
 	},
 } as const;
 
