@@ -33,9 +33,9 @@ describe('Button', () => {
 
 		test('shows loading spinner when loading', () => {
 			const { container } = render(<Button loading>Loading</Button>);
-			const spinner = container.querySelector('svg.animate-spin');
-			expect(spinner).toBeInTheDocument();
-			expect(spinner).toHaveAttribute('aria-hidden', 'true');
+			const svg = container.querySelector('svg');
+			expect(svg).toBeInTheDocument();
+			expect(svg).toHaveAttribute('role', 'status');
 		});
 
 		test('applies custom className', () => {
@@ -147,6 +147,57 @@ describe('Button', () => {
 	});
 
 	describe('Variants', () => {
+		test('renders different button styles', () => {
+			const { rerender } = render(<Button variant="solid">Solid</Button>);
+			expect(screen.getByRole('button')).toHaveTextContent('Solid');
+
+			rerender(<Button variant="outline">Outline</Button>);
+			expect(screen.getByRole('button')).toHaveTextContent('Outline');
+
+			rerender(<Button variant="ghost">Ghost</Button>);
+			expect(screen.getByRole('button')).toHaveTextContent('Ghost');
+
+			rerender(<Button variant="link">Link</Button>);
+			expect(screen.getByRole('button')).toHaveTextContent('Link');
+		});
+
+		test('renders different color schemes', () => {
+			const { rerender } = render(<Button colorScheme="primary">Primary</Button>);
+			expect(screen.getByRole('button')).toHaveTextContent('Primary');
+
+			rerender(<Button colorScheme="success">Success</Button>);
+			expect(screen.getByRole('button')).toHaveTextContent('Success');
+
+			rerender(<Button colorScheme="error">Error</Button>);
+			expect(screen.getByRole('button')).toHaveTextContent('Error');
+
+			rerender(<Button colorScheme="info">Info</Button>);
+			expect(screen.getByRole('button')).toHaveTextContent('Info');
+		});
+
+		test('combines variant and colorScheme', () => {
+			const { rerender } = render(
+				<Button variant="outline" colorScheme="success">
+					Success Outline
+				</Button>
+			);
+			expect(screen.getByRole('button')).toHaveTextContent('Success Outline');
+
+			rerender(
+				<Button variant="ghost" colorScheme="error">
+					Error Ghost
+				</Button>
+			);
+			expect(screen.getByRole('button')).toHaveTextContent('Error Ghost');
+
+			rerender(
+				<Button variant="link" colorScheme="warning">
+					Warning Link
+				</Button>
+			);
+			expect(screen.getByRole('button')).toHaveTextContent('Warning Link');
+		});
+
 		test('renders different sizes', () => {
 			const { rerender } = render(<Button size="sm">Small</Button>);
 			expect(screen.getByRole('button')).toBeInTheDocument();
@@ -155,6 +206,9 @@ describe('Button', () => {
 			expect(screen.getByRole('button')).toBeInTheDocument();
 
 			rerender(<Button size="lg">Large</Button>);
+			expect(screen.getByRole('button')).toBeInTheDocument();
+
+			rerender(<Button size="xl">Extra Large</Button>);
 			expect(screen.getByRole('button')).toBeInTheDocument();
 		});
 

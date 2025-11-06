@@ -60,36 +60,48 @@ describe('Heading', () => {
 	});
 
 	describe('Variants', () => {
-		test('renders with different sizes', () => {
-			const { rerender } = render(<Heading size="xs">Extra Small</Heading>);
-			expect(screen.getByRole('heading')).toHaveTextContent('Extra Small');
+		test('renders with different semantic variants', () => {
+			const { rerender } = render(<Heading variant="display">Display</Heading>);
+			expect(screen.getByRole('heading')).toHaveTextContent('Display');
 
-			rerender(<Heading size="sm">Small</Heading>);
-			expect(screen.getByRole('heading')).toHaveTextContent('Small');
+			rerender(<Heading variant="h1">H1</Heading>);
+			expect(screen.getByRole('heading')).toHaveTextContent('H1');
 
-			rerender(<Heading size="md">Medium</Heading>);
-			expect(screen.getByRole('heading')).toHaveTextContent('Medium');
+			rerender(<Heading variant="h2">H2</Heading>);
+			expect(screen.getByRole('heading')).toHaveTextContent('H2');
 
-			rerender(<Heading size="lg">Large</Heading>);
-			expect(screen.getByRole('heading')).toHaveTextContent('Large');
+			rerender(<Heading variant="h3">H3</Heading>);
+			expect(screen.getByRole('heading')).toHaveTextContent('H3');
 
-			rerender(<Heading size="xl">Extra Large</Heading>);
-			expect(screen.getByRole('heading')).toHaveTextContent('Extra Large');
+			rerender(<Heading variant="h4">H4</Heading>);
+			expect(screen.getByRole('heading')).toHaveTextContent('H4');
+
+			rerender(<Heading variant="h5">H5</Heading>);
+			expect(screen.getByRole('heading')).toHaveTextContent('H5');
+
+			rerender(<Heading variant="h6">H6</Heading>);
+			expect(screen.getByRole('heading')).toHaveTextContent('H6');
 		});
 
-		test('renders with color palette', () => {
-			render(<Heading colorPalette="blue">Colored Heading</Heading>);
-			expect(screen.getByRole('heading')).toHaveTextContent('Colored Heading');
+		test('renders with color schemes', () => {
+			const { rerender } = render(<Heading colorScheme="primary">Primary Heading</Heading>);
+			expect(screen.getByRole('heading')).toHaveTextContent('Primary Heading');
+
+			rerender(<Heading colorScheme="success">Success Heading</Heading>);
+			expect(screen.getByRole('heading')).toHaveTextContent('Success Heading');
+
+			rerender(<Heading colorScheme="error">Error Heading</Heading>);
+			expect(screen.getByRole('heading')).toHaveTextContent('Error Heading');
 		});
 
-		test('size prop is independent of semantic heading level', () => {
+		test('variant is independent of semantic heading level', () => {
 			render(
-				<Heading as="h1" size="xs">
-					Small H1
+				<Heading as="h1" variant="h6">
+					H1 element with H6 style
 				</Heading>
 			);
 			const heading = screen.getByRole('heading', { level: 1 });
-			expect(heading).toHaveTextContent('Small H1');
+			expect(heading).toHaveTextContent('H1 element with H6 style');
 		});
 	});
 

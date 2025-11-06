@@ -1,3 +1,3 @@
-export { Checkbox, CheckboxRoot, CheckboxInput, CheckboxLabel } from './Checkbox.component';
-export * from './Checkbox.types';
-export * from './Checkbox.variants';
+export { Checkbox } from './Checkbox.component';
+export type { CheckboxProps } from './Checkbox.types';
+export type { CheckboxVariantProps } from './Checkbox.variants';
