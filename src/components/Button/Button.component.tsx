@@ -2,6 +2,8 @@ import React from 'react';
 
 import { mergeClassNames } from '@mirai-ui/utils';
 
+import { Spinner } from '../Spinner';
+
 import { buttonVariants, iconSizes, iconSpacing } from './Button.variants';
 
 import type { ButtonProps } from './Button.types';
@@ -75,21 +77,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 				onKeyDown={handleKeyDown}
 				{...props}
 			>
-				{loading && (
-					<svg
-						className={mergeClassNames('animate-spin', leftIconSpacing, iconSizeClass)}
-						fill="none"
-						viewBox="0 0 24 24"
-						aria-hidden="true"
-					>
-						<circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-						<path
-							className="opacity-75"
-							fill="currentColor"
-							d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-						/>
-					</svg>
-				)}
+				{loading && <Spinner size={effectiveIconSize as IconSize} />}
 
 				{leftIcon && !loading && (
 					<span className={mergeClassNames('flex items-center', leftIconSpacing, iconSizeClass)}>{leftIcon}</span>
