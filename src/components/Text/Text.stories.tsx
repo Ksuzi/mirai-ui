@@ -9,7 +9,7 @@ const meta: Meta<typeof Text> = {
 	argTypes: {
 		variant: {
 			control: 'select',
-			options: ['body-lg', 'body', 'body-sm', 'caption', 'overline', 'label', 'button', 'code', 'link'],
+			options: ['body-lg', 'body', 'body-sm', 'caption', 'overline', 'code', 'label', 'helper-text'],
 		},
 		colorScheme: {
 			control: 'select',
@@ -66,6 +66,12 @@ export const AllVariants: Story = {
 			<Text variant="caption">Caption: Sphinx of black quartz, judge my vow.</Text>
 			<Text variant="overline">Overline: Category</Text>
 			<Text variant="code">Code: const example = true;</Text>
+			<Text as="label" variant="label" size="md">
+				Label: Email address
+			</Text>
+			<Text variant="helper-text" size="md">
+				Helper text: Enter your email address
+			</Text>
 		</div>
 	),
 };
@@ -144,6 +150,50 @@ export const SemanticElements: Story = {
 			<Text as="span">Span text</Text>
 			<Text as="div">Div text</Text>
 			<Text as="label">Label text</Text>
+		</div>
+	),
+};
+
+export const FormLabelsAndHelpers: Story = {
+	render: () => (
+		<div className="space-y-6">
+			<div>
+				<Text className="text-sm font-medium mb-2">Label sizes:</Text>
+				<div className="space-y-2">
+					<Text as="label" variant="label" size="sm">
+						Small Label
+					</Text>
+					<Text as="label" variant="label" size="md">
+						Medium Label
+					</Text>
+					<Text as="label" variant="label" size="lg">
+						Large Label
+					</Text>
+					<Text as="label" variant="label" size="xl">
+						Extra Large Label
+					</Text>
+				</div>
+			</div>
+			<div>
+				<Text className="text-sm font-medium mb-2">Helper text sizes and states:</Text>
+				<div className="space-y-2">
+					<Text variant="helper-text" size="sm">
+						Small helper text
+					</Text>
+					<Text variant="helper-text" size="md">
+						Medium helper text
+					</Text>
+					<Text variant="helper-text" size="md" colorScheme="error">
+						Error message
+					</Text>
+					<Text variant="helper-text" size="md" colorScheme="success">
+						Success message
+					</Text>
+					<Text variant="helper-text" size="md" colorScheme="warning">
+						Warning message
+					</Text>
+				</div>
+			</div>
 		</div>
 	),
 };

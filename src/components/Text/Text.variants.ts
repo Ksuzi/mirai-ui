@@ -9,6 +9,8 @@ export const textVariants = cva([], {
 			caption: ['typo-caption'],
 			overline: ['typo-overline'],
 			code: ['typo-code'],
+			label: ['block', 'font-medium'],
+			'helper-text': [],
 		},
 
 		colorScheme: {
@@ -22,6 +24,13 @@ export const textVariants = cva([], {
 			info: ['text-info-600'],
 			accent: ['text-accent-600'],
 			disabled: ['text-disabled-foreground'],
+		},
+
+		size: {
+			sm: [],
+			md: [],
+			lg: [],
+			xl: [],
 		},
 
 		fontWeight: {
@@ -52,6 +61,19 @@ export const textVariants = cva([], {
 			justify: ['text-justify'],
 		},
 	},
+	compoundVariants: [
+		{ variant: 'label', size: 'sm', class: 'text-sm mb-1' },
+		{ variant: 'label', size: 'md', class: 'text-base mb-1.5' },
+		{ variant: 'label', size: 'lg', class: 'text-lg mb-2' },
+		{ variant: 'label', size: 'xl', class: 'text-xl mb-2.5' },
+
+		{ variant: 'helper-text', size: 'sm', class: 'text-xs mt-1' },
+		{ variant: 'helper-text', size: 'md', class: 'text-sm mt-1.5' },
+		{ variant: 'helper-text', size: 'lg', class: 'text-base mt-2' },
+		{ variant: 'helper-text', size: 'xl', class: 'text-lg mt-2.5' },
+
+		{ variant: 'helper-text', colorScheme: 'default', class: 'text-foreground-muted' },
+	],
 	defaultVariants: {
 		variant: 'body',
 		colorScheme: 'default',
