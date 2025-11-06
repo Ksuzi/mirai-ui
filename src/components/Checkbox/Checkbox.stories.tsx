@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Button } from '@mirai-ui/components';
+import { Field } from '../Field';
 
 import { Checkbox } from './Checkbox.component';
 
@@ -12,18 +12,18 @@ const meta: Meta<typeof Checkbox> = {
 	tags: ['autodocs'],
 	argTypes: {
 		size: {
-			control: { type: 'select' },
+			control: 'select',
 			options: ['sm', 'md', 'lg', 'xl'],
 		},
 		colorScheme: {
-			control: { type: 'select' },
+			control: 'select',
 			options: ['primary', 'secondary', 'success', 'warning', 'error', 'info', 'muted'],
 		},
 		disabled: {
-			control: { type: 'boolean' },
+			control: 'boolean',
 		},
 		checked: {
-			control: { type: 'boolean' },
+			control: 'boolean',
 		},
 	},
 };
@@ -32,107 +32,113 @@ export default meta;
 type Story = StoryObj<typeof Checkbox>;
 
 export const Default: Story = {
-	args: {
-		label: 'Default checkbox',
-	},
+	args: {},
 };
 
-export const WithoutLabel: Story = {
-	args: {},
+export const Sizes: Story = {
+	render: () => (
+		<div className="flex items-center gap-4">
+			<Checkbox size="sm" defaultChecked />
+			<Checkbox size="md" defaultChecked />
+			<Checkbox size="lg" defaultChecked />
+			<Checkbox size="xl" defaultChecked />
+		</div>
+	),
+};
+
+export const ColorSchemes: Story = {
+	render: () => (
+		<div className="flex flex-wrap gap-4">
+			<Checkbox colorScheme="primary" defaultChecked />
+			<Checkbox colorScheme="secondary" defaultChecked />
+			<Checkbox colorScheme="success" defaultChecked />
+			<Checkbox colorScheme="warning" defaultChecked />
+			<Checkbox colorScheme="error" defaultChecked />
+			<Checkbox colorScheme="info" defaultChecked />
+			<Checkbox colorScheme="muted" defaultChecked />
+		</div>
+	),
 };
 
 export const Checked: Story = {
 	args: {
-		label: 'Checked checkbox',
 		defaultChecked: true,
 	},
 };
 
 export const Disabled: Story = {
 	args: {
-		label: 'Disabled checkbox',
 		disabled: true,
 	},
 };
 
 export const DisabledChecked: Story = {
 	args: {
-		label: 'Disabled checked checkbox',
 		disabled: true,
 		defaultChecked: true,
 	},
 };
 
-export const AllSizes: Story = {
+export const WithFieldComponent: Story = {
 	render: () => (
-		<div className="flex items-center gap-4">
-			<Checkbox size="sm" label="Small" defaultChecked />
-			<Checkbox size="md" label="Medium" defaultChecked />
-			<Checkbox size="lg" label="Large" defaultChecked />
-			<Checkbox size="xl" label="Extra Large" defaultChecked />
+		<div className="space-y-6 max-w-md">
+			<h3 className="text-lg font-medium">Using Checkbox with Field Component</h3>
+			<p className="text-sm text-muted-600 mb-4">
+				For forms with labels and helper text, use the Field component as shown below.
+			</p>
+
+			<Field>
+				<div className="flex items-center gap-2">
+					<Field.Control>
+						<Checkbox />
+					</Field.Control>
+					<Field.Label className="mb-0">I agree to the terms and conditions</Field.Label>
+				</div>
+			</Field>
+
+			<Field required error="You must accept the privacy policy">
+				<div className="flex items-center gap-2">
+					<Field.Control>
+						<Checkbox />
+					</Field.Control>
+					<Field.Label className="mb-0">I accept the privacy policy</Field.Label>
+				</div>
+				<Field.Message />
+			</Field>
+
+			<Field helperText="You will receive weekly updates via email">
+				<div className="flex items-center gap-2">
+					<Field.Control>
+						<Checkbox defaultChecked />
+					</Field.Control>
+					<Field.Label className="mb-0">Subscribe to newsletter</Field.Label>
+				</div>
+				<Field.Message />
+			</Field>
+
+			<Field disabled>
+				<div className="flex items-center gap-2">
+					<Field.Control>
+						<Checkbox />
+					</Field.Control>
+					<Field.Label className="mb-0">Receive SMS notifications (coming soon)</Field.Label>
+				</div>
+			</Field>
 		</div>
 	),
 };
 
-export const ColorVariants: Story = {
-	render: () => (
-		<div className="flex flex-col gap-4">
-			<div className="flex items-center gap-4">
-				<Checkbox colorScheme="primary" label="Primary" defaultChecked />
-				<Checkbox colorScheme="secondary" label="Secondary" defaultChecked />
-				<Checkbox colorScheme="success" label="Success" defaultChecked />
-				<Checkbox colorScheme="warning" label="Warning" defaultChecked />
-				<Checkbox colorScheme="error" label="Error" defaultChecked />
-				<Checkbox colorScheme="info" label="Info" defaultChecked />
-				<Checkbox colorScheme="muted" label="Muted" defaultChecked />
-			</div>
-			<div className="flex items-center gap-4">
-				<Checkbox colorScheme="primary" label="Primary Unchecked" />
-				<Checkbox colorScheme="secondary" label="Secondary Unchecked" />
-				<Checkbox colorScheme="success" label="Success Unchecked" />
-				<Checkbox colorScheme="warning" label="Warning Unchecked" />
-				<Checkbox colorScheme="error" label="Error Unchecked" />
-				<Checkbox colorScheme="info" label="Info Unchecked" />
-				<Checkbox colorScheme="muted" label="Muted Unchecked" />
-			</div>
-		</div>
-	),
-};
+export const ControlledCheckbox: Story = {
+	render: function ControlledExample() {
+		const [checked, setChecked] = React.useState(false);
 
-const InteractiveStory = () => {
-	const [checked, setChecked] = React.useState(false);
-
-	return (
-		<div className="flex flex-col w-2xs gap-4">
-			<Checkbox
-				label={`Checkbox is ${checked ? 'checked' : 'unchecked'}`}
-				checked={checked}
-				onChange={(e: React.ChangeEvent<HTMLInputElement>) => setChecked(e.target.checked)}
-			/>
-			<Button onClick={() => setChecked((prev) => !prev)}>Toggle programmatically</Button>
-		</div>
-	);
-};
-
-export const Interactive: Story = {
-	render: () => <InteractiveStory />,
-};
-
-export const WithCustomStyling: Story = {
-	render: () => (
-		<div className="flex flex-col gap-6">
-			<div>
-				<h3 className="text-lg font-semibold mb-2">Custom Wrapper Styling</h3>
-				<Checkbox
-					label="Checkbox with custom wrapper"
-					colorScheme="primary"
-					wrapperClassName="p-4 bg-gray-100 rounded-lg border-2 border-dashed border-gray-300"
-				/>
+		return (
+			<div className="space-y-4">
+				<Checkbox checked={checked} onChange={(e) => setChecked(e.target.checked)} />
+				<p className="text-sm">
+					Checkbox is <strong>{checked ? 'checked' : 'unchecked'}</strong>
+				</p>
 			</div>
-			<div>
-				<h3 className="text-lg font-semibold mb-2">Block Layout</h3>
-				<Checkbox label="Block checkbox with margin" colorScheme="secondary" wrapperClassName="flex-col items-start" />
-			</div>
-		</div>
-	),
+		);
+	},
 };

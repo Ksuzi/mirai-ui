@@ -2,7 +2,9 @@ import { describe, expect, test, vi } from 'vitest';
 
 import { render, screen, userEvent } from '@mirai-ui/test';
 
-import { Checkbox, CheckboxRoot, CheckboxInput, CheckboxLabel } from './Checkbox.component';
+import { Field } from '../Field';
+
+import { Checkbox } from './Checkbox.component';
 
 describe('Checkbox', () => {
 	describe('Rendering', () => {
@@ -11,29 +13,10 @@ describe('Checkbox', () => {
 			expect(screen.getByRole('checkbox')).toBeInTheDocument();
 		});
 
-		test('renders with label', () => {
-			render(<Checkbox label="Accept terms" />);
-			expect(screen.getByLabelText('Accept terms')).toBeInTheDocument();
-		});
-
-		test('renders without label', () => {
-			render(<Checkbox />);
-			const checkbox = screen.getByRole('checkbox');
-			expect(checkbox).toBeInTheDocument();
-			expect(checkbox.parentElement?.querySelector('label')).not.toBeInTheDocument();
-		});
-
 		test('applies custom className to checkbox', () => {
 			render(<Checkbox className="custom-class" data-testid="checkbox" />);
 			const checkbox = screen.getByRole('checkbox');
 			expect(checkbox).toHaveClass('custom-class');
-		});
-
-		test('applies custom className to wrapper', () => {
-			const { container } = render(<Checkbox wrapperClassName="wrapper-class" />);
-			const wrapper = container.querySelector('.wrapper-class');
-			expect(wrapper).toBeInTheDocument();
-			expect(wrapper).toHaveClass('wrapper-class');
 		});
 	});
 
@@ -103,18 +86,6 @@ describe('Checkbox', () => {
 			expect(checkbox).not.toBeChecked();
 		});
 
-		test('clicking label toggles checkbox', async () => {
-			const user = userEvent.setup();
-			render(<Checkbox label="Click me" />);
-			const checkbox = screen.getByRole('checkbox');
-			const label = screen.getByText('Click me');
-
-			expect(checkbox).not.toBeChecked();
-
-			await user.click(label);
-			expect(checkbox).toBeChecked();
-		});
-
 		test('can be toggled with Space key', async () => {
 			const user = userEvent.setup();
 			render(<Checkbox />);
@@ -154,34 +125,6 @@ describe('Checkbox', () => {
 	});
 
 	describe('Accessibility', () => {
-		test('associates label with checkbox via htmlFor', () => {
-			render(<Checkbox label="Terms and conditions" id="terms-checkbox" />);
-			const checkbox = screen.getByLabelText('Terms and conditions');
-			expect(checkbox).toHaveAttribute('id', 'terms-checkbox');
-		});
-
-		test('generates unique id when not provided', () => {
-			render(
-				<>
-					<Checkbox label="Checkbox 1" />
-					<Checkbox label="Checkbox 2" />
-				</>
-			);
-
-			const checkbox1 = screen.getByLabelText('Checkbox 1');
-			const checkbox2 = screen.getByLabelText('Checkbox 2');
-
-			expect(checkbox1.id).toBeTruthy();
-			expect(checkbox2.id).toBeTruthy();
-			expect(checkbox1.id).not.toBe(checkbox2.id);
-		});
-
-		test('label has appropriate disabled styling', () => {
-			render(<Checkbox label="Disabled checkbox" disabled />);
-			const label = screen.getByText('Disabled checkbox');
-			expect(label).toBeInTheDocument();
-		});
-
 		test('supports aria-label for checkboxes without visible labels', () => {
 			render(<Checkbox aria-label="Accept terms" />);
 			const checkbox = screen.getByLabelText('Accept terms');
@@ -221,45 +164,45 @@ describe('Checkbox', () => {
 		});
 	});
 
+	describe('With Field Component', () => {
+		test('works with Field for labels', () => {
+			render(
+				<Field>
+					<div className="flex items-center gap-2">
+						<Field.Control>
+							<Checkbox />
+						</Field.Control>
+						<Field.Label className="mb-0">Accept terms</Field.Label>
+					</div>
+				</Field>
+			);
+
+			expect(screen.getByLabelText('Accept terms')).toBeInTheDocument();
+		});
+
+		test('works with Field for error messages', () => {
+			render(
+				<Field error="You must accept the terms">
+					<div className="flex items-center gap-2">
+						<Field.Control>
+							<Checkbox />
+						</Field.Control>
+						<Field.Label className="mb-0">Accept terms</Field.Label>
+					</div>
+					<Field.Message />
+				</Field>
+			);
+
+			expect(screen.getByRole('alert')).toHaveTextContent('You must accept the terms');
+		});
+	});
+
 	describe('Ref Forwarding', () => {
 		test('forwards ref to input element', () => {
 			const ref = { current: null as HTMLInputElement | null };
 			render(<Checkbox ref={ref} />);
 			expect(ref.current).toBeInstanceOf(HTMLInputElement);
 			expect(ref.current?.type).toBe('checkbox');
-		});
-	});
-
-	describe('Composite Components', () => {
-		test('CheckboxRoot renders wrapper div', () => {
-			const { container } = render(<CheckboxRoot>Content</CheckboxRoot>);
-			expect(container.firstChild).toBeInTheDocument();
-		});
-
-		test('CheckboxInput renders checkbox input', () => {
-			render(<CheckboxInput />);
-			expect(screen.getByRole('checkbox')).toBeInTheDocument();
-		});
-
-		test('CheckboxLabel renders label element', () => {
-			render(<CheckboxLabel>Label text</CheckboxLabel>);
-			expect(screen.getByText('Label text')).toBeInTheDocument();
-		});
-
-		test('can compose custom checkbox with sub-components', () => {
-			render(
-				<CheckboxRoot>
-					<CheckboxInput id="custom-checkbox" />
-					<CheckboxLabel htmlFor="custom-checkbox">Custom Label</CheckboxLabel>
-				</CheckboxRoot>
-			);
-
-			const checkbox = screen.getByRole('checkbox');
-			const label = screen.getByText('Custom Label');
-
-			expect(checkbox).toBeInTheDocument();
-			expect(label).toBeInTheDocument();
-			expect(checkbox).toHaveAttribute('id', 'custom-checkbox');
 		});
 	});
 });
