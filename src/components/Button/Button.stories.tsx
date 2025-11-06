@@ -7,6 +7,14 @@ const meta: Meta<typeof Button> = {
 	title: 'Components/Button',
 	component: Button,
 	tags: ['autodocs'],
+	parameters: {
+		docs: {
+			description: {
+				component:
+					'Versatile button component with multiple variants, sizes, and color schemes. Supports loading states and icons.',
+			},
+		},
+	},
 	argTypes: {
 		variant: {
 			control: { type: 'select' },
@@ -114,6 +122,14 @@ export const AllVariants: Story = {
 			</div>
 		</div>
 	),
+	parameters: {
+		docs: {
+			description: {
+				story:
+					'All button variants with different color schemes. Solid for primary actions, outline for secondary, ghost for tertiary, and link for navigation.',
+			},
+		},
+	},
 };
 
 export const AllSizes: Story = {
@@ -125,6 +141,13 @@ export const AllSizes: Story = {
 			<Button size="xl">Extra Large</Button>
 		</div>
 	),
+	parameters: {
+		docs: {
+			description: {
+				story: 'Available button sizes from small to extra large. Medium is the default size.',
+			},
+		},
+	},
 };
 
 export const WithIcons: Story = {
@@ -137,6 +160,13 @@ export const WithIcons: Story = {
 			</Button>
 		</div>
 	),
+	parameters: {
+		docs: {
+			description: {
+				story: 'Buttons can include icons on the left, right, or both sides to enhance visual communication.',
+			},
+		},
+	},
 };
 
 export const IconGap: Story = {
@@ -219,6 +249,13 @@ export const IconGap: Story = {
 			</div>
 		</div>
 	),
+	parameters: {
+		docs: {
+			description: {
+				story: 'Icons automatically adjust spacing based on button size and variant.',
+			},
+		},
+	},
 };
 
 export const LoadingStates: Story = {
@@ -233,6 +270,13 @@ export const LoadingStates: Story = {
 			</Button>
 		</div>
 	),
+	parameters: {
+		docs: {
+			description: {
+				story: 'Loading state automatically disables the button and changes the cursor to indicate processing.',
+			},
+		},
+	},
 };
 
 export const FullWidth: Story = {
@@ -241,6 +285,13 @@ export const FullWidth: Story = {
 			<Button fullWidth>Full Width Button</Button>
 		</div>
 	),
+	parameters: {
+		docs: {
+			description: {
+				story: 'Full width buttons stretch to fill their container, useful for mobile layouts and forms.',
+			},
+		},
+	},
 };
 
 export const CompoundVariants: Story = {
@@ -259,6 +310,13 @@ export const CompoundVariants: Story = {
 			</div>
 		</div>
 	),
+	parameters: {
+		docs: {
+			description: {
+				story: 'Buttons support combining multiple variants, sizes, and states for flexible styling.',
+			},
+		},
+	},
 };
 
 export const RealWorldExamples: Story = {
@@ -306,4 +364,12 @@ export const RealWorldExamples: Story = {
 			</div>
 		</div>
 	),
+	parameters: {
+		docs: {
+			description: {
+				story:
+					'Common patterns showing how to combine button variants and color schemes in real-world scenarios like forms and alerts.',
+			},
+		},
+	},
 };

@@ -6,6 +6,14 @@ const meta: Meta<typeof Spinner> = {
 	title: 'Components/Spinner',
 	component: Spinner,
 	tags: ['autodocs'],
+	parameters: {
+		docs: {
+			description: {
+				component:
+					'Loading spinner component with multiple sizes and color schemes. Use to indicate loading or processing states.',
+			},
+		},
+	},
 	args: {
 		size: 'md',
 		colorScheme: 'primary',
@@ -17,7 +25,7 @@ const meta: Meta<typeof Spinner> = {
 		},
 		colorScheme: {
 			control: { type: 'select' },
-			options: ['primary', 'secondary', 'success', 'warning', 'error', 'info', 'muted', ' base'],
+			options: ['primary', 'secondary', 'success', 'warning', 'error', 'info', 'muted', 'base'],
 		},
 	},
 };
@@ -25,66 +33,50 @@ const meta: Meta<typeof Spinner> = {
 export default meta;
 type Story = StoryObj<typeof Spinner>;
 
-export const Default: Story = {};
+export const Default: Story = {
+	parameters: {
+		docs: {
+			description: {
+				story: 'Basic spinner with default size and color. Use the controls below to experiment with different props.',
+			},
+		},
+	},
+};
 
 export const Sizes: Story = {
 	render: () => (
-		<div>
-			<div className="flex items-center gap-4">
+		<div className="flex items-center gap-6">
+			<div className="text-center">
 				<Spinner size="sm" />
+				<p className="text-xs text-muted-600 mt-2">Small</p>
+			</div>
+			<div className="text-center">
 				<Spinner size="md" />
+				<p className="text-xs text-muted-600 mt-2">Medium</p>
+			</div>
+			<div className="text-center">
 				<Spinner size="lg" />
+				<p className="text-xs text-muted-600 mt-2">Large</p>
+			</div>
+			<div className="text-center">
 				<Spinner size="xl" />
-			</div>
-			<div className="flex items-center gap-4">
-				<Spinner size="sm" colorScheme="primary" />
-				<Spinner size="md" colorScheme="primary" />
-				<Spinner size="lg" colorScheme="primary" />
-				<Spinner size="xl" colorScheme="primary" />
-			</div>
-			<div className="flex items-center gap-4">
-				<Spinner size="sm" colorScheme="secondary" />
-				<Spinner size="md" colorScheme="secondary" />
-				<Spinner size="lg" colorScheme="secondary" />
-				<Spinner size="xl" colorScheme="secondary" />
-			</div>
-			<div className="flex items-center gap-4">
-				<Spinner size="sm" colorScheme="success" />
-				<Spinner size="md" colorScheme="success" />
-				<Spinner size="lg" colorScheme="success" />
-				<Spinner size="xl" colorScheme="success" />
-			</div>
-			<div className="flex items-center gap-4">
-				<Spinner size="sm" colorScheme="warning" />
-				<Spinner size="md" colorScheme="warning" />
-				<Spinner size="lg" colorScheme="warning" />
-				<Spinner size="xl" colorScheme="warning" />
-			</div>
-			<div className="flex items-center gap-4">
-				<Spinner size="sm" colorScheme="error" />
-				<Spinner size="md" colorScheme="error" />
-				<Spinner size="lg" colorScheme="error" />
-				<Spinner size="xl" colorScheme="error" />
-			</div>
-			<div className="flex items-center gap-4">
-				<Spinner size="sm" colorScheme="info" />
-				<Spinner size="md" colorScheme="info" />
-				<Spinner size="lg" colorScheme="info" />
-				<Spinner size="xl" colorScheme="info" />
-			</div>
-			<div className="flex items-center gap-4">
-				<Spinner size="sm" colorScheme="muted" />
-				<Spinner size="md" colorScheme="muted" />
-				<Spinner size="lg" colorScheme="muted" />
-				<Spinner size="xl" colorScheme="muted" />
+				<p className="text-xs text-muted-600 mt-2">Extra Large</p>
 			</div>
 		</div>
 	),
+	parameters: {
+		docs: {
+			description: {
+				story:
+					'Available spinner sizes from small to extra large. Choose based on context: sm for inline use, md for buttons, lg/xl for full-page loading.',
+			},
+		},
+	},
 };
 
 export const ColorSchemes: Story = {
 	render: () => (
-		<div className="flex items-center gap-4">
+		<div className="flex flex-wrap items-center gap-4">
 			<Spinner colorScheme="primary" />
 			<Spinner colorScheme="secondary" />
 			<Spinner colorScheme="success" />
@@ -94,6 +86,13 @@ export const ColorSchemes: Story = {
 			<Spinner colorScheme="muted" />
 		</div>
 	),
+	parameters: {
+		docs: {
+			description: {
+				story: 'Multiple color schemes to match different contexts and states in your application.',
+			},
+		},
+	},
 };
 
 export const InheritColor: Story = {
@@ -103,4 +102,11 @@ export const InheritColor: Story = {
 			<span>Spinner inherits text color from parent</span>
 		</div>
 	),
+	parameters: {
+		docs: {
+			description: {
+				story: 'When no colorScheme is specified, spinner inherits the text color from its parent element.',
+			},
+		},
+	},
 };

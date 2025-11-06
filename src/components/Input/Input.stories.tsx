@@ -8,6 +8,14 @@ const meta: Meta<typeof Input> = {
 	title: 'Components/Input',
 	component: Input,
 	tags: ['autodocs'],
+	parameters: {
+		docs: {
+			description: {
+				component:
+					'Flexible input component with multiple visual styles and states. Use with Field component for labels and validation messages.',
+			},
+		},
+	},
 	argTypes: {
 		variant: {
 			control: 'select',
@@ -37,6 +45,13 @@ export const Default: Story = {
 	args: {
 		placeholder: 'Enter your text...',
 	},
+	parameters: {
+		docs: {
+			description: {
+				story: 'Basic input with default styling. Use the controls below to experiment with different props.',
+			},
+		},
+	},
 };
 
 export const AllVariants: Story = {
@@ -49,6 +64,14 @@ export const AllVariants: Story = {
 			<Input variant="underlined" placeholder="Underlined variant" />
 		</div>
 	),
+	parameters: {
+		docs: {
+			description: {
+				story:
+					'Five visual styles: default (standard), outlined (transparent), filled (subtle shadow), borderless (minimal), and underlined (Material Design style).',
+			},
+		},
+	},
 };
 
 export const Sizes: Story = {
@@ -60,6 +83,13 @@ export const Sizes: Story = {
 			<Input size="xl" placeholder="Extra Large" />
 		</div>
 	),
+	parameters: {
+		docs: {
+			description: {
+				story: 'Available input sizes from small to extra large. Medium is the default.',
+			},
+		},
+	},
 };
 
 export const States: Story = {
@@ -71,6 +101,13 @@ export const States: Story = {
 			<Input state="warning" placeholder="Warning state" />
 		</div>
 	),
+	parameters: {
+		docs: {
+			description: {
+				story: 'Visual states for validation feedback. Typically controlled by the Field component.',
+			},
+		},
+	},
 };
 
 export const WithIcons: Story = {
@@ -81,6 +118,13 @@ export const WithIcons: Story = {
 			<Input leftIcon={<span>🔍</span>} rightIcon={<span>⌘K</span>} placeholder="Search" />
 		</div>
 	),
+	parameters: {
+		docs: {
+			description: {
+				story: 'Add icons on either side to provide visual context or indicate functionality.',
+			},
+		},
+	},
 };
 
 export const Disabled: Story = {
@@ -88,6 +132,13 @@ export const Disabled: Story = {
 		disabled: true,
 		placeholder: 'Disabled input',
 		value: 'Disabled value',
+	},
+	parameters: {
+		docs: {
+			description: {
+				story: 'Disabled inputs cannot be edited and are visually dimmed.',
+			},
+		},
 	},
 };
 
@@ -104,6 +155,13 @@ export const FullWidthToggle: Story = {
 			</div>
 		</div>
 	),
+	parameters: {
+		docs: {
+			description: {
+				story: 'Inputs are full width by default but can be set to auto width.',
+			},
+		},
+	},
 };
 
 export const WithFieldComponent: Story = {
@@ -147,4 +205,12 @@ export const WithFieldComponent: Story = {
 			</Field>
 		</div>
 	),
+	parameters: {
+		docs: {
+			description: {
+				story:
+					'Complete form example showing Input used with Field for labels, validation, and accessibility. This is the recommended pattern for forms.',
+			},
+		},
+	},
 };

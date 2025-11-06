@@ -1,12 +1,19 @@
 ## Storybook Guidelines
 
-Standards for writing stories for Mirai UI components.
+Standards for writing stories for Mirai UI components. Storybook serves as the primary documentation for the library.
+
+### Philosophy
+
+- **Simple but Clear**: Keep stories easy to understand without overwhelming detail
+- **Show, Don't Just Tell**: Use visual examples over lengthy descriptions
+- **Real-World Focus**: Demonstrate practical use cases
+- **Consistent Structure**: Follow the same pattern across all components
 
 ### File Location & Naming
 
-- Collocate stories with components: `ComponentName/ComponentName.stories.tsx`.
-- Title: `Components/ComponentName` (or nested like `Components/Form/Input`).
-- Use `tags: ['autodocs']` for auto-generated docs pages.
+- Collocate stories with components: `ComponentName/ComponentName.stories.tsx`
+- Title: `Components/ComponentName` (or nested like `Components/Form/Input`)
+- Use `tags: ['autodocs']` for auto-generated docs pages
 
 ### Base Template
 
@@ -111,12 +118,48 @@ export const InputStates: StoryObj<typeof Input> = {
 };
 ```
 
+### Story Types
+
+Each component should include these core stories:
+
+1. **Default** - Basic usage with default props
+2. **Variants/Sizes/ColorSchemes** - Visual options side by side
+3. **States** - Different states (disabled, error, loading, etc.)
+4. **Real-World Examples** - Practical use cases showing component combinations
+
+Optional stories based on component complexity:
+
+- **Interactive** - Controlled examples with state (for complex components)
+- **Composition** - How component works with others
+- **Accessibility** - Focus states, keyboard navigation (when notable)
+
+### Adding Descriptions
+
+Add brief descriptions to help users understand when to use each story:
+
+```tsx
+export const MyStory: Story = {
+	render: () => <Component />,
+	parameters: {
+		docs: {
+			description: {
+				story: 'Brief explanation of what this demonstrates and when to use it.',
+			},
+		},
+	},
+};
+```
+
+Keep descriptions concise - one or two sentences maximum.
+
 ### Best Practices
 
-- Prefer `args` for props; keep custom `render` simple.
-- Show semantic combinations (`variant` × `colorScheme` × `size`) that users actually need.
-- Keep layout helpers inside stories minimal (`flex`, `gap`, `w-*`).
-- Avoid testing logic in stories; use tests for behavior (see `docs/testing-guidelines.mdx`).
+- **Prefer `args`** for simple prop variations; use custom `render` for complex layouts
+- **Show semantic combinations** (`variant` × `colorScheme` × `size`) that users actually need
+- **Keep layout helpers minimal** - use basic Tailwind classes (`flex`, `gap`, `space-y-*`)
+- **Use meaningful content** - avoid "lorem ipsum" when real examples are clearer
+- **Group related examples** - use sections with headings in render functions
+- **Avoid testing logic** in stories; use tests for behavior (see `docs/testing-guidelines.mdx`)
 
 ### Cross-References
 

@@ -10,6 +10,14 @@ const meta: Meta<typeof Checkbox> = {
 	title: 'Components/Checkbox',
 	component: Checkbox,
 	tags: ['autodocs'],
+	parameters: {
+		docs: {
+			description: {
+				component:
+					'Accessible checkbox component with multiple sizes and color schemes. Use with Field component for labels and form integration.',
+			},
+		},
+	},
 	argTypes: {
 		size: {
 			control: 'select',
@@ -33,6 +41,13 @@ type Story = StoryObj<typeof Checkbox>;
 
 export const Default: Story = {
 	args: {},
+	parameters: {
+		docs: {
+			description: {
+				story: 'Basic checkbox with default styling. Use the controls below to experiment with different props.',
+			},
+		},
+	},
 };
 
 export const Sizes: Story = {
@@ -44,6 +59,13 @@ export const Sizes: Story = {
 			<Checkbox size="xl" defaultChecked />
 		</div>
 	),
+	parameters: {
+		docs: {
+			description: {
+				story: 'Available checkbox sizes from small to extra large. Medium is the default.',
+			},
+		},
+	},
 };
 
 export const ColorSchemes: Story = {
@@ -58,11 +80,25 @@ export const ColorSchemes: Story = {
 			<Checkbox colorScheme="muted" defaultChecked />
 		</div>
 	),
+	parameters: {
+		docs: {
+			description: {
+				story: 'Multiple color schemes to match different semantic contexts in your application.',
+			},
+		},
+	},
 };
 
 export const Checked: Story = {
 	args: {
 		defaultChecked: true,
+	},
+	parameters: {
+		docs: {
+			description: {
+				story: 'Checkbox in checked state. Use `checked` for controlled or `defaultChecked` for uncontrolled.',
+			},
+		},
 	},
 };
 
@@ -70,12 +106,26 @@ export const Disabled: Story = {
 	args: {
 		disabled: true,
 	},
+	parameters: {
+		docs: {
+			description: {
+				story: 'Disabled checkboxes cannot be toggled and are visually dimmed.',
+			},
+		},
+	},
 };
 
 export const DisabledChecked: Story = {
 	args: {
 		disabled: true,
 		defaultChecked: true,
+	},
+	parameters: {
+		docs: {
+			description: {
+				story: 'Disabled checkbox in checked state, useful for displaying read-only selections.',
+			},
+		},
 	},
 };
 
@@ -126,6 +176,13 @@ export const WithFieldComponent: Story = {
 			</Field>
 		</div>
 	),
+	parameters: {
+		docs: {
+			description: {
+				story: 'Recommended pattern for using Checkbox in forms with Field for labels, validation, and accessibility.',
+			},
+		},
+	},
 };
 
 export const ControlledCheckbox: Story = {
@@ -140,5 +197,12 @@ export const ControlledCheckbox: Story = {
 				</p>
 			</div>
 		);
+	},
+	parameters: {
+		docs: {
+			description: {
+				story: 'Example of a controlled checkbox with state management using React hooks.',
+			},
+		},
 	},
 };

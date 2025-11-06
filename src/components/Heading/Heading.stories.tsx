@@ -1,4 +1,5 @@
 import { Heading } from './Heading.component';
+import { Text } from '../Text';
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
@@ -6,6 +7,14 @@ const meta: Meta<typeof Heading> = {
 	title: 'Components/Heading',
 	component: Heading,
 	tags: ['autodocs'],
+	parameters: {
+		docs: {
+			description: {
+				component:
+					'Semantic heading component with multiple levels and color schemes. Use for page titles, section headings, and content hierarchy.',
+			},
+		},
+	},
 	argTypes: {
 		variant: {
 			control: 'select',
@@ -29,6 +38,13 @@ export const Default: Story = {
 	args: {
 		children: 'The quick brown fox jumps over the lazy dog',
 	},
+	parameters: {
+		docs: {
+			description: {
+				story: 'Basic heading with default styling. Use the controls below to experiment with different variants.',
+			},
+		},
+	},
 };
 
 export const AllVariants: Story = {
@@ -43,6 +59,14 @@ export const AllVariants: Story = {
 			<Heading variant="h6">H6 Heading</Heading>
 		</div>
 	),
+	parameters: {
+		docs: {
+			description: {
+				story:
+					'All heading levels from display (largest) to h6 (smallest). Use display for hero sections, h1 for page titles.',
+			},
+		},
+	},
 };
 
 export const ColorSchemes: Story = {
@@ -59,6 +83,13 @@ export const ColorSchemes: Story = {
 			<Heading colorScheme="accent">Accent Heading</Heading>
 		</div>
 	),
+	parameters: {
+		docs: {
+			description: {
+				story: 'Semantic color schemes for different contexts and emphasis.',
+			},
+		},
+	},
 };
 
 export const SemanticElements: Story = {
@@ -84,6 +115,13 @@ export const SemanticElements: Story = {
 			</Heading>
 		</div>
 	),
+	parameters: {
+		docs: {
+			description: {
+				story: 'Proper semantic HTML with matching visual styles. Use the `as` prop to control the HTML element.',
+			},
+		},
+	},
 };
 
 export const WithCustomStyles: Story = {
@@ -92,5 +130,64 @@ export const WithCustomStyles: Story = {
 		variant: 'h2',
 		colorScheme: 'accent',
 		className: 'underline',
+	},
+	parameters: {
+		docs: {
+			description: {
+				story: 'Extend headings with custom classes for additional styling.',
+			},
+		},
+	},
+};
+
+export const TypographyHierarchy: Story = {
+	render: () => (
+		<div className="space-y-8 max-w-3xl">
+			<div>
+				<Heading variant="display">Building Design Systems</Heading>
+				<Text variant="body-lg" colorScheme="muted" className="mt-3">
+					A comprehensive guide to creating consistent and scalable component libraries
+				</Text>
+			</div>
+
+			<div>
+				<Heading variant="h2">Getting Started</Heading>
+				<Text className="mt-2">
+					Design systems help teams build consistent, accessible user interfaces at scale. They provide a shared
+					language between designers and developers.
+				</Text>
+			</div>
+
+			<div>
+				<Heading variant="h3">Installation</Heading>
+				<Text className="mt-2">Install the package using your preferred package manager:</Text>
+				<Text variant="code" className="mt-2">
+					npm install @mirai-ui/core
+				</Text>
+			</div>
+
+			<div>
+				<Heading variant="h4">Basic Configuration</Heading>
+				<Text className="mt-2">Configure your design tokens in the configuration file.</Text>
+				<Text variant="helper-text" colorScheme="muted" className="mt-1">
+					Note: Configuration is optional for default setup
+				</Text>
+			</div>
+
+			<div>
+				<Heading variant="h5">Advanced Options</Heading>
+				<Text variant="body-sm" className="mt-1">
+					Customize theme tokens, color schemes, and component variants to match your brand.
+				</Text>
+			</div>
+		</div>
+	),
+	parameters: {
+		docs: {
+			description: {
+				story:
+					'Example showing proper typographic hierarchy in a document structure using Heading and Text components together.',
+			},
+		},
 	},
 };

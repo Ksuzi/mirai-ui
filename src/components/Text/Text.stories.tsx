@@ -6,6 +6,14 @@ const meta: Meta<typeof Text> = {
 	title: 'Components/Text',
 	component: Text,
 	tags: ['autodocs'],
+	parameters: {
+		docs: {
+			description: {
+				component:
+					'Versatile text component with multiple variants, colors, and text utilities. Use for body text, labels, captions, and code snippets.',
+			},
+		},
+	},
 	argTypes: {
 		variant: {
 			control: 'select',
@@ -55,6 +63,14 @@ export const Default: Story = {
 	args: {
 		children: 'Sphinx of black quartz, judge my vow.',
 	},
+	parameters: {
+		docs: {
+			description: {
+				story:
+					'Basic text with default styling. Use the controls below to experiment with different variants and properties.',
+			},
+		},
+	},
 };
 
 export const AllVariants: Story = {
@@ -74,6 +90,14 @@ export const AllVariants: Story = {
 			</Text>
 		</div>
 	),
+	parameters: {
+		docs: {
+			description: {
+				story:
+					'All text variants including body sizes, caption, overline, code, label, and helper text. Choose based on content hierarchy and context.',
+			},
+		},
+	},
 };
 
 export const FontWeights: Story = {
@@ -86,6 +110,13 @@ export const FontWeights: Story = {
 			<Text fontWeight="bold">Sphinx of black quartz, judge my vow. (bold)</Text>
 		</div>
 	),
+	parameters: {
+		docs: {
+			description: {
+				story: 'Available font weights from light to bold for emphasis and hierarchy.',
+			},
+		},
+	},
 };
 
 export const ColorSchemes: Story = {
@@ -103,6 +134,13 @@ export const ColorSchemes: Story = {
 			<Text colorScheme="disabled">Disabled text</Text>
 		</div>
 	),
+	parameters: {
+		docs: {
+			description: {
+				story: 'Semantic color schemes for different contexts and states.',
+			},
+		},
+	},
 };
 
 export const Truncation: Story = {
@@ -118,6 +156,13 @@ export const Truncation: Story = {
 			</div>
 		</div>
 	),
+	parameters: {
+		docs: {
+			description: {
+				story: 'Truncate text with ellipsis when it overflows its container.',
+			},
+		},
+	},
 };
 
 export const LineClamp: Story = {
@@ -141,6 +186,13 @@ export const LineClamp: Story = {
 			</div>
 		</div>
 	),
+	parameters: {
+		docs: {
+			description: {
+				story: 'Limit text to a specific number of lines with ellipsis overflow.',
+			},
+		},
+	},
 };
 
 export const SemanticElements: Story = {
@@ -152,6 +204,13 @@ export const SemanticElements: Story = {
 			<Text as="label">Label text</Text>
 		</div>
 	),
+	parameters: {
+		docs: {
+			description: {
+				story: 'Render as different HTML elements while maintaining the same visual styles.',
+			},
+		},
+	},
 };
 
 export const FormLabelsAndHelpers: Story = {
@@ -196,4 +255,11 @@ export const FormLabelsAndHelpers: Story = {
 			</div>
 		</div>
 	),
+	parameters: {
+		docs: {
+			description: {
+				story: 'Specialized variants for form labels and helper text with different sizes and validation states.',
+			},
+		},
+	},
 };

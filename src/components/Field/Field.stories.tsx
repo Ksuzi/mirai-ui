@@ -8,6 +8,14 @@ const meta: Meta<typeof Field> = {
 	title: 'Components/Field',
 	component: Field,
 	tags: ['autodocs'],
+	parameters: {
+		docs: {
+			description: {
+				component:
+					'Form field wrapper component that provides labels, validation messages, and helper text. Use with Input, Checkbox, and other form controls.',
+			},
+		},
+	},
 	args: {
 		size: 'md',
 		state: 'default',
@@ -45,6 +53,14 @@ export const Default: Story = {
 			<Field.Message />
 		</Field>
 	),
+	parameters: {
+		docs: {
+			description: {
+				story:
+					'Basic field with label and input. Use the controls below to experiment with different states and options.',
+			},
+		},
+	},
 };
 
 export const WithHelperText: Story = {
@@ -57,6 +73,13 @@ export const WithHelperText: Story = {
 			<Field.Message />
 		</Field>
 	),
+	parameters: {
+		docs: {
+			description: {
+				story: 'Field with helper text to provide additional guidance or context.',
+			},
+		},
+	},
 };
 
 export const WithError: Story = {
@@ -69,6 +92,13 @@ export const WithError: Story = {
 			<Field.Message />
 		</Field>
 	),
+	parameters: {
+		docs: {
+			description: {
+				story: 'Field with error message for validation feedback. Automatically sets error state on the input.',
+			},
+		},
+	},
 };
 
 export const Required: Story = {
@@ -81,6 +111,14 @@ export const Required: Story = {
 			<Field.Message />
 		</Field>
 	),
+	parameters: {
+		docs: {
+			description: {
+				story:
+					'Required field with asterisk indicator. The required prop adds visual indication and accessibility attributes.',
+			},
+		},
+	},
 };
 
 export const Disabled: Story = {
@@ -93,6 +131,13 @@ export const Disabled: Story = {
 			<Field.Message />
 		</Field>
 	),
+	parameters: {
+		docs: {
+			description: {
+				story: 'Disabled field with dimmed appearance. Automatically disables all child form controls.',
+			},
+		},
+	},
 };
 
 export const Sizes: Story = {
@@ -131,6 +176,13 @@ export const Sizes: Story = {
 			</Field>
 		</div>
 	),
+	parameters: {
+		docs: {
+			description: {
+				story: 'Available field sizes. The size prop controls label, input, and message sizing consistently.',
+			},
+		},
+	},
 };
 
 export const States: Story = {
@@ -169,6 +221,14 @@ export const States: Story = {
 			</Field>
 		</div>
 	),
+	parameters: {
+		docs: {
+			description: {
+				story:
+					'Validation states for user feedback. States automatically apply appropriate styling to labels, inputs, and messages.',
+			},
+		},
+	},
 };
 
 export const WithIcons: Story = {
@@ -191,6 +251,13 @@ export const WithIcons: Story = {
 			</Field>
 		</div>
 	),
+	parameters: {
+		docs: {
+			description: {
+				story: 'Fields work seamlessly with inputs that have icons.',
+			},
+		},
+	},
 };
 
 export const CustomMessage: Story = {
@@ -207,6 +274,13 @@ export const CustomMessage: Story = {
 			</Field.Message>
 		</Field>
 	),
+	parameters: {
+		docs: {
+			description: {
+				story: 'Customize the message area with custom content for complex validation rules.',
+			},
+		},
+	},
 };
 
 export const FormExample: Story = {
@@ -245,4 +319,12 @@ export const FormExample: Story = {
 			</Field>
 		</form>
 	),
+	parameters: {
+		docs: {
+			description: {
+				story:
+					'Complete form example showing Field in action with various states. This is the recommended pattern for building accessible forms.',
+			},
+		},
+	},
 };
