@@ -1,5 +1,6 @@
-import { Heading } from './Heading.component';
 import { Text } from '../Text';
+
+import { Heading } from './Heading.component';
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
