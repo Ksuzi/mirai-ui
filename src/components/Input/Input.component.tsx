@@ -2,7 +2,9 @@ import React from 'react';
 
 import { mergeClassNames } from '@mirai-ui/utils';
 
-import { inputVariants, labelVariants, helperTextVariants } from './Input.variants';
+import { Text } from '../Text';
+
+import { inputVariants } from './Input.variants';
 import { inputUtils } from './utils';
 
 import type { InputProps } from './Input.types';
@@ -36,17 +38,15 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
 		return (
 			<div className="w-full">
 				{label && (
-					<label
+					<Text
+						as="label"
 						htmlFor={inputId}
-						className={mergeClassNames(
-							labelVariants({
-								size,
-								required,
-							})
-						)}
+						variant="label"
+						size={size}
+						className={required ? "after:content-['*'] after:ml-0.5 after:text-error-500" : undefined}
 					>
 						{label}
-					</label>
+					</Text>
 				)}
 
 				<div className="relative">
@@ -85,19 +85,17 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
 				</div>
 
 				{displayMessage && (
-					<p
+					<Text
+						as="p"
 						id={messageId}
-						className={mergeClassNames(
-							helperTextVariants({
-								size,
-								state: effectiveState,
-							})
-						)}
+						variant="helper-text"
+						size={size}
+						colorScheme={effectiveState}
 						role={effectiveState === 'error' ? 'alert' : undefined}
 						aria-live={effectiveState === 'error' ? 'polite' : undefined}
 					>
 						{displayMessage}
-					</p>
+					</Text>
 				)}
 			</div>
 		);

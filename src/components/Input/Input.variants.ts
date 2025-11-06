@@ -164,46 +164,4 @@ export const inputVariants = cva(
 	}
 );
 
-export const labelVariants = cva(['block', 'font-medium', 'text-foreground'], {
-	variants: {
-		size: {
-			sm: ['text-sm', 'mb-1'],
-			md: ['text-base', 'mb-1.5'],
-			lg: ['text-lg', 'mb-2'],
-			xl: ['text-xl', 'mb-2.5'],
-		},
-		required: {
-			true: "after:content-['*'] after:ml-0.5 after:text-error-500",
-			false: '',
-		},
-	},
-	defaultVariants: {
-		size: 'md',
-		required: false,
-	},
-});
-
-export const helperTextVariants = cva(['text-foreground-muted'], {
-	variants: {
-		size: {
-			sm: ['text-xs', 'mt-1'],
-			md: ['text-sm', 'mt-1.5'],
-			lg: ['text-base', 'mt-2'],
-			xl: ['text-lg', 'mt-2.5'],
-		},
-		state: {
-			default: 'text-foreground-muted',
-			error: 'text-error-600',
-			success: 'text-success-600',
-			warning: 'text-warning-600',
-		},
-	},
-	defaultVariants: {
-		size: 'md',
-		state: 'default',
-	},
-});
-
 export type InputVariantProps = VariantProps<typeof inputVariants>;
-export type LabelVariantProps = VariantProps<typeof labelVariants>;
-export type HelperTextVariantProps = VariantProps<typeof helperTextVariants>;
