@@ -4,7 +4,7 @@ import { mergeClassNames } from '@mirai-ui/utils';
 
 import { Spinner } from '../Spinner';
 
-import { buttonVariants, iconSizes, iconSpacing } from './Button.variants';
+import { buttonVariants, iconSizes } from './Button.variants';
 
 import type { ButtonProps } from './Button.types';
 import type { IconSize } from './Button.variants';
@@ -29,9 +29,6 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 	) => {
 		const effectiveIconSize = iconSize ?? size;
 		const iconSizeClass = iconSizes[effectiveIconSize as IconSize];
-
-		const leftIconSpacing = iconSpacing.left[size as IconSize];
-		const rightIconSpacing = iconSpacing.right[size as IconSize];
 
 		const handleKeyDown = (event: React.KeyboardEvent<HTMLButtonElement>) => {
 			if (event.key === 'Enter' || event.key === ' ') {
@@ -80,14 +77,12 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 				{loading && <Spinner size={effectiveIconSize as IconSize} />}
 
 				{leftIcon && !loading && (
-					<span className={mergeClassNames('flex items-center', leftIconSpacing, iconSizeClass)}>{leftIcon}</span>
+					<span className={mergeClassNames('flex items-center', iconSizeClass)}>{leftIcon}</span>
 				)}
 
 				{children}
 
-				{rightIcon && (
-					<span className={mergeClassNames('flex items-center', rightIconSpacing, iconSizeClass)}>{rightIcon}</span>
-				)}
+				{rightIcon && <span className={mergeClassNames('flex items-center', iconSizeClass)}>{rightIcon}</span>}
 			</button>
 		);
 	}

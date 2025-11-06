@@ -37,9 +37,9 @@ export const buttonVariants = cva(
 
 			size: {
 				sm: ['px-3', 'py-1.5', 'text-sm', 'gap-1.5'],
-				md: ['px-4', 'py-2', 'text-base', 'gap-2'],
-				lg: ['px-6', 'py-3', 'text-lg', 'gap-2.5'],
-				xl: ['px-8', 'py-4', 'text-xl', 'gap-3'],
+				md: ['px-4', 'py-2', 'text-base', 'gap-1.5'],
+				lg: ['px-6', 'py-3', 'text-lg', 'gap-2'],
+				xl: ['px-8', 'py-4', 'text-xl', 'gap-2.5'],
 			},
 
 			fullWidth: {
@@ -239,21 +239,6 @@ export const iconSizes = {
 	md: 'h-4 w-4',
 	lg: 'h-5 w-5',
 	xl: 'h-6 w-6',
-} as const;
-
-export const iconSpacing = {
-	left: {
-		sm: 'mr-0.25',
-		md: 'mr-0.5',
-		lg: 'mr-1',
-		xl: 'mr-1.5',
-	},
-	right: {
-		sm: 'ml-0.25',
-		md: 'ml-0.5',
-		lg: 'ml-1',
-		xl: 'ml-1.5',
-	},
 } as const;
 
 export type ButtonVariantProps = VariantProps<typeof buttonVariants>;

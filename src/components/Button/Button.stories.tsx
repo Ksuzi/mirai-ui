@@ -139,6 +139,88 @@ export const WithIcons: Story = {
 	),
 };
 
+export const IconGap: Story = {
+	render: () => (
+		<div className="space-y-8">
+			<div>
+				<div className="space-y-6">
+					<div>
+						<p className="text-xs font-medium text-muted-600 mb-2">Left Icon</p>
+						<div className="flex flex-wrap items-center gap-3">
+							<Button size="sm" leftIcon="📁">
+								Small
+							</Button>
+							<Button size="md" leftIcon="📁">
+								Medium
+							</Button>
+							<Button size="lg" leftIcon="📁">
+								Large
+							</Button>
+							<Button size="xl" leftIcon="📁">
+								Extra Large
+							</Button>
+						</div>
+					</div>
+
+					<div>
+						<p className="text-xs font-medium text-muted-600 mb-2">Right Icon</p>
+						<div className="flex flex-wrap items-center gap-3">
+							<Button size="sm" rightIcon="→">
+								Small
+							</Button>
+							<Button size="md" rightIcon="→">
+								Medium
+							</Button>
+							<Button size="lg" rightIcon="→">
+								Large
+							</Button>
+							<Button size="xl" rightIcon="→">
+								Extra Large
+							</Button>
+						</div>
+					</div>
+
+					<div>
+						<p className="text-xs font-medium text-muted-600 mb-2">Both Icons</p>
+						<div className="flex flex-wrap items-center gap-3">
+							<Button size="sm" leftIcon="❤️" rightIcon="🚀">
+								Small
+							</Button>
+							<Button size="md" leftIcon="❤️" rightIcon="🚀">
+								Medium
+							</Button>
+							<Button size="lg" leftIcon="❤️" rightIcon="🚀">
+								Large
+							</Button>
+							<Button size="xl" leftIcon="❤️" rightIcon="🚀">
+								Extra Large
+							</Button>
+						</div>
+					</div>
+
+					<div>
+						<p className="text-xs font-medium text-muted-600 mb-2">All Variants (Medium Size)</p>
+						<div className="flex flex-wrap items-center gap-3">
+							<Button variant="solid" leftIcon="✓" colorScheme="success">
+								Solid
+							</Button>
+							<Button variant="outline" leftIcon="⚠" colorScheme="warning">
+								Outline
+							</Button>
+							<Button variant="ghost" leftIcon="ℹ" colorScheme="info">
+								Ghost
+							</Button>
+							<Button variant="link" leftIcon="→" colorScheme="primary">
+								Link
+							</Button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	),
+};
+
 export const LoadingStates: Story = {
 	render: () => (
 		<div className="flex gap-4">
