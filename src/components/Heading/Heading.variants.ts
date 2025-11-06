@@ -1,36 +1,32 @@
 import { cva, type VariantProps } from 'class-variance-authority';
 
-export const headingVariants = cva(['font-semibold', 'leading-tight', 'tracking-tight'], {
+export const headingVariants = cva([], {
 	variants: {
-		size: {
-			xs: ['text-xs', 'leading-4'],
-			sm: ['text-sm', 'leading-5'],
-			md: ['text-base', 'leading-6'],
-			lg: ['text-lg', 'leading-7'],
-			xl: ['text-xl', 'leading-7'],
-			'2xl': ['text-2xl', 'leading-8'],
-			'3xl': ['text-3xl', 'leading-9'],
-			'4xl': ['text-4xl', 'leading-10'],
-			'5xl': ['text-5xl', 'leading-none'],
-			'6xl': ['text-6xl', 'leading-none'],
-			'7xl': ['text-7xl', 'leading-none'],
+		variant: {
+			display: ['typo-display'],
+			h1: ['typo-h1'],
+			h2: ['typo-h2'],
+			h3: ['typo-h3'],
+			h4: ['typo-h4'],
+			h5: ['typo-h5'],
+			h6: ['typo-h6'],
 		},
-		colorPalette: {
-			gray: ['text-gray-900'],
-			red: ['text-red-600'],
-			orange: ['text-orange-600'],
-			yellow: ['text-yellow-600'],
-			green: ['text-green-600'],
-			teal: ['text-teal-600'],
-			blue: ['text-blue-600'],
-			cyan: ['text-cyan-600'],
-			purple: ['text-purple-600'],
-			pink: ['text-pink-600'],
+
+		colorScheme: {
+			default: ['text-foreground'],
+			muted: ['text-foreground-muted'],
+			primary: ['text-primary-600'],
+			secondary: ['text-secondary-600'],
+			success: ['text-success-600'],
+			warning: ['text-warning-600'],
+			error: ['text-error-600'],
+			info: ['text-info-600'],
+			accent: ['text-accent-600'],
 		},
 	},
 	defaultVariants: {
-		size: 'xl',
-		colorPalette: 'gray',
+		variant: 'h2',
+		colorScheme: 'default',
 	},
 });
 

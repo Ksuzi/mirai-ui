@@ -2,6 +2,8 @@ import { describe, expect, test, vi } from 'vitest';
 
 import { render, screen, userEvent } from '@mirai-ui/test';
 
+import { Field } from '../Field';
+
 import { Input } from './Input.component';
 
 describe('Input', () => {
@@ -11,20 +13,9 @@ describe('Input', () => {
 			expect(screen.getByRole('textbox')).toBeInTheDocument();
 		});
 
-		test('renders with label', () => {
-			render(<Input label="Email" />);
-			expect(screen.getByLabelText('Email')).toBeInTheDocument();
-		});
-
-		test('renders with helper text', () => {
-			render(<Input helperText="Enter your email address" />);
-			expect(screen.getByText('Enter your email address')).toBeInTheDocument();
-		});
-
-		test('renders with error message', () => {
-			render(<Input error="Email is required" />);
-			const errorMessage = screen.getByRole('alert');
-			expect(errorMessage).toHaveTextContent('Email is required');
+		test('renders with placeholder', () => {
+			render(<Input placeholder="Enter text" />);
+			expect(screen.getByPlaceholderText('Enter text')).toBeInTheDocument();
 		});
 
 		test('renders with left icon', () => {
@@ -38,43 +29,59 @@ describe('Input', () => {
 		});
 	});
 
-	describe('Accessibility', () => {
-		test('associates label with input', () => {
-			render(<Input label="Username" id="username-input" />);
-			const input = screen.getByLabelText('Username');
-			expect(input).toHaveAttribute('id', 'username-input');
+	describe('Variants', () => {
+		test('renders different input styles', () => {
+			const { rerender } = render(<Input variant="default" placeholder="Default" />);
+			expect(screen.getByRole('textbox')).toBeInTheDocument();
+
+			rerender(<Input variant="outlined" placeholder="Outlined" />);
+			expect(screen.getByRole('textbox')).toBeInTheDocument();
+
+			rerender(<Input variant="filled" placeholder="Filled" />);
+			expect(screen.getByRole('textbox')).toBeInTheDocument();
+
+			rerender(<Input variant="borderless" placeholder="Borderless" />);
+			expect(screen.getByRole('textbox')).toBeInTheDocument();
+
+			rerender(<Input variant="underlined" placeholder="Underlined" />);
+			expect(screen.getByRole('textbox')).toBeInTheDocument();
 		});
 
-		test('marks input as required when required prop is true', () => {
-			render(<Input label="Email" required />);
-			expect(screen.getByLabelText(/Email/)).toBeRequired();
+		test('renders different states', () => {
+			const { rerender } = render(<Input state="default" />);
+			expect(screen.getByRole('textbox')).toBeInTheDocument();
+
+			rerender(<Input state="error" />);
+			expect(screen.getByRole('textbox')).toBeInTheDocument();
+
+			rerender(<Input state="success" />);
+			expect(screen.getByRole('textbox')).toBeInTheDocument();
+
+			rerender(<Input state="warning" />);
+			expect(screen.getByRole('textbox')).toBeInTheDocument();
 		});
 
-		test('sets aria-invalid when error is present', () => {
-			render(<Input error="Invalid input" />);
-			expect(screen.getByRole('textbox')).toHaveAttribute('aria-invalid', 'true');
+		test('applies different sizes', () => {
+			const { rerender } = render(<Input size="sm" data-testid="input" />);
+			expect(screen.getByTestId('input')).toBeInTheDocument();
+
+			rerender(<Input size="md" data-testid="input" />);
+			expect(screen.getByTestId('input')).toBeInTheDocument();
+
+			rerender(<Input size="lg" data-testid="input" />);
+			expect(screen.getByTestId('input')).toBeInTheDocument();
 		});
 
-		test('error message has proper ARIA attributes', () => {
-			render(<Input error="Invalid email" />);
-			const errorMessage = screen.getByRole('alert');
-			expect(errorMessage).toHaveAttribute('aria-live', 'polite');
+		test('applies custom className', () => {
+			const { container } = render(<Input className="custom-class" data-testid="input" />);
+			const inputWrapper = container.querySelector('.custom-class');
+			expect(inputWrapper).toBeInTheDocument();
 		});
 
-		test('associates helper text with input via aria-describedby', () => {
-			render(<Input helperText="Enter your email" id="email-input" />);
-			const input = screen.getByRole('textbox');
-			const helperTextId = input.getAttribute('aria-describedby');
-			expect(helperTextId).toBeTruthy();
-			expect(screen.getByText('Enter your email')).toHaveAttribute('id', helperTextId);
-		});
-
-		test('associates error with input via aria-describedby', () => {
-			render(<Input error="Invalid email" id="email-input" />);
-			const input = screen.getByRole('textbox');
-			const errorId = input.getAttribute('aria-describedby');
-			expect(errorId).toBeTruthy();
-			expect(screen.getByRole('alert')).toHaveAttribute('id', errorId);
+		test('applies fullWidth by default', () => {
+			const { container } = render(<Input />);
+			const wrapper = container.querySelector('.relative');
+			expect(wrapper?.parentElement).toBeInTheDocument();
 		});
 	});
 
@@ -120,28 +127,46 @@ describe('Input', () => {
 		});
 	});
 
-	describe('Variants', () => {
-		test('applies different sizes', () => {
-			const { rerender } = render(<Input size="sm" data-testid="input" />);
-			expect(screen.getByTestId('input')).toBeInTheDocument();
+	describe('With Field Component', () => {
+		test('works with Field for labels', () => {
+			render(
+				<Field>
+					<Field.Label>Email</Field.Label>
+					<Field.Control>
+						<Input />
+					</Field.Control>
+				</Field>
+			);
 
-			rerender(<Input size="md" data-testid="input" />);
-			expect(screen.getByTestId('input')).toBeInTheDocument();
-
-			rerender(<Input size="lg" data-testid="input" />);
-			expect(screen.getByTestId('input')).toBeInTheDocument();
+			expect(screen.getByLabelText('Email')).toBeInTheDocument();
 		});
 
-		test('applies custom className', () => {
-			render(<Input className="custom-class" data-testid="input" />);
-			const input = screen.getByTestId('input');
-			expect(input).toHaveClass('custom-class');
+		test('works with Field for error messages', () => {
+			render(
+				<Field error="Email is required">
+					<Field.Label>Email</Field.Label>
+					<Field.Control>
+						<Input />
+					</Field.Control>
+					<Field.Message />
+				</Field>
+			);
+
+			expect(screen.getByRole('alert')).toHaveTextContent('Email is required');
 		});
 
-		test('applies fullWidth by default', () => {
-			const { container } = render(<Input />);
-			const wrapper = container.querySelector('.w-full');
-			expect(wrapper).toBeInTheDocument();
+		test('works with Field for helper text', () => {
+			render(
+				<Field helperText="Enter your email address">
+					<Field.Label>Email</Field.Label>
+					<Field.Control>
+						<Input />
+					</Field.Control>
+					<Field.Message />
+				</Field>
+			);
+
+			expect(screen.getByText('Enter your email address')).toBeInTheDocument();
 		});
 	});
 

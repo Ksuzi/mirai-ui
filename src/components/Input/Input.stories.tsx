@@ -1,3 +1,5 @@
+import { Field } from '../Field';
+
 import { Input } from './Input.component';
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
@@ -6,8 +8,20 @@ const meta: Meta<typeof Input> = {
 	title: 'Components/Input',
 	component: Input,
 	tags: ['autodocs'],
+	parameters: {
+		docs: {
+			description: {
+				component:
+					'Flexible input component with multiple visual styles and states. Use with Field component for labels and validation messages.',
+			},
+		},
+	},
 	argTypes: {
 		variant: {
+			control: 'select',
+			options: ['default', 'outlined', 'filled', 'borderless', 'underlined'],
+		},
+		state: {
 			control: 'select',
 			options: ['default', 'error', 'success', 'warning'],
 		},
@@ -16,9 +30,6 @@ const meta: Meta<typeof Input> = {
 			options: ['sm', 'md', 'lg', 'xl'],
 		},
 		fullWidth: {
-			control: 'boolean',
-		},
-		required: {
 			control: 'boolean',
 		},
 		disabled: {
@@ -34,110 +45,100 @@ export const Default: Story = {
 	args: {
 		placeholder: 'Enter your text...',
 	},
+	parameters: {
+		docs: {
+			description: {
+				story: 'Basic input with default styling. Use the controls below to experiment with different props.',
+			},
+		},
+	},
 };
 
 export const AllVariants: Story = {
 	render: () => (
-		<div className="flex flex-wrap gap-4">
-			<Input variant="outlined" placeholder="Outlined" />
-			<Input variant="filled" placeholder="Filled" />
-			<Input variant="borderless" placeholder="Borderless" />
-			<Input variant="underlined" placeholder="Underlined" />
+		<div className="space-y-4">
+			<Input variant="default" placeholder="Default variant" />
+			<Input variant="outlined" placeholder="Outlined variant" />
+			<Input variant="filled" placeholder="Filled variant" />
+			<Input variant="borderless" placeholder="Borderless variant" />
+			<Input variant="underlined" placeholder="Underlined variant" />
 		</div>
 	),
-};
-
-export const WithLabel: Story = {
-	args: {
-		label: 'Email Address',
-		placeholder: 'Enter your email...',
-		type: 'email',
+	parameters: {
+		docs: {
+			description: {
+				story:
+					'Five visual styles: default (standard), outlined (transparent), filled (subtle shadow), borderless (minimal), and underlined (Material Design style).',
+			},
+		},
 	},
 };
 
-export const WithHelperText: Story = {
-	args: {
-		label: 'Password',
-		placeholder: 'Enter your password...',
-		type: 'password',
-		helperText: 'Password must be at least 8 characters long',
+export const Sizes: Story = {
+	render: () => (
+		<div className="space-y-4">
+			<Input size="sm" placeholder="Small" />
+			<Input size="md" placeholder="Medium" />
+			<Input size="lg" placeholder="Large" />
+			<Input size="xl" placeholder="Extra Large" />
+		</div>
+	),
+	parameters: {
+		docs: {
+			description: {
+				story: 'Available input sizes from small to extra large. Medium is the default.',
+			},
+		},
 	},
 };
 
-export const WithError: Story = {
-	args: {
-		label: 'Email Address',
-		placeholder: 'Enter your email...',
-		type: 'email',
-		error: 'Please enter a valid email address',
-		value: 'invalid-email',
-	},
-};
-
-export const Required: Story = {
-	args: {
-		label: 'Full Name',
-		placeholder: 'Enter your full name...',
-		required: true,
-		helperText: 'This field is required',
+export const States: Story = {
+	render: () => (
+		<div className="space-y-4">
+			<Input state="default" placeholder="Default state" />
+			<Input state="error" placeholder="Error state" />
+			<Input state="success" placeholder="Success state" />
+			<Input state="warning" placeholder="Warning state" />
+		</div>
+	),
+	parameters: {
+		docs: {
+			description: {
+				story: 'Visual states for validation feedback. Typically controlled by the Field component.',
+			},
+		},
 	},
 };
 
 export const WithIcons: Story = {
 	render: () => (
 		<div className="space-y-4">
-			<Input
-				label="Search"
-				placeholder="Search for something..."
-				leftIcon={
-					<svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-						<path
-							strokeLinecap="round"
-							strokeLinejoin="round"
-							strokeWidth={2}
-							d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-						/>
-					</svg>
-				}
-			/>
-			<Input
-				label="Amount"
-				placeholder="0.00"
-				type="number"
-				rightIcon={<span className="text-gray-500 text-sm">USD</span>}
-			/>
+			<Input leftIcon={<span>@</span>} placeholder="Email" />
+			<Input rightIcon={<span>✓</span>} placeholder="Username" />
+			<Input leftIcon={<span>🔍</span>} rightIcon={<span>⌘K</span>} placeholder="Search" />
 		</div>
 	),
-};
-
-export const AllVariantsWithError: Story = {
-	render: () => (
-		<div className="space-y-4">
-			<Input variant="default" placeholder="Default variant" label="Default" />
-			<Input variant="error" placeholder="Error variant" label="Error" error="This field has an error" />
-			<Input variant="success" placeholder="Success variant" label="Success" />
-			<Input variant="warning" placeholder="Warning variant" label="Warning" />
-		</div>
-	),
-};
-
-export const AllSizes: Story = {
-	render: () => (
-		<div className="space-y-4">
-			<Input size="sm" placeholder="Small input" label="Small (sm)" />
-			<Input size="md" placeholder="Medium input" label="Medium (md)" />
-			<Input size="lg" placeholder="Large input" label="Large (lg)" />
-			<Input size="xl" placeholder="Extra large input" label="Extra Large (xl)" />
-		</div>
-	),
+	parameters: {
+		docs: {
+			description: {
+				story: 'Add icons on either side to provide visual context or indicate functionality.',
+			},
+		},
+	},
 };
 
 export const Disabled: Story = {
 	args: {
-		label: 'Disabled Input',
-		placeholder: 'This input is disabled',
 		disabled: true,
+		placeholder: 'Disabled input',
 		value: 'Disabled value',
+	},
+	parameters: {
+		docs: {
+			description: {
+				story: 'Disabled inputs cannot be edited and are visually dimmed.',
+			},
+		},
 	},
 };
 
@@ -154,4 +155,62 @@ export const FullWidthToggle: Story = {
 			</div>
 		</div>
 	),
+	parameters: {
+		docs: {
+			description: {
+				story: 'Inputs are full width by default but can be set to auto width.',
+			},
+		},
+	},
+};
+
+export const WithFieldComponent: Story = {
+	render: () => (
+		<div className="space-y-6 max-w-md">
+			<h3 className="text-lg font-medium">Using Input with Field Component</h3>
+			<p className="text-sm text-muted-600 mb-4">
+				For forms with labels and helper text, use the Field component as shown below.
+			</p>
+
+			<Field required>
+				<Field.Label>Full Name</Field.Label>
+				<Field.Control>
+					<Input placeholder="John Doe" />
+				</Field.Control>
+				<Field.Message />
+			</Field>
+
+			<Field required error="Please enter a valid email address">
+				<Field.Label>Email</Field.Label>
+				<Field.Control>
+					<Input type="email" placeholder="john@example.com" leftIcon={<span>@</span>} />
+				</Field.Control>
+				<Field.Message />
+			</Field>
+
+			<Field helperText="Choose a strong password" size="lg">
+				<Field.Label>Password</Field.Label>
+				<Field.Control>
+					<Input type="password" placeholder="Enter password" />
+				</Field.Control>
+				<Field.Message />
+			</Field>
+
+			<Field disabled helperText="This feature is coming soon">
+				<Field.Label>Phone Number</Field.Label>
+				<Field.Control>
+					<Input placeholder="+1 (555) 000-0000" />
+				</Field.Control>
+				<Field.Message />
+			</Field>
+		</div>
+	),
+	parameters: {
+		docs: {
+			description: {
+				story:
+					'Complete form example showing Input used with Field for labels, validation, and accessibility. This is the recommended pattern for forms.',
+			},
+		},
+	},
 };

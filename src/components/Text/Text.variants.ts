@@ -1,20 +1,38 @@
 import { cva, type VariantProps } from 'class-variance-authority';
 
-export const textVariants = cva(['text-gray-900'], {
+export const textVariants = cva([], {
 	variants: {
-		textStyle: {
-			xs: ['text-xs', 'leading-4'],
-			sm: ['text-sm', 'leading-5'],
-			md: ['text-base', 'leading-6'],
-			lg: ['text-lg', 'leading-7'],
-			xl: ['text-xl', 'leading-7'],
-			'2xl': ['text-2xl', 'leading-8'],
-			'3xl': ['text-3xl', 'leading-9'],
-			'4xl': ['text-4xl', 'leading-10'],
-			'5xl': ['text-5xl', 'leading-none'],
-			'6xl': ['text-6xl', 'leading-none'],
-			'7xl': ['text-7xl', 'leading-none'],
+		variant: {
+			'body-lg': ['typo-body-lg'],
+			body: ['typo-body'],
+			'body-sm': ['typo-body-sm'],
+			caption: ['typo-caption'],
+			overline: ['typo-overline'],
+			code: ['typo-code'],
+			label: ['block', 'font-medium'],
+			'helper-text': [],
 		},
+
+		colorScheme: {
+			default: ['text-foreground'],
+			muted: ['text-foreground-muted'],
+			primary: ['text-primary-600'],
+			secondary: ['text-secondary-600'],
+			success: ['text-success-600'],
+			warning: ['text-warning-600'],
+			error: ['text-error-600'],
+			info: ['text-info-600'],
+			accent: ['text-accent-600'],
+			disabled: ['text-disabled-foreground'],
+		},
+
+		size: {
+			sm: [],
+			md: [],
+			lg: [],
+			xl: [],
+		},
+
 		fontWeight: {
 			light: ['font-light'],
 			normal: ['font-normal'],
@@ -22,9 +40,11 @@ export const textVariants = cva(['text-gray-900'], {
 			semibold: ['font-semibold'],
 			bold: ['font-bold'],
 		},
+
 		truncate: {
 			true: ['truncate'],
 		},
+
 		lineClamp: {
 			1: ['line-clamp-1'],
 			2: ['line-clamp-2'],
@@ -33,24 +53,30 @@ export const textVariants = cva(['text-gray-900'], {
 			5: ['line-clamp-5'],
 			6: ['line-clamp-6'],
 		},
-		colorPalette: {
-			gray: ['text-gray-800'],
-			red: ['text-red-600'],
-			orange: ['text-orange-600'],
-			yellow: ['text-yellow-600'],
-			green: ['text-green-600'],
-			teal: ['text-teal-600'],
-			blue: ['text-blue-600'],
-			cyan: ['text-cyan-600'],
-			purple: ['text-purple-600'],
-			pink: ['text-pink-600'],
-			muted: ['text-gray-600'],
+
+		align: {
+			left: ['text-left'],
+			center: ['text-center'],
+			right: ['text-right'],
+			justify: ['text-justify'],
 		},
 	},
+	compoundVariants: [
+		{ variant: 'label', size: 'sm', class: 'text-sm mb-1' },
+		{ variant: 'label', size: 'md', class: 'text-base mb-1.5' },
+		{ variant: 'label', size: 'lg', class: 'text-lg mb-2' },
+		{ variant: 'label', size: 'xl', class: 'text-xl mb-2.5' },
+
+		{ variant: 'helper-text', size: 'sm', class: 'text-xs mt-1' },
+		{ variant: 'helper-text', size: 'md', class: 'text-sm mt-1.5' },
+		{ variant: 'helper-text', size: 'lg', class: 'text-base mt-2' },
+		{ variant: 'helper-text', size: 'xl', class: 'text-lg mt-2.5' },
+
+		{ variant: 'helper-text', colorScheme: 'default', class: 'text-foreground-muted' },
+	],
 	defaultVariants: {
-		textStyle: 'md',
-		fontWeight: 'normal',
-		colorPalette: 'gray',
+		variant: 'body',
+		colorScheme: 'default',
 	},
 });
 

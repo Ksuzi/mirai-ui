@@ -1,26 +1,14 @@
-import type { CheckboxVariantProps, CheckboxLabelVariantProps } from './Checkbox.variants';
+import type { CheckboxVariantProps } from './Checkbox.variants';
+
+export type CheckboxColorScheme = 'primary' | 'secondary' | 'success' | 'warning' | 'error' | 'info' | 'muted';
 
 export type CheckboxProps = {
-	label?: string;
-	/** Additional CSS classes for the wrapper div */
-	wrapperClassName?: string;
+	/**
+	 * Deprecated: use colorScheme instead. Will be mapped internally for BC.
+	 */
 	color?: 'base' | 'primary' | 'secondary';
+	/** Semantic color scheme */
+	colorScheme?: CheckboxColorScheme;
 	['aria-label']?: string;
 } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'> &
-	CheckboxVariantProps;
-
-export type CheckboxRootProps = {
-	className?: string;
-} & React.HTMLAttributes<HTMLDivElement>;
-
-export type CheckboxInputProps = {
-	className?: string;
-	color?: 'base' | 'primary' | 'secondary';
-	['aria-label']?: string;
-} & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'> &
-	CheckboxVariantProps;
-
-export type CheckboxLabelProps = {
-	className?: string;
-} & React.LabelHTMLAttributes<HTMLLabelElement> &
-	Pick<CheckboxLabelVariantProps, 'size' | 'disabled'>;
+	Omit<CheckboxVariantProps, 'colorScheme'> & { colorScheme?: CheckboxColorScheme };

@@ -9,18 +9,28 @@ import type { TextProps } from './Text.types';
 export const Text = React.forwardRef<
 	HTMLParagraphElement | HTMLSpanElement | HTMLDivElement | HTMLLabelElement,
 	TextProps
->(({ textStyle, fontWeight, truncate, lineClamp, colorPalette, className, children, as = 'p', ...props }, ref) => {
-	const Component = as as React.ElementType;
+>(
+	(
+		{ variant, colorScheme, size, fontWeight, truncate, lineClamp, align, className, children, as = 'p', ...props },
+		ref
+	) => {
+		const Component = as as React.ElementType;
+		const variantClasses = textVariants({
+			variant,
+			colorScheme,
+			size,
+			fontWeight,
+			truncate,
+			lineClamp,
+			align,
+		});
 
-	return (
-		<Component
-			ref={ref}
-			className={mergeClassNames(textVariants({ textStyle, fontWeight, truncate, lineClamp, colorPalette }), className)}
-			{...props}
-		>
-			{children}
-		</Component>
-	);
-});
+		return (
+			<Component ref={ref} className={mergeClassNames(variantClasses, className)} {...props}>
+				{children}
+			</Component>
+		);
+	}
+);
 
 Text.displayName = 'Text';
