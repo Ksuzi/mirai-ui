@@ -41,21 +41,4 @@ export const checkboxVariants = cva(
 	}
 );
 
-export const checkboxLabelVariants = cva(['select-none', 'cursor-pointer', 'text-foreground'], {
-	variants: {
-		size: {
-			sm: ['text-sm', 'ml-2'],
-			md: ['text-base', 'ml-2'],
-			lg: ['text-lg', 'ml-3'],
-			xl: ['text-xl', 'ml-3'],
-		},
-		disabled: {
-			true: ['cursor-not-allowed', 'opacity-50', 'text-disabled-foreground'],
-			false: [],
-		},
-	},
-	defaultVariants: { size: 'md', disabled: false },
-});
-
 export type CheckboxVariantProps = VariantProps<typeof checkboxVariants>;
-export type CheckboxLabelVariantProps = VariantProps<typeof checkboxLabelVariants>;

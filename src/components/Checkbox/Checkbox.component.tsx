@@ -2,7 +2,9 @@ import React from 'react';
 
 import { mergeClassNames } from '@mirai-ui/utils';
 
-import { checkboxVariants, checkboxLabelVariants } from './Checkbox.variants';
+import { Text } from '../Text';
+
+import { checkboxVariants } from './Checkbox.variants';
 import { CheckboxIcon } from './CheckboxIcon';
 
 import type { CheckboxProps, CheckboxRootProps, CheckboxInputProps, CheckboxLabelProps } from './Checkbox.types';
@@ -45,15 +47,30 @@ export const CheckboxInput = React.forwardRef<HTMLInputElement, CheckboxInputPro
 );
 
 export const CheckboxLabel = React.forwardRef<HTMLLabelElement, CheckboxLabelProps>(
-	({ size, disabled, className, children, ...props }, ref) => (
-		<label ref={ref} className={mergeClassNames(checkboxLabelVariants({ size, disabled }), className)} {...props}>
-			{children}
-		</label>
-	)
+	({ size = 'md', disabled = false, className, children, ...props }, ref) => {
+		const sizeClass = size === 'lg' || size === 'xl' ? 'ml-3' : 'ml-2';
+
+		return (
+			<Text
+				ref={ref}
+				as="label"
+				className={mergeClassNames(
+					'select-none cursor-pointer',
+					sizeClass,
+					disabled === true && 'cursor-not-allowed opacity-50',
+					className
+				)}
+				colorScheme={disabled === true ? 'disabled' : 'default'}
+				{...props}
+			>
+				{children}
+			</Text>
+		);
+	}
 );
 
 export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
-	({ size, colorScheme, className, wrapperClassName, label, disabled, id, ...props }, ref) => {
+	({ size = 'md', colorScheme, className, wrapperClassName, label, disabled, id, ...props }, ref) => {
 		const checkboxId = id ?? `checkbox-${Math.random().toString(36).substring(2, 9)}`;
 
 		if (label) {
@@ -68,7 +85,7 @@ export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
 						className={className}
 						{...props}
 					/>
-					<CheckboxLabel htmlFor={checkboxId} size={size} disabled={disabled}>
+					<CheckboxLabel htmlFor={checkboxId} size={size ?? 'md'} disabled={disabled ?? false}>
 						{label}
 					</CheckboxLabel>
 				</CheckboxRoot>
