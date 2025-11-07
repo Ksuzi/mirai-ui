@@ -5,3 +5,4 @@ export * from './Heading';
 export * from './Input';
 export * from './Spinner';
 export * from './Text';
+export * from './Textarea';
