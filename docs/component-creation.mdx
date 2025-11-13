@@ -5,7 +5,7 @@ Complete guide for creating maintainable, accessible components in Mirai UI.
 ## Related Documentation
 
 - **Semantic tokens:** `docs/semantic-tokens.mdx`
-- **Storybook standards:** `docs/storybook-guidelines.mdx`  
+- **Storybook standards:** `docs/storybook-guidelines.mdx`
 - **Testing guidelines:** `docs/testing-guidelines.mdx`
 - **Refactoring guide:** `docs/refactoring-checklist.md`
 
@@ -41,6 +41,7 @@ ComponentName/
 ```
 
 **When to add optional files:**
+
 - `.hooks.ts` → 2+ custom hooks OR single hook > 20 lines
 - `.utils.ts` → 3+ utility functions OR repeated logic
 - `SubComponent/` → Internal component > 30 lines OR has own variants
@@ -404,6 +405,7 @@ Component.displayName = 'Component';
 ### When to Extract Code
 
 #### Create `.hooks.ts` when:
+
 - ✅ You have 2+ custom hooks
 - ✅ Hook logic exceeds 20 lines
 - ✅ Complex state management needs separation
@@ -432,29 +434,403 @@ export const useClickOutside = (
 ```
 
 #### Create `.utils.ts` when:
+
 - ✅ Function is pure (no side effects)
-- ✅ Function is reused 3+ times
+- ✅ Function is reused 2+ times
 - ✅ Logic can be tested independently
+- ✅ Examples: data transformation, validation, formatting
+
+**Utils File Structure:**
 
 ```typescript
 // Component.utils.ts
-export const isOptionDisabled = (option: SelectOption): boolean => {
+import type { ComponentOption } from './Component.types';
+
+// Define functions as const (not exported directly)
+const isOptionDisabled = (option: ComponentOption): boolean => {
 	return option.disabled ?? false;
 };
 
-export const getSelectedOption = (options: SelectOption[], value?: string): SelectOption | undefined => {
+const getSelectedOption = (options: ComponentOption[], value?: string): ComponentOption | undefined => {
 	return options.find((opt) => opt.value === value);
 };
 
-export const getDisplayText = (option: SelectOption | undefined, placeholder: string): string => {
-	return option?.label ?? placeholder;
+const getDisplayText = (selectedOption: ComponentOption | undefined, placeholder: string): string => {
+	return selectedOption?.label ?? placeholder;
+};
+
+// Export single grouped object with inline documentation
+export const componentUtils = {
+	/**
+	 * Checks if an option is disabled
+	 */
+	isOptionDisabled,
+
+	/**
+	 * Gets the selected option from options array by value
+	 */
+	getSelectedOption,
+
+	/**
+	 * Gets display text for component
+	 * Shows option label or placeholder
+	 */
+	getDisplayText,
 };
 ```
 
+**Using Utils in Components:**
+
+```typescript
+// Component.component.tsx
+import { componentUtils } from './Component.utils';
+
+export const Component = React.forwardRef<HTMLElement, ComponentProps>(
+	({ options, value, placeholder }, ref) => {
+		// Use utils via the exported object
+		const selectedOption = componentUtils.getSelectedOption(options, value);
+		const displayText = componentUtils.getDisplayText(selectedOption, placeholder);
+
+		const handleSelect = (option: Option) => {
+			if (componentUtils.isOptionDisabled(option)) return;
+			onChange?.(option.value);
+		};
+
+		return <div>{displayText}</div>;
+	}
+);
+```
+
+**Exporting Utils:**
+
+```typescript
+// Component/index.ts
+export { Component } from './Component.component';
+export type { ComponentProps } from './Component.types';
+export type { ComponentVariantProps } from './Component.variants';
+export { componentUtils } from './Component.utils';
+```
+
+**Testing Utils:**
+
+```typescript
+// Component.utils.test.ts
+import { describe, expect, test } from 'vitest';
+import { componentUtils } from './Component.utils';
+
+describe('Component Utils', () => {
+	describe('isOptionDisabled', () => {
+		test('returns false when disabled property is not set', () => {
+			const option = { value: 'test', label: 'Test' };
+			expect(componentUtils.isOptionDisabled(option)).toBe(false);
+		});
+
+		test('returns true when disabled is true', () => {
+			const option = { value: 'test', label: 'Test', disabled: true };
+			expect(componentUtils.isOptionDisabled(option)).toBe(true);
+		});
+	});
+});
+```
+
 #### Create `SubComponent/` when:
+
 - ✅ Component exceeds 30 lines
 - ✅ Used in multiple places
 - ✅ Has its own types/variants
+
+---
+
+## Component Export Patterns
+
+### Export Philosophy
+
+Use **explicit named exports** for clarity, tree-shaking, and TypeScript support. Choose the right pattern based on component architecture.
+
+### Pattern 1: Simple Component (Most Common)
+
+For standalone components without sub-components.
+
+**When to use:** Button, Input, Text, Heading, Spinner
+
+**index.ts:**
+
+```typescript
+export { ComponentName } from './ComponentName.component';
+export type { ComponentNameProps } from './ComponentName.types';
+export type { ComponentNameVariantProps } from './ComponentName.variants';
+```
+
+**Benefits:**
+
+- ✅ Best tree-shaking
+- ✅ Clear API surface
+- ✅ TypeScript-friendly
+
+### Pattern 2: Compound Component with Context
+
+For components where sub-parts share state via Context API.
+
+**When to use:** Field, Tabs, Accordion, RadioGroup
+
+**index.ts:**
+
+```typescript
+export { ComponentName, ComponentNameLabel, ComponentNameControl } from './ComponentName.component';
+
+export type { ComponentNameProps, ComponentNameLabelProps, ComponentNameControlProps } from './ComponentName.types';
+
+export type { ComponentNameVariantProps } from './ComponentName.variants';
+```
+
+**Component.component.tsx:**
+
+```typescript
+// Sub-components use shared context
+export const FieldLabel = React.forwardRef<...>((props, ref) => {
+  const context = useFieldContext();
+  // ...
+});
+
+// Namespace pattern for convenience
+export const Field = Object.assign(FieldRoot, {
+  Label: FieldLabel,
+  Control: FieldControl,
+  Message: FieldMessage,
+});
+```
+
+**Usage flexibility:**
+
+```typescript
+// Pattern A: Namespace (cleaner)
+<Field>
+  <Field.Label>Email</Field.Label>
+  <Field.Control><Input /></Field.Control>
+</Field>
+
+// Pattern B: Named imports (better tree-shaking)
+<Field>
+  <FieldLabel>Email</FieldLabel>
+  <FieldControl><Input /></FieldControl>
+</Field>
+```
+
+### Pattern 3: Component with Internal Sub-Components
+
+For components where sub-parts are internal implementation details.
+
+**When to use:** Select, Checkbox (with internal icons/options)
+
+**index.ts:**
+
+```typescript
+// Export ONLY the main component
+export { Select } from './Select.component';
+export type { SelectProps, SelectOption } from './Select.types';
+export type { SelectVariantProps } from './Select.variants';
+
+// DON'T export internal SelectOption or SelectIcon
+```
+
+**Benefits:**
+
+- ✅ Simple API
+- ✅ No breaking changes if internals change
+- ✅ Best encapsulation
+
+### Export Pattern Decision Matrix
+
+| Component Type          | Pattern   | Export Sub-Components? | Example                |
+| ----------------------- | --------- | ---------------------- | ---------------------- |
+| Simple standalone       | Pattern 1 | No                     | Button, Input, Text    |
+| Compound with Context   | Pattern 2 | Yes, all parts         | Field, Tabs, Accordion |
+| Internal sub-components | Pattern 3 | No                     | Select, Checkbox       |
+
+### What to Export
+
+**Always export:**
+
+- ✅ Main component
+- ✅ Component props types
+- ✅ Variant props types
+
+**Sometimes export:**
+
+- ⚠️ Sub-components (Pattern 2 only)
+- ⚠️ Utility types (if useful)
+
+**Never export:**
+
+- ❌ Internal helpers
+- ❌ Internal sub-components (Pattern 3)
+- ❌ Hook internals
+
+### Common Mistakes
+
+**❌ DON'T: Use wildcard exports**
+
+```typescript
+// BAD
+export * from './Button.component';
+export * from './Button.types';
+```
+
+**✅ DO: Use explicit named exports**
+
+```typescript
+// GOOD
+export { Button } from './Button.component';
+export type { ButtonProps } from './Button.types';
+export type { ButtonVariantProps } from './Button.variants';
+```
+
+---
+
+## Utility Functions Best Practices
+
+### Utils Pattern Rules
+
+**✅ DO:**
+
+- Keep functions as `const` (not exported directly)
+- Export a single grouped object (`componentUtils`)
+- Add brief inline documentation inside the exported object
+- Keep functions pure (no side effects, no hooks)
+- Use clear naming: `get`, `is`, `calculate`, `format`, `validate`
+- Test thoroughly (utils are easy to test!)
+
+**❌ DON'T:**
+
+- Don't export functions individually
+- Don't add verbose JSDoc above functions (brief docs in export object)
+- Don't use hooks in utils (create `.hooks.ts` instead)
+- Don't create utils for one-time use code
+
+### Utils vs Hooks
+
+| Utils (.utils.ts)      | Hooks (.hooks.ts)   |
+| ---------------------- | ------------------- |
+| ✅ Pure functions      | ✅ Uses React hooks |
+| ✅ Data transformation | ✅ State management |
+| ✅ Validation          | ✅ Side effects     |
+| ✅ Calculations        | ✅ Event listeners  |
+| ✅ Formatting          | ✅ Lifecycle logic  |
+
+**Example Comparison:**
+
+```typescript
+// ✅ UTIL: Pure function
+const formatPrice = (price: number): string => {
+	return `$${price.toFixed(2)}`;
+};
+
+export const priceUtils = {
+	/** Formats price with currency symbol */
+	formatPrice,
+};
+
+// ✅ HOOK: Uses React hooks
+export const useClickOutside = (ref: RefObject<HTMLElement>, handler: () => void) => {
+	useEffect(() => {
+		const handleClick = (e: MouseEvent) => { ... };
+		document.addEventListener('click', handleClick);
+		return () => document.removeEventListener('click', handleClick);
+	}, [ref, handler]);
+};
+```
+
+### Real-World Examples
+
+**Select Utils:**
+
+```typescript
+// Select.utils.ts
+import type { SelectOption } from './Select.types';
+
+const isOptionDisabled = (option: SelectOption): boolean => {
+	return option.disabled ?? false;
+};
+
+const getSelectedOption = (options: SelectOption[], value?: string): SelectOption | undefined => {
+	return options.find((opt) => opt.value === value);
+};
+
+const getDisplayText = (selectedOption: SelectOption | undefined, placeholder: string): string => {
+	return selectedOption?.label ?? placeholder;
+};
+
+export const selectUtils = {
+	/** Checks if a select option is disabled */
+	isOptionDisabled,
+
+	/** Gets the selected option from options array by value */
+	getSelectedOption,
+
+	/** Gets display text for select button (shows option label or placeholder) */
+	getDisplayText,
+};
+```
+
+**Switch Utils:**
+
+```typescript
+// Switch.utils.ts
+import type { SwitchVariantProps } from './Switch.variants';
+import type { SpinnerVariantProps } from '../Spinner/Spinner.variants';
+
+const getSpinnerSize = (size: SwitchVariantProps['size']): SpinnerVariantProps['size'] => {
+	if (size === 'xl') return 'lg';
+	if (size === 'lg') return 'md';
+	return 'sm';
+};
+
+export const switchUtils = {
+	/** Maps Switch size to appropriate Spinner size */
+	getSpinnerSize,
+};
+```
+
+**Input Utils:**
+
+```typescript
+// Input.utils.ts
+export type InputStateType = 'default' | 'error' | 'success' | 'warning';
+
+const getInputState = (params: { state?: 'success' | 'warning' | null; error?: string }): InputStateType => {
+	const { state, error } = params;
+	if (error) return 'error';
+	if (state === 'success' || state === 'warning') return state;
+	return 'default';
+};
+
+const getInputMessage = (params: { error?: string; helperText?: string }): string | undefined => {
+	const { error, helperText } = params;
+	return error ?? helperText;
+};
+
+const getInputId = (customId?: string): string => {
+	return customId ?? `input-${Math.random().toString(36).substring(2, 11)}`;
+};
+
+const getAriaDescribedBy = (inputId: string, hasMessage: boolean): string | undefined => {
+	return hasMessage ? `${inputId}-message` : undefined;
+};
+
+export const inputUtils = {
+	/** Determines input state based on error and state props (Priority: error > state > default) */
+	getInputState,
+
+	/** Gets display message from error or helper text (Priority: error > helperText) */
+	getInputMessage,
+
+	/** Generates unique ID for input element if not provided */
+	getInputId,
+
+	/** Generates ARIA describedby ID when message exists */
+	getAriaDescribedBy,
+};
+```
 
 ---
 
@@ -487,6 +863,7 @@ useEventListener('wheel', handleWheel, element, { passive: true });
 ```
 
 **Features:**
+
 - ✅ Automatic cleanup on unmount
 - ✅ Prevents memory leaks
 - ✅ Properly typed for different elements
@@ -497,12 +874,15 @@ useEventListener('wheel', handleWheel, element, { passive: true });
 ## Design Tokens
 
 ### Color Schemes
+
 `primary` | `secondary` | `success` | `warning` | `error` | `info` | `muted` | `accent`
 
 ### Sizes
+
 `sm` | `md` | `lg` | `xl`
 
 ### Spacing
+
 - **sm:** `px-3 py-1.5`
 - **md:** `px-4 py-2`
 - **lg:** `px-6 py-3`
@@ -512,11 +892,11 @@ useEventListener('wheel', handleWheel, element, { passive: true });
 
 ```typescript
 // ✅ DO: Use semantic tokens
-'bg-primary-600', 'text-foreground', 'border-input-border'
-'text-error-600', 'bg-success-50', 'border-warning-500'
+('bg-primary-600', 'text-foreground', 'border-input-border');
+('text-error-600', 'bg-success-50', 'border-warning-500');
 
 // ❌ DON'T: Use base colors
-'bg-indigo-600', 'text-blue-500', 'border-gray-300'
+('bg-indigo-600', 'text-blue-500', 'border-gray-300');
 ```
 
 ---
@@ -680,6 +1060,7 @@ export const RealWorld: Story = {
 See how all principles come together in a complex component:
 
 **File Structure:**
+
 ```
 Select/
 ├── Select.component.tsx      (147 lines)
@@ -701,6 +1082,7 @@ Select/
 ```
 
 **Key Takeaways:**
+
 - Main component: 147 lines (clean and focused)
 - Extracted hooks for complex logic
 - Extracted utils for repeated checks
@@ -717,12 +1099,16 @@ See `docs/refactoring-checklist.md` for detailed refactoring patterns.
 ## Component Creation Checklist
 
 ### Structure
+
 - [ ] All required files created (.component, .types, .variants, .stories, .test, index)
-- [ ] Extracted hooks if 2+ or > 20 lines
-- [ ] Extracted utils if 3+ or reused
+- [ ] Extracted hooks if 2+ or > 20 lines (`.hooks.ts`)
+- [ ] Extracted utils if 3+ or reused (`.utils.ts` with `componentUtils` export)
 - [ ] Extracted internal components if > 30 lines
+- [ ] Utils exported from `index.ts`
+- [ ] Utils tests created (`.utils.test.ts`)
 
 ### Code Quality
+
 - [ ] Component file < 150 lines
 - [ ] Used `React.forwardRef` + `displayName`
 - [ ] Followed import order
@@ -730,17 +1116,20 @@ See `docs/refactoring-checklist.md` for detailed refactoring patterns.
 - [ ] Used semantic tokens (no base colors)
 
 ### Shared Resources
+
 - [ ] Checked `src/hooks/` for existing hooks
 - [ ] Used `useEventListener` instead of manual listeners
 - [ ] Used `mergeClassNames` for className composition
 
 ### Accessibility
+
 - [ ] Semantic HTML elements
 - [ ] ARIA attributes (label, describedby, invalid, etc.)
 - [ ] Keyboard navigation support
 - [ ] Focus management (`focus-visible:ring`)
 
 ### Testing
+
 - [ ] Rendering tests
 - [ ] Interaction tests (use `userEvent`)
 - [ ] Accessibility tests
@@ -748,11 +1137,13 @@ See `docs/refactoring-checklist.md` for detailed refactoring patterns.
 - [ ] Ref forwarding tests
 
 ### Documentation
+
 - [ ] Storybook stories (Default, Variants, ColorSchemes, Sizes, States)
 - [ ] JSDoc comments for public APIs
 - [ ] Real-world usage examples
 
 ### Verification
+
 - [ ] Component exported from `src/components/index.ts`
 - [ ] Run `npm run lint` → no errors
 - [ ] Run `npm run typecheck` → no errors
