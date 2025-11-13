@@ -4,4 +4,3 @@ export type FieldLabelProps = {
 	 */
 	children?: React.ReactNode;
 } & React.LabelHTMLAttributes<HTMLLabelElement>;
-
