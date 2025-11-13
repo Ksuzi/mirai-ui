@@ -3,7 +3,7 @@ import React from 'react';
 import { mergeClassNames } from '@mirai-ui/utils';
 
 import { useClickOutside, useKeyboardNavigation } from './Select.hooks';
-import { isOptionDisabled, getSelectedOption, getDisplayText } from './Select.utils';
+import { selectUtils } from './Select.utils';
 import { selectVariants, selectDropdownVariants } from './Select.variants';
 import { SelectIcon } from './SelectIcon';
 import { SelectOption as SelectOptionComponent } from './SelectOption';
@@ -44,7 +44,7 @@ export const Select = React.forwardRef<HTMLButtonElement, SelectProps>(
 
 		const handleSelect = React.useCallback(
 			(option: SelectOption): void => {
-				if (isOptionDisabled(option)) return;
+				if (selectUtils.isOptionDisabled(option)) return;
 
 				setSelectedValue(option.value);
 				setIsOpen(false);
@@ -79,8 +79,8 @@ export const Select = React.forwardRef<HTMLButtonElement, SelectProps>(
 			disabled,
 		});
 
-		const selectedOption = getSelectedOption(options, selectedValue);
-		const displayText = getDisplayText(selectedOption, placeholder);
+		const selectedOption = selectUtils.getSelectedOption(options, selectedValue);
+		const displayText = selectUtils.getDisplayText(selectedOption, placeholder);
 
 		return (
 			<div className={mergeClassNames('relative', fullWidth ? 'w-full' : 'w-auto')}>
