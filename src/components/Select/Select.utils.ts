@@ -14,17 +14,18 @@ const getDisplayText = (selectedOption: SelectOption | undefined, placeholder: s
 
 export const selectUtils = {
 	/**
-	 * Checks if an option is disabled
+	 * Checks if a select option is disabled
 	 */
 	isOptionDisabled,
 
 	/**
-	 * Gets the selected option from the options array
+	 * Gets the selected option from options array by value
 	 */
 	getSelectedOption,
 
 	/**
-	 * Gets the display text for the select button
+	 * Gets display text for select button
+	 * Shows option label or placeholder
 	 */
 	getDisplayText,
 };

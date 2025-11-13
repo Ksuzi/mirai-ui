@@ -2,7 +2,7 @@ import React from 'react';
 
 import { mergeClassNames } from '@mirai-ui/utils';
 
-import { isOptionDisabled } from '../Select.utils';
+import { selectUtils } from '../Select.utils';
 
 import { selectOptionVariants } from './SelectOption.variants';
 
@@ -18,7 +18,7 @@ export const SelectOption: React.FC<SelectOptionProps> = ({
 	className,
 	...props
 }) => {
-	const disabled = isOptionDisabled(option);
+	const disabled = selectUtils.isOptionDisabled(option);
 
 	const handleClick = (): void => {
 		if (!disabled) {
