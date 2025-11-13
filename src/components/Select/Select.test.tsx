@@ -317,10 +317,10 @@ describe('Select', () => {
 	});
 
 	describe('Ref Forwarding', () => {
-		test('forwards ref to button element', () => {
-			const ref = { current: null as HTMLButtonElement | null };
+		test('forwards ref to div element', () => {
+			const ref = { current: null as HTMLDivElement | null };
 			render(<Select ref={ref} options={basicOptions} />);
-			expect(ref.current).toBeInstanceOf(HTMLButtonElement);
+			expect(ref.current).toBeInstanceOf(HTMLDivElement);
 		});
 	});
 });

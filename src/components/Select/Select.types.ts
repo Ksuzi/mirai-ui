@@ -1,5 +1,3 @@
-import type { SelectVariantProps } from './Select.variants';
-
 export type SelectOption = {
 	/**
 	 * The value of the option
@@ -17,35 +15,82 @@ export type SelectOption = {
 	disabled?: boolean;
 };
 
-export type SelectProps = Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'onChange' | 'value'> &
-	SelectVariantProps & {
-		/**
-		 * Icon displayed on the left side
-		 */
-		leftIcon?: React.ReactNode;
+/**
+ * Context value shared between Select compound components
+ */
+export type SelectContextValue = {
+	/**
+	 * The currently selected value
+	 */
+	value?: string;
 
-		/**
-		 * Placeholder text when no option is selected
-		 */
-		placeholder?: string;
+	/**
+	 * Callback fired when selection changes
+	 */
+	onChange?: (value: string) => void;
 
-		/**
-		 * Array of options to display in the dropdown
-		 */
-		options?: SelectOption[];
+	/**
+	 * Whether the dropdown is open
+	 */
+	isOpen: boolean;
 
-		/**
-		 * The currently selected value
-		 */
-		value?: string;
+	/**
+	 * Function to toggle dropdown open state
+	 */
+	setIsOpen: (open: boolean) => void;
 
-		/**
-		 * Callback fired when selection changes
-		 */
-		onChange?: (value: string) => void;
+	/**
+	 * Index of the highlighted option (for keyboard navigation)
+	 */
+	highlightedIndex: number;
 
-		/**
-		 * Aria label for accessibility
-		 */
-		['aria-label']?: string;
-	};
+	/**
+	 * Function to set highlighted index
+	 */
+	setHighlightedIndex: (index: number) => void;
+
+	/**
+	 * Reference to the trigger button
+	 */
+	triggerRef: React.RefObject<HTMLButtonElement | null>;
+
+	/**
+	 * Reference to the dropdown content
+	 */
+	contentRef: React.RefObject<HTMLDivElement | null>;
+
+	/**
+	 * Variant of the select
+	 */
+	variant: 'default' | 'outlined' | 'filled' | 'borderless' | 'underlined' | null;
+
+	/**
+	 * State of the select
+	 */
+	state: 'default' | 'error' | 'success' | 'warning' | null;
+
+	/**
+	 * Size of the select
+	 */
+	size: 'sm' | 'md' | 'lg' | 'xl' | null;
+
+	/**
+	 * Whether the select is disabled
+	 */
+	disabled: boolean;
+
+	/**
+	 * Whether the select should take full width
+	 */
+	fullWidth: boolean | null;
+
+	/**
+	 * Array of options (for hybrid props-based mode)
+	 */
+	options: SelectOption[];
+
+	/**
+	 * Function to handle option selection
+	 */
+	handleSelect: (value: string) => void;
+};

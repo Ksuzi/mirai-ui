@@ -343,3 +343,119 @@ export const RealWorld: Story = {
 		},
 	},
 };
+
+export const CompositionBasic: Story = {
+	render: () => (
+		<div className="space-y-4">
+			<div>
+				<h3 className="text-sm font-medium mb-2">Props-based (Simple)</h3>
+				<Select placeholder="Select an option" options={basicOptions} />
+			</div>
+			<div>
+				<h3 className="text-sm font-medium mb-2">Composition-based (Advanced)</h3>
+				<Select>
+					<Select.Trigger placeholder="Select an option" />
+					<Select.Content>
+						<Select.Option value="option1">Option 1</Select.Option>
+						<Select.Option value="option2">Option 2</Select.Option>
+						<Select.Option value="option3">Option 3</Select.Option>
+					</Select.Content>
+				</Select>
+			</div>
+		</div>
+	),
+	parameters: {
+		docs: {
+			description: {
+				story:
+					'Select supports both props-based (simple) and composition-based (advanced) patterns. Use props-based for simple dropdowns, composition for custom option content.',
+			},
+		},
+	},
+};
+
+export const CompositionCustomContent: Story = {
+	render: () => (
+		<div className="space-y-6">
+			<div>
+				<h3 className="text-lg font-medium mb-2">Custom Option Content</h3>
+				<Select>
+					<Select.Trigger placeholder="Select a user" leftIcon={<span>👤</span>} />
+					<Select.Content>
+						<Select.Option value="john">
+							<div className="flex items-center gap-2">
+								<span className="text-2xl">👨</span>
+								<div>
+									<div className="font-medium">John Doe</div>
+									<div className="text-xs text-muted-500">john@example.com</div>
+								</div>
+							</div>
+						</Select.Option>
+						<Select.Option value="jane">
+							<div className="flex items-center gap-2">
+								<span className="text-2xl">👩</span>
+								<div>
+									<div className="font-medium">Jane Smith</div>
+									<div className="text-xs text-muted-500">jane@example.com</div>
+								</div>
+							</div>
+						</Select.Option>
+						<Select.Option value="bob" disabled>
+							<div className="flex items-center gap-2">
+								<span className="text-2xl">👨‍💼</span>
+								<div>
+									<div className="font-medium">Bob Johnson</div>
+									<div className="text-xs text-muted-500">bob@example.com (Unavailable)</div>
+								</div>
+							</div>
+						</Select.Option>
+					</Select.Content>
+				</Select>
+			</div>
+
+			<div>
+				<h3 className="text-lg font-medium mb-2">With Icons and Badges</h3>
+				<Select>
+					<Select.Trigger placeholder="Select a priority" />
+					<Select.Content>
+						<Select.Option value="high">
+							<div className="flex items-center justify-between w-full">
+								<span className="flex items-center gap-2">
+									<span className="text-xl">🔴</span>
+									<span>High Priority</span>
+								</span>
+								<span className="px-2 py-0.5 bg-error-100 text-error-700 text-xs rounded">Urgent</span>
+							</div>
+						</Select.Option>
+						<Select.Option value="medium">
+							<div className="flex items-center justify-between w-full">
+								<span className="flex items-center gap-2">
+									<span className="text-xl">🟡</span>
+									<span>Medium Priority</span>
+								</span>
+								<span className="px-2 py-0.5 bg-warning-100 text-warning-700 text-xs rounded">Normal</span>
+							</div>
+						</Select.Option>
+						<Select.Option value="low">
+							<div className="flex items-center justify-between w-full">
+								<span className="flex items-center gap-2">
+									<span className="text-xl">🟢</span>
+									<span>Low Priority</span>
+								</span>
+								<span className="px-2 py-0.5 bg-success-100 text-success-700 text-xs rounded">Later</span>
+							</div>
+						</Select.Option>
+					</Select.Content>
+				</Select>
+			</div>
+		</div>
+	),
+	parameters: {
+		docs: {
+			description: {
+				story:
+					'With composition pattern, you can create rich option content with avatars, badges, icons, multi-line text, and any custom JSX.',
+			},
+		},
+	},
+};
