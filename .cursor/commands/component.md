@@ -46,7 +46,7 @@ ComponentName/
 ├── ComponentName.types.ts # TypeScript types
 ├── ComponentName.variants.ts # CVA styling variants
 ├── ComponentName.hooks.ts # Component-specific custom hooks (optional)
-├── ComponentName.utils.ts # Component-specific utility functions (optional)
+├── ComponentName.utils.ts # Component-specific utility functions (optional, internal only)
 ├── ComponentName.stories.tsx # Storybook stories
 ├── ComponentName.test.tsx # Component tests
 ├── SubComponent/ # Internal sub-components (optional)
@@ -70,7 +70,7 @@ ComponentName/
 - Functions are pure and testable separately
 - Logic is reused multiple times in component
 - Examples: data transformation, validation, formatting
-- See detailed guide in **UTILITY FUNCTIONS** section below
+- **Note: Utils are internal-only, NOT exported from index.ts**
 
 **Create sub-component folders when:**
 - Internal component exceeds 30 lines
@@ -95,7 +95,6 @@ Create `ComponentName.utils.ts` when:
 - ✅ Functions are **pure** (no side effects, no hooks)
 - ✅ Logic is **reused 2+ times** in the component
 - ✅ Functions are **testable independently**
-- ✅ Examples: data transformation, validation, formatting, calculations
 
 **DON'T create utils for:**
 - ❌ Simple 1-2 line helpers (keep inline)
@@ -105,12 +104,10 @@ Create `ComponentName.utils.ts` when:
 
 ### Utils File Structure
 
-**Template:**
-
 ```typescript
+// ComponentName.utils.ts
 import type { ComponentOption } from './Component.types';
 
-// Define functions as const
 const isOptionDisabled = (option: ComponentOption): boolean => {
 	return option.disabled ?? false;
 };
@@ -119,112 +116,29 @@ const getSelectedOption = (options: ComponentOption[], value?: string): Componen
 	return options.find((opt) => opt.value === value);
 };
 
-const getDisplayText = (selectedOption: ComponentOption | undefined, placeholder: string): string => {
-	return selectedOption?.label ?? placeholder;
-};
-
-// Export grouped object with inline documentation
 export const componentUtils = {
-	/**
-	 * Checks if an option is disabled
-	 */
+	/** Checks if an option is disabled */
 	isOptionDisabled,
-
-	/**
-	 * Gets the selected option from options array by value
-	 */
+	/** Gets the selected option from options array by value */
 	getSelectedOption,
-
-	/**
-	 * Gets display text for component
-	 * Shows option label or placeholder
-	 */
-	getDisplayText,
 };
 ```
 
 ### Utils Pattern Rules
 
 **✅ DO:**
-
-```typescript
-// 1. Keep functions as const (not exported directly)
-const calculateTotal = (items: Item[]): number => {
-	return items.reduce((sum, item) => sum + item.price, 0);
-};
-
-// 2. Export single grouped object
-export const componentUtils = {
-	/**
-	 * Brief description inside the object
-	 */
-	calculateTotal,
-};
-
-// 3. Use in component via object
-import { componentUtils } from './Component.utils';
-
-const total = componentUtils.calculateTotal(items);
-```
+- Keep functions as `const` (not exported directly)
+- Export single grouped object with brief inline docs
+- Keep functions pure (no side effects, no hooks)
+- Use clear naming: `get`, `is`, `calculate`, `format`, `validate`
 
 **❌ DON'T:**
+- Export functions individually
+- Export utils from `index.ts` (they're internal only)
+- Add verbose JSDoc above functions
+- Use hooks in utils (create `.hooks.ts` instead)
 
-```typescript
-// BAD: Don't export functions individually
-export const calculateTotal = (items: Item[]) => { ... };
-export const formatPrice = (price: number) => { ... };
-
-// BAD: Don't put long docs above functions
-/**
- * Calculates the total price...
- * @param items - Array of items
- * @returns Total price
- * @example
- * calculateTotal([...])
- */
-const calculateTotal = ...
-```
-
-### Real-World Examples
-
-**Example 1: Select Utils**
-
-```typescript
-// Select.utils.ts
-import type { SelectOption } from './Select.types';
-
-const isOptionDisabled = (option: SelectOption): boolean => {
-	return option.disabled ?? false;
-};
-
-const getSelectedOption = (options: SelectOption[], value?: string): SelectOption | undefined => {
-	return options.find((opt) => opt.value === value);
-};
-
-const getDisplayText = (selectedOption: SelectOption | undefined, placeholder: string): string => {
-	return selectedOption?.label ?? placeholder;
-};
-
-export const selectUtils = {
-	/**
-	 * Checks if a select option is disabled
-	 */
-	isOptionDisabled,
-
-	/**
-	 * Gets the selected option from options array by value
-	 */
-	getSelectedOption,
-
-	/**
-	 * Gets display text for select button
-	 * Shows option label or placeholder
-	 */
-	getDisplayText,
-};
-```
-
-**Example 2: Switch Utils**
+### Real-World Example
 
 ```typescript
 // Switch.utils.ts
@@ -238,81 +152,22 @@ const getSpinnerSize = (size: SwitchVariantProps['size']): SpinnerVariantProps['
 };
 
 export const switchUtils = {
-	/**
-	 * Maps Switch size to appropriate Spinner size
-	 */
+	/** Maps Switch size to appropriate Spinner size */
 	getSpinnerSize,
-};
-```
-
-**Example 3: Input Utils**
-
-```typescript
-// Input.utils.ts
-export type InputStateType = 'default' | 'error' | 'success' | 'warning';
-
-const getInputState = (params: { state?: 'success' | 'warning' | null; error?: string }): InputStateType => {
-	const { state, error } = params;
-
-	if (error) return 'error';
-	if (state === 'success' || state === 'warning') return state;
-	return 'default';
-};
-
-const getInputMessage = (params: { error?: string; helperText?: string }): string | undefined => {
-	const { error, helperText } = params;
-	return error ?? helperText;
-};
-
-const getInputId = (customId?: string): string => {
-	return customId ?? `input-${Math.random().toString(36).substring(2, 11)}`;
-};
-
-const getAriaDescribedBy = (inputId: string, hasMessage: boolean): string | undefined => {
-	return hasMessage ? `${inputId}-message` : undefined;
-};
-
-export const inputUtils = {
-	/**
-	 * Determines input state based on error and state props
-	 * Priority: error > state > default
-	 */
-	getInputState,
-
-	/**
-	 * Gets display message from error or helper text
-	 * Priority: error > helperText
-	 */
-	getInputMessage,
-
-	/**
-	 * Generates unique ID for input element if not provided
-	 */
-	getInputId,
-
-	/**
-	 * Generates ARIA describedby ID when message exists
-	 */
-	getAriaDescribedBy,
 };
 ```
 
 ### Using Utils in Components
 
 ```typescript
-// Component.component.tsx
-import React from 'react';
 import { componentUtils } from './Component.utils';
-import type { ComponentProps } from './Component.types';
 
 export const Component = React.forwardRef<HTMLElement, ComponentProps>(
-	({ options, value, placeholder, ...props }, ref) => {
-		// Use utils via the exported object
+	({ options, value, placeholder }, ref) => {
 		const selectedOption = componentUtils.getSelectedOption(options, value);
 		const displayText = componentUtils.getDisplayText(selectedOption, placeholder);
 
 		const handleSelect = (option: Option) => {
-			// Use utils in handlers
 			if (componentUtils.isOptionDisabled(option)) return;
 			onChange?.(option.value);
 		};
@@ -322,19 +177,9 @@ export const Component = React.forwardRef<HTMLElement, ComponentProps>(
 );
 ```
 
-### Exporting Utils from index.ts
-
-```typescript
-// Component/index.ts
-export { Component } from './Component.component';
-export type { ComponentProps } from './Component.types';
-export type { ComponentVariantProps } from './Component.variants';
-export { componentUtils } from './Component.utils';
-```
-
 ### Testing Utils
 
-Always create tests for utils (they're easy to test!):
+Always create tests for utils:
 
 ```typescript
 // Component.utils.test.ts
@@ -342,78 +187,27 @@ import { describe, expect, test } from 'vitest';
 import { componentUtils } from './Component.utils';
 
 describe('Component Utils', () => {
-	describe('isOptionDisabled', () => {
-		test('returns false when disabled property is not set', () => {
-			const option = { value: 'test', label: 'Test' };
-			expect(componentUtils.isOptionDisabled(option)).toBe(false);
-		});
-
-		test('returns true when disabled is explicitly true', () => {
-			const option = { value: 'test', label: 'Test', disabled: true };
-			expect(componentUtils.isOptionDisabled(option)).toBe(true);
-		});
+	test('isOptionDisabled returns false when disabled property is not set', () => {
+		const option = { value: 'test', label: 'Test' };
+		expect(componentUtils.isOptionDisabled(option)).toBe(false);
 	});
 
-	describe('getSelectedOption', () => {
-		const options = [
-			{ value: 'opt1', label: 'Option 1' },
-			{ value: 'opt2', label: 'Option 2' },
-		];
-
-		test('returns correct option when value matches', () => {
-			const result = componentUtils.getSelectedOption(options, 'opt2');
-			expect(result).toEqual({ value: 'opt2', label: 'Option 2' });
-		});
-
-		test('returns undefined when value does not match', () => {
-			expect(componentUtils.getSelectedOption(options, 'opt3')).toBeUndefined();
-		});
+	test('isOptionDisabled returns true when disabled is true', () => {
+		const option = { value: 'test', label: 'Test', disabled: true };
+		expect(componentUtils.isOptionDisabled(option)).toBe(true);
 	});
 });
 ```
-
-### Utils Best Practices
-
-1. **Keep functions pure** - No side effects, no external state
-2. **Single responsibility** - Each function does one thing well
-3. **Type everything** - Full TypeScript types for params and returns
-4. **Test thoroughly** - Utils are easy to test, aim for 100% coverage
-5. **Clear naming** - Use action verbs: `get`, `is`, `calculate`, `format`, `validate`
-6. **Brief docs** - One-line description in exported object is enough
-7. **Group logically** - Related functions in same utils file
-8. **Reusability** - If used only once, keep it inline in component
 
 ### Utils vs Hooks
 
 **Use Utils (.utils.ts) for:**
 - ✅ Pure functions (no side effects)
-- ✅ Data transformation
-- ✅ Validation logic
-- ✅ Calculations
-- ✅ Formatting
+- ✅ Data transformation, validation, calculations, formatting
 
 **Use Hooks (.hooks.ts) for:**
 - ✅ Functions using React hooks
-- ✅ State management
-- ✅ Side effects
-- ✅ Event listeners
-- ✅ Lifecycle logic
-
-```typescript
-// ✅ UTIL: Pure function
-const formatPrice = (price: number): string => {
-	return `$${price.toFixed(2)}`;
-};
-
-// ✅ HOOK: Uses React hooks
-const useClickOutside = (ref: RefObject<HTMLElement>, handler: () => void) => {
-	useEffect(() => {
-		const handleClick = (e: MouseEvent) => { ... };
-		document.addEventListener('click', handleClick);
-		return () => document.removeEventListener('click', handleClick);
-	}, [ref, handler]);
-};
-```
+- ✅ State management, side effects, event listeners
 
 ---
 
@@ -440,6 +234,7 @@ export const buttonVariants = cva(
 		'font-medium',
 		'transition-all',
 		'duration-300',
+		'focus:outline-none',
 		'focus-visible:outline-none',
 		'focus-visible:ring-2',
 		'focus-visible:ring-ring',
@@ -447,21 +242,23 @@ export const buttonVariants = cva(
 	],
 	{
 		variants: {
-			variant: { solid: [], outline: [], ghost: [], link: [] },
+			variant: { solid: [], outline: ['border-1'], ghost: [], link: [] },
 			colorScheme: { primary: [], secondary: [], success: [], warning: [], error: [], info: [], muted: [] },
 			size: {
 				sm: ['px-3', 'py-1.5', 'text-sm'],
 				md: ['px-4', 'py-2', 'text-base'],
 				lg: ['px-6', 'py-3', 'text-lg'],
+				xl: ['px-8', 'py-4', 'text-xl'],
 			},
 			fullWidth: { true: 'w-full', false: 'w-auto' },
+			loading: { true: 'cursor-wait', false: '' },
 		},
 		compoundVariants: [
 			{ variant: 'solid', colorScheme: 'primary', class: 'bg-primary-600 hover:bg-primary-500 text-white' },
-			{ variant: 'outline', colorScheme: 'primary', class: 'border-2 border-primary-600 text-primary-600 hover:bg-primary-600 hover:text-white' },
+			{ variant: 'outline', colorScheme: 'primary', class: 'border-1 border-primary-600 text-primary-600 hover:bg-primary-600 hover:text-white' },
 			{ variant: 'ghost', colorScheme: 'primary', class: 'text-primary-600 hover:bg-primary-50' },
 		],
-		defaultVariants: { variant: 'solid', colorScheme: 'primary', size: 'md', fullWidth: false },
+		defaultVariants: { variant: 'solid', colorScheme: 'primary', size: 'md', fullWidth: false, loading: false },
 	}
 );
 ````
@@ -475,7 +272,6 @@ export const buttonVariants = cva(
 - Handle `variant`, `state`, `size` variants
 - Add proper ARIA attributes for accessibility
 - Support `disabled`, `readOnly`, `required` states
-- Include helper text and error message handling
 
 **Variants Structure:**
 
@@ -487,6 +283,7 @@ export const inputVariants = cva(
 		'rounded-md',
 		'transition-all',
 		'duration-200',
+		'focus:outline-none',
 		'focus-visible:outline-none',
 		'focus-visible:ring-2',
 		'focus-visible:ring-ring',
@@ -498,21 +295,26 @@ export const inputVariants = cva(
 	{
 		variants: {
 			variant: {
-				default: ['border', 'bg-input'],
-				outlined: ['border-2', 'bg-transparent'],
+				default: ['border', 'bg-input', 'shadow-xs'],
+				outlined: ['border-1', 'bg-transparent', 'shadow-xs'],
 				filled: ['border', 'border-transparent', 'bg-muted-100', 'shadow-xs'],
 				borderless: ['border-0', 'bg-transparent', 'shadow-none'],
 				underlined: ['border-0', 'border-b-2', 'bg-transparent', 'rounded-none', 'shadow-none', 'px-0'],
 			},
 			state: { default: [], error: [], success: [], warning: [] },
-			size: { sm: ['px-3', 'py-1.5', 'text-sm'], md: ['px-4', 'py-2', 'text-base'] },
+			size: {
+				sm: ['px-3', 'py-1.5', 'text-sm'],
+				md: ['px-4', 'py-2', 'text-base'],
+				lg: ['px-6', 'py-3', 'text-lg'],
+				xl: ['px-8', 'py-4', 'text-xl'],
+			},
 			fullWidth: { true: 'w-full', false: 'w-auto' },
 		},
 		compoundVariants: [
 			{ variant: 'default', state: 'default', class: 'border-input-border text-foreground focus:border-primary-500' },
 			{ variant: 'default', state: 'error', class: 'border-error-500 text-foreground focus:border-error-600' },
 			{ variant: 'default', state: 'success', class: 'border-success-500 text-foreground focus:border-success-600' },
-			{ variant: 'outlined', state: 'default', class: 'border-border text-foreground focus:border-primary-500' },
+			{ variant: 'outlined', state: 'default', class: 'border-input-border text-foreground focus:border-primary-500' },
 			{ variant: 'outlined', state: 'error', class: 'border-error-500 text-foreground focus:border-error-600' },
 		],
 		defaultVariants: { variant: 'default', state: 'default', size: 'md', fullWidth: true },
@@ -527,7 +329,6 @@ export const inputVariants = cva(
 - Simple prop interfaces
 - Support `variant` and `padding`/`spacing` variants
 - Use semantic color tokens
-- No complex state management needed
 
 **Variants Structure:**
 
@@ -557,7 +358,6 @@ export const cardVariants = cva(['rounded-md', 'border'], {
 - Use semantic typography tokens (typo-body, typo-h1, etc.)
 - Support polymorphic `as` prop for semantic HTML
 - Support `colorScheme` for text colors
-- Keep variants simple and semantic
 
 **Variants Structure:**
 
@@ -636,7 +436,7 @@ Every component MUST include:
 
 **4. Focus Management**
 
-- `focus-visible:outline-none` base style
+- `focus:outline-none` and `focus-visible:outline-none` base style
 - `focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2` for visible focus
 
 ---
@@ -691,7 +491,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 			<button
 				ref={ref}
 				className={mergeClassNames(
-					buttonVariants({ variant, colorScheme, size, fullWidth }),
+					buttonVariants({ variant, colorScheme, size, fullWidth, loading }),
 					className
 				)}
 				aria-busy={loading}
@@ -797,6 +597,7 @@ export const Sizes: Story = {
 			<Button size="sm">Small</Button>
 			<Button size="md">Medium</Button>
 			<Button size="lg">Large</Button>
+			<Button size="xl">Extra Large</Button>
 		</div>
 	),
 };
@@ -808,20 +609,6 @@ export const States: Story = {
 			<Button>Default</Button>
 			<Button loading>Loading</Button>
 			<Button disabled>Disabled</Button>
-		</div>
-	),
-};
-
-// 6. Real-world examples
-export const RealWorld: Story = {
-	render: () => (
-		<div className="flex gap-3">
-			<Button variant="solid" colorScheme="primary">
-				Submit Form
-			</Button>
-			<Button variant="outline" colorScheme="secondary">
-				Cancel
-			</Button>
 		</div>
 	),
 };
@@ -923,38 +710,25 @@ describe('Button', () => {
 - Use semantic queries: `getByRole`, `getByLabelText`, `getByText`
 - Always use `await` with `userEvent` methods
 - Test keyboard navigation where applicable
-- Don't test CSS classes unless critical for functionality
 
 ---
 
 ## COMPONENT EXPORT PATTERNS
 
-### Export Philosophy
-
-Use **explicit named exports** for clarity, tree-shaking, and TypeScript support. Choose the right pattern based on component architecture.
-
----
+Use **explicit named exports** for clarity, tree-shaking, and TypeScript support.
 
 ### Pattern 1: Simple Component (Most Common)
 
-For standalone components without sub-components or minimal internal parts.
+For standalone components without sub-components.
 
-**When to use:**
+**When to use:** Button, Input, Text, Heading, Spinner
 
-- Button, Input, Text, Heading
-- Components without sub-components
-- Internal parts are implementation details
-
-**index.ts structure:**
+**index.ts:**
 
 ```typescript
-// Export main component
 export { ComponentName } from './ComponentName.component';
-
-// Export types
 export type { ComponentNameProps } from './ComponentName.types';
-
-// Export variant props for advanced users
+// Export variant props only if useful for external styling (optional)
 export type { ComponentNameVariantProps } from './ComponentName.variants';
 ```
 
@@ -966,174 +740,83 @@ export type { ButtonProps } from './Button.types';
 export type { ButtonVariantProps, IconSize } from './Button.variants';
 ```
 
-**Benefits:**
+### Pattern 2: Compound Component with Context
 
-- ✅ Best tree-shaking
-- ✅ Clear API surface
-- ✅ TypeScript-friendly
-- ✅ No namespace pollution
+For components where sub-parts share state via Context API.
 
----
+**When to use:** Field, Tabs, Accordion, RadioGroup
 
-### Pattern 2: Compound Component with Context (Flexible Composition)
-
-For components where sub-parts **must** work together and share state via Context.
-
-**When to use:**
-
-- Field (label, control, message share context)
-- Tabs (tab buttons share active state)
-- Accordion (items share open/close state)
-- RadioGroup (radios share selection)
-
-**Criteria:**
-
-- Sub-components require shared state
-- Sub-components are rarely used independently
-- Context API is used for implicit communication
-
-**index.ts structure:**
+**index.ts:**
 
 ```typescript
 // Export all parts individually for tree-shaking
-export { ComponentName, ComponentNamePart1, ComponentNamePart2 } from './ComponentName.component';
+export { ComponentName, ComponentNameLabel, ComponentNameControl } from './ComponentName.component';
 
-// Export all types
-export type { ComponentNameProps, ComponentNamePart1Props, ComponentNamePart2Props } from './ComponentName.types';
+export type { ComponentNameProps, ComponentNameLabelProps } from './ComponentName.types';
 
 export type { ComponentNameVariantProps } from './ComponentName.variants';
 ```
 
-**ComponentName.component.tsx structure:**
+**Component.component.tsx:**
 
 ```typescript
-// Define sub-components
+// Sub-components use shared context
 export const FieldLabel = React.forwardRef<...>((props, ref) => {
-  const context = useFieldContext(); // Uses shared context
+  const context = useFieldContext();
   // ...
 });
 
 export const FieldControl = React.forwardRef<...>((props, ref) => {
-  const context = useFieldContext(); // Uses shared context
+  const context = useFieldContext();
   // ...
 });
 
-export const FieldMessage = React.forwardRef<...>((props, ref) => {
-  const context = useFieldContext(); // Uses shared context
-  // ...
-});
-
-// Main component with namespace for convenience
+// Namespace pattern for convenience
 export const Field = Object.assign(FieldRoot, {
   Label: FieldLabel,
   Control: FieldControl,
   Message: FieldMessage,
 });
-
-FieldRoot.displayName = 'FieldRoot';
-FieldLabel.displayName = 'FieldLabel';
-FieldControl.displayName = 'FieldControl';
-FieldMessage.displayName = 'FieldMessage';
 ```
 
-**Example: Field**
+**Usage:**
 
 ```typescript
-// index.ts
-export { Field, FieldLabel, FieldControl, FieldMessage } from './Field.component';
-export type { FieldRootProps, FieldLabelProps, FieldControlProps, FieldMessageProps } from './Field.types';
-export type { FieldRootVariantProps } from './Field.variants';
-```
-
-**Usage flexibility:**
-
-```typescript
-// Pattern 1: Namespace (cleaner for compound components)
+// Option 1: Namespace syntax
 <Field>
   <Field.Label>Email</Field.Label>
   <Field.Control><Input /></Field.Control>
-  <Field.Message>Helper text</Field.Message>
 </Field>
 
-// Pattern 2: Named imports (better tree-shaking)
-import { Field, FieldLabel, FieldControl } from '@mirai-ui';
+// Option 2: Named imports
 <Field>
   <FieldLabel>Email</FieldLabel>
   <FieldControl><Input /></FieldControl>
 </Field>
 ```
 
-**Benefits:**
-
-- ✅ Both usage patterns available
-- ✅ Clear parent-child relationship
-- ✅ Implicit state sharing via Context
-- ✅ Still supports tree-shaking with named imports
-
----
-
 ### Pattern 3: Component with Internal Sub-Components
 
-For components with sub-components that are internal implementation details.
+For components where sub-parts are internal implementation details.
 
-**When to use:**
+**When to use:** Select, Checkbox (with internal icons/options)
 
-- Select (with SelectOption, SelectIcon)
-- Checkbox (with CheckboxIcon)
-- Components where sub-parts are rendered internally
-
-**Criteria:**
-
-- Sub-components are NOT meant for external use
-- Parent component controls rendering
-- No need for external composition
-
-**index.ts structure:**
+**index.ts:**
 
 ```typescript
 // Export ONLY the main component
 export { Select } from './Select.component';
 export type { SelectProps, SelectOption } from './Select.types';
-export type { SelectVariantProps } from './Select.variants';
-
-// DO NOT export SelectOption or SelectIcon - they're internal
+// DON'T export internal SelectOption or SelectIcon components
 ```
-
-**Example: Select**
-
-```typescript
-// Select renders options internally via props
-<Select
-  options={[
-    { value: '1', label: 'Option 1' },
-    { value: '2', label: 'Option 2' }
-  ]}
-  value={value}
-  onChange={onChange}
-/>
-
-// SelectOption and SelectIcon are internal implementation details
-```
-
-**Benefits:**
-
-- ✅ Simple, focused API
-- ✅ No breaking changes if internal structure changes
-- ✅ Users can't misuse internal components
-- ✅ Best encapsulation
-
----
 
 ### Export Pattern Decision Matrix
 
-| Component Type              | Pattern        | Export Sub-Components? | Example                    |
-| --------------------------- | -------------- | ---------------------- | -------------------------- |
-| **Simple standalone**       | Pattern 1      | No                     | Button, Input, Text        |
-| **Compound with Context**   | Pattern 2      | Yes, all parts         | Field, Tabs, Accordion     |
-| **Internal sub-components** | Pattern 3      | No, keep internal      | Select, Checkbox           |
-| **Optional composition**    | Pattern 1 or 2 | Optional               | Card, CardHeader, CardBody |
-
----
+| Component Type              | Pattern   | Export Sub-Components? | Export Variant Props? | Example                |
+| --------------------------- | --------- | ---------------------- | --------------------- | ---------------------- |
+| **Simple standalone**       | Pattern 1 | No                     | Optional              | Button, Input, Text    |
+| **Compound with Context**   | Pattern 2 | Yes, all parts         | Optional              | Field, Tabs, Accordion |
+| **Internal sub-components** | Pattern 3 | No, keep internal      | Optional              | Select, Checkbox       |
 
 ### What to Export
 
@@ -1141,116 +824,19 @@ export type { SelectVariantProps } from './Select.variants';
 
 - ✅ Main component
 - ✅ Component props types
-- ✅ Variant props types (for advanced styling)
 
 **Sometimes export:**
 
+- ⚠️ Variant props types (only if useful for external custom styling)
 - ⚠️ Sub-components (only for compound components with Context)
 - ⚠️ Utility types (if useful for consumers)
-- ⚠️ Variant functions (for advanced custom styling)
 
 **Never export:**
 
 - ❌ Internal helper functions
+- ❌ Utils (keep internal only)
 - ❌ Internal sub-components (unless Pattern 2)
-- ❌ Implementation details
 - ❌ Hook internals
-
----
-
-### Common Mistakes to Avoid
-
-**❌ DON'T: Use wildcard exports**
-
-```typescript
-// BAD - breaks tree-shaking, unclear API
-export * from './Button.component';
-export * from './Button.types';
-```
-
-**✅ DO: Use explicit named exports**
-
-```typescript
-// GOOD - clear, tree-shakeable
-export { Button } from './Button.component';
-export type { ButtonProps } from './Button.types';
-export type { ButtonVariantProps } from './Button.variants';
-```
-
-**❌ DON'T: Export everything**
-
-```typescript
-// BAD - exposes internal implementation
-export { Select, SelectOption, SelectIcon, useSelectState, SelectDropdown } from './Select.component';
-```
-
-**✅ DO: Export only public API**
-
-```typescript
-// GOOD - clean API surface
-export { Select } from './Select.component';
-export type { SelectProps, SelectOption } from './Select.types';
-```
-
-**❌ DON'T: Use Object.assign for simple components**
-
-```typescript
-// BAD - unnecessary complexity for standalone component
-export const Button = Object.assign(ButtonRoot, {
-	Icon: ButtonIcon, // Users don't need this
-});
-```
-
-**✅ DO: Use Object.assign only for compound components**
-
-```typescript
-// GOOD - compound component with shared context
-export const Field = Object.assign(FieldRoot, {
-	Label: FieldLabel, // Uses shared context
-	Control: FieldControl, // Uses shared context
-	Message: FieldMessage, // Uses shared context
-});
-```
-
----
-
-## INDEX.TS EXPORT TEMPLATES
-
-### Template 1: Simple Component
-
-```typescript
-export { ComponentName } from './ComponentName.component';
-export type { ComponentNameProps } from './ComponentName.types';
-export type { ComponentNameVariantProps } from './ComponentName.variants';
-```
-
-### Template 2: Compound Component
-
-```typescript
-export {
-	ComponentName,
-	ComponentNameLabel,
-	ComponentNameControl,
-	ComponentNameMessage,
-} from './ComponentName.component';
-
-export type {
-	ComponentNameProps,
-	ComponentNameLabelProps,
-	ComponentNameControlProps,
-	ComponentNameMessageProps,
-} from './ComponentName.types';
-
-export type { ComponentNameVariantProps } from './ComponentName.variants';
-```
-
-### Template 3: Component with Type Exports Only
-
-```typescript
-export { ComponentName } from './ComponentName.component';
-export type { ComponentNameProps } from './ComponentName.types';
-// Note: No variant props if component doesn't use CVA
-```
 
 ---
 
@@ -1333,19 +919,13 @@ const handleClickOutside = (e: MouseEvent) => {
 };
 
 useEventListener('mousedown', handleClickOutside, document);
-
-// ❌ DON'T: Reimplement event listener logic
-useEffect(() => {
-	document.addEventListener('mousedown', handleClickOutside);
-	return () => document.removeEventListener('mousedown', handleClickOutside);
-}, []);
 ```
 
 ### Component Organization Principles
 
 1. **Keep component file clean** (ideally < 150 lines)
    - Extract hooks to `.hooks.ts` if > 20 lines
-   - Extract utils to `.utils.ts` if reused 3+ times
+   - Extract utils to `.utils.ts` if reused 3+ times (internal only)
    - Extract internal components if > 30 lines
 
 2. **Naming conventions:**
@@ -1408,32 +988,6 @@ useEffect(() => {
    Component.displayName = 'Component';
    ```
 
-### Extract Internal Components When:
-
-```typescript
-// ❌ BAD: Inline complex JSX
-<button>
-  <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-    <svg className="w-5 h-5">
-      <path d="..." />
-    </svg>
-  </div>
-  {children}
-</button>
-
-// ✅ GOOD: Extract to named component
-const LeftIcon: React.FC<{ icon: ReactNode }> = ({ icon }) => (
-  <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-    <span className="text-muted-400">{icon}</span>
-  </div>
-);
-
-LeftIcon.displayName = 'LeftIcon';
-
-// ✅ BEST: Extract to separate file/folder if used elsewhere
-import { LeftIcon } from './LeftIcon';
-```
-
 ### Performance Optimization
 
 ```typescript
@@ -1444,12 +998,9 @@ const handleClick = React.useCallback(() => {
 
 // ✅ Use React.useMemo for expensive calculations
 const filteredOptions = React.useMemo(() => options.filter((opt) => !opt.disabled), [options]);
-
-// ✅ Memoize handler updates in custom hooks
-useEffect(() => {
-	savedHandler.current = handler;
-}, [handler]);
 ```
+
+---
 
 ## IMPORTANT REMINDERS
 
@@ -1462,15 +1013,12 @@ useEffect(() => {
 7. **Support both controlled and uncontrolled modes** for form inputs
 8. **Follow the post-generation workflow** - don't skip steps
 9. **Use `@mirai-ui/test`** for test imports, not direct testing-library imports
-10. **Keep stories simple and focused** - show variants, don't test logic
-11. **Check `src/hooks/` for shared hooks** before reimplementing
-12. **Extract complex logic** to separate files when appropriate
-13. **Keep component files clean** (< 150 lines ideal)
-14. **Follow import order** conventions (enforced by linter)
-15. **Use `useCallback`** for event handlers to prevent re-renders
-16. **Create `.utils.ts` with `componentUtils` export** for pure functions (3+ utils or reused)
-17. **Always test utils** - they're easy to test and should have good coverage
-18. **Use utils via object notation** - `componentUtils.functionName()` in components
+10. **Check `src/hooks/` for shared hooks** before reimplementing
+11. **Extract complex logic** to separate files when appropriate
+12. **Keep component files clean** (< 150 lines ideal)
+13. **Use `useCallback`** for event handlers to prevent re-renders
+14. **Create `.utils.ts` for pure functions** (3+ utils or reused) - internal only, NOT exported
+15. **Always test utils** - they're easy to test and should have good coverage
 
 ---
 
@@ -1489,21 +1037,24 @@ Before considering the task complete, verify:
 
 - [ ] Component uses `React.forwardRef` with `displayName`
 - [ ] CVA variants use semantic tokens only
+- [ ] Sizes include sm, md, lg, xl
+- [ ] Focus states use both `focus:` and `focus-visible:` patterns
 - [ ] Proper TypeScript types extending correct HTML interfaces
 - [ ] Utils are pure functions (no hooks, no side effects)
-- [ ] Utils exported from `index.ts` if created
+- [ ] Utils are internal only (NOT exported from index.ts)
 - [ ] Component file < 150 lines (extract if longer)
 
 ### Documentation & Testing
 
-- [ ] Comprehensive Storybook stories (Default, Variants, ColorSchemes, Sizes, States, RealWorld)
+- [ ] Comprehensive Storybook stories (Default, Variants, ColorSchemes, Sizes, States)
 - [ ] Complete test coverage (Rendering, Interaction, Accessibility, States, Ref)
-- [ ] Utils tests pass with good coverage
+- [ ] Utils tests pass with good coverage (if utils exist)
 - [ ] Proper ARIA attributes for accessibility
 
 ### Integration
 
 - [ ] Component exported from `src/components/index.ts`
+- [ ] Variant props exported only if useful for external styling
 - [ ] Linting passes with no errors
 - [ ] Type checking passes with no errors
 - [ ] All tests pass (new and existing)
@@ -1514,7 +1065,7 @@ When you receive a component request, follow this workflow:
 
 1. Identify component category (Interactive, Form, Display, or Typography)
 2. Generate all 6 required files
-3. Export from index files
+3. Export from index files (component + types, variant props optional)
 4. Execute post-generation workflow
 5. Report completion with summary of what was created
 
@@ -1545,20 +1096,6 @@ When you receive a component request, follow this workflow:
 
 ```
 
-### Example 4: Typography Component
-```
-
-/component create a Label component for form labels with support for required indicator and different sizes
-
-```
-
-### Example 5: Complex Interactive Component
-```
-
-/component create a Switch toggle component with on/off states, support for controlled/uncontrolled modes, and accessibility features
-
-```
-
 ---
 
 ## Tips
@@ -1580,10 +1117,5 @@ When you receive a component request, follow this workflow:
 - **Layout**: Container, Stack, Grid, Flex
 - **Feedback**: Spinner, Skeleton, Progress, Toast
 - **Overlay**: Modal, Popover, Tooltip, Dropdown
-
-
-
-
-
 
 ```
