@@ -1,27 +1,57 @@
 # Component Creation Guide
 
-See also:
+Complete guide for creating maintainable, accessible components in Mirai UI.
 
-- Semantic tokens and usage: `docs/semantic-tokens.mdx`
-- Storybook authoring standards: `docs/storybook-guidelines.mdx`
-- Test guidance: `docs/testing-guidelines.mdx`
+## Related Documentation
 
-## 📁 File Structure
+- **Semantic tokens:** `docs/semantic-tokens.mdx`
+- **Storybook standards:** `docs/storybook-guidelines.mdx`  
+- **Testing guidelines:** `docs/testing-guidelines.mdx`
+- **Refactoring guide:** `docs/REFACTORING_CHECKLIST.md`
+
+---
+
+## Quick Start
+
+### Required Files
+
+Every component MUST include:
 
 ```
 ComponentName/
-├── ComponentName.component.tsx
-├── ComponentName.types.ts
-├── ComponentName.variants.ts
-├── ComponentName.stories.tsx
-└── index.ts
+├── ComponentName.component.tsx   # Main implementation
+├── ComponentName.types.ts        # TypeScript interfaces
+├── ComponentName.variants.ts     # CVA styling
+├── ComponentName.stories.tsx     # Storybook documentation
+├── ComponentName.test.tsx        # Test suite
+└── index.ts                      # Public exports
 ```
 
-## 🚀 Templates
+### Optional Files (Add When Needed)
 
-### Interactive Components (Button, Select, etc.)
+```
+ComponentName/
+├── ComponentName.hooks.ts        # Custom hooks (when 2+ hooks or > 20 lines)
+├── ComponentName.utils.ts        # Pure functions (when 3+ utils or reused)
+└── SubComponent/                 # Internal components (when > 30 lines)
+    ├── SubComponent.component.tsx
+    ├── SubComponent.types.ts
+    ├── SubComponent.variants.ts  (if needed)
+    └── index.ts
+```
 
-**Variants:**
+**When to add optional files:**
+- `.hooks.ts` → 2+ custom hooks OR single hook > 20 lines
+- `.utils.ts` → 3+ utility functions OR repeated logic
+- `SubComponent/` → Internal component > 30 lines OR has own variants
+
+---
+
+## Component Templates
+
+### Interactive Components (Button, Link, Switch)
+
+**Variants Template:**
 
 ```typescript
 import { cva, type VariantProps } from 'class-variance-authority';
@@ -36,37 +66,78 @@ export const componentVariants = cva(
 		'transition-all',
 		'duration-300',
 		'focus-visible:outline-none',
+		'focus-visible:ring-2',
+		'focus-visible:ring-ring',
+		'focus-visible:ring-offset-2',
 	],
 	{
 		variants: {
-			variant: { solid: [], outline: [], ghost: [], link: [] },
-			colorScheme: { primary: [], secondary: [], success: [], warning: [], error: [], info: [], muted: [] },
+			variant: {
+				solid: [],
+				outline: ['border-2'],
+				ghost: [],
+				link: ['underline-offset-4'],
+			},
+			colorScheme: {
+				primary: [],
+				secondary: [],
+				success: [],
+				warning: [],
+				error: [],
+				info: [],
+				muted: [],
+			},
 			size: {
 				sm: ['px-3', 'py-1.5', 'text-sm'],
 				md: ['px-4', 'py-2', 'text-base'],
 				lg: ['px-6', 'py-3', 'text-lg'],
+				xl: ['px-8', 'py-4', 'text-xl'],
 			},
-			fullWidth: { true: 'w-full', false: 'w-auto' },
-			loading: { true: 'cursor-wait', false: '' },
+			fullWidth: {
+				true: 'w-full',
+				false: 'w-auto',
+			},
+			loading: {
+				true: 'cursor-wait opacity-70',
+				false: '',
+			},
 		},
 		compoundVariants: [
-			{ variant: 'solid', colorScheme: 'primary', class: 'bg-primary-600 hover:bg-primary-500 text-white' },
-			{ variant: 'outline', colorScheme: 'primary', class: 'border-primary-600 text-primary-600 hover:bg-primary-50' },
-			{ variant: 'ghost', colorScheme: 'primary', class: 'text-primary-600 hover:bg-primary-50' },
+			{
+				variant: 'solid',
+				colorScheme: 'primary',
+				class: 'bg-primary-600 hover:bg-primary-500 text-white',
+			},
+			{
+				variant: 'outline',
+				colorScheme: 'primary',
+				class: 'border-primary-600 text-primary-600 hover:bg-primary-50',
+			},
+			{
+				variant: 'ghost',
+				colorScheme: 'primary',
+				class: 'text-primary-600 hover:bg-primary-50',
+			},
 			{
 				variant: 'link',
 				colorScheme: 'primary',
-				class: 'text-primary-600 hover:text-primary-500 px-0 underline-offset-4 hover:underline',
+				class: 'text-primary-600 hover:text-primary-500 hover:underline px-0',
 			},
 		],
-		defaultVariants: { variant: 'solid', colorScheme: 'primary', size: 'md', fullWidth: false, loading: false },
+		defaultVariants: {
+			variant: 'solid',
+			colorScheme: 'primary',
+			size: 'md',
+			fullWidth: false,
+			loading: false,
+		},
 	}
 );
 
 export type ComponentVariantProps = VariantProps<typeof componentVariants>;
 ```
 
-**Component:**
+**Component Template:**
 
 ```typescript
 import React from 'react';
@@ -75,16 +146,13 @@ import { componentVariants } from './Component.variants';
 import type { ComponentProps } from './Component.types';
 
 export const Component = React.forwardRef<HTMLButtonElement, ComponentProps>(
-	({ variant, colorScheme, size, fullWidth, loading, className, children, ...props }, ref) => {
+	({ variant, colorScheme, size, fullWidth, loading, className, children, disabled, ...props }, ref) => {
 		return (
 			<button
 				ref={ref}
-				className={mergeClassNames(
-					componentVariants({ variant, colorScheme, size, fullWidth, loading }),
-					className
-				)}
-				aria-busy={Boolean(loading)}
-				disabled={Boolean(loading || props.disabled)}
+				className={mergeClassNames(componentVariants({ variant, colorScheme, size, fullWidth, loading }), className)}
+				aria-busy={loading}
+				disabled={disabled || loading}
 				{...props}
 			>
 				{children}
@@ -96,9 +164,32 @@ export const Component = React.forwardRef<HTMLButtonElement, ComponentProps>(
 Component.displayName = 'Component';
 ```
 
-### Form Components (Input, Textarea, etc.)
+**Types Template:**
 
-**Variants:**
+```typescript
+import type { ComponentVariantProps } from './Component.variants';
+
+export interface ComponentProps extends React.ButtonHTMLAttributes<HTMLButtonElement>, ComponentVariantProps {
+	/**
+	 * Whether the component is in loading state
+	 */
+	loading?: boolean;
+
+	/**
+	 * Icon to display on the left side
+	 */
+	leftIcon?: React.ReactNode;
+
+	/**
+	 * Icon to display on the right side
+	 */
+	rightIcon?: React.ReactNode;
+}
+```
+
+### Form Components (Input, Textarea, Select)
+
+**Variants Template:**
 
 ```typescript
 export const inputVariants = cva(
@@ -109,33 +200,94 @@ export const inputVariants = cva(
 		'transition-all',
 		'duration-200',
 		'focus-visible:outline-none',
+		'focus-visible:ring-2',
+		'focus-visible:ring-ring',
+		'focus-visible:ring-offset-2',
+		'disabled:cursor-not-allowed',
+		'disabled:opacity-50',
 		'placeholder:text-muted-400',
 	],
 	{
 		variants: {
 			variant: {
-				default: ['border', 'bg-input'],
-				outlined: ['border-1', 'bg-transparent'],
-				filled: ['border', 'border-transparent', 'shadow-xs'],
+				default: ['border', 'bg-input', 'shadow-xs'],
+				outlined: ['border-2', 'bg-transparent', 'shadow-xs'],
+				filled: ['border', 'border-transparent', 'bg-muted-100', 'shadow-xs'],
 				borderless: ['border-0', 'bg-transparent', 'shadow-none'],
 				underlined: ['border-0', 'border-b-2', 'bg-transparent', 'rounded-none', 'shadow-none', 'px-0'],
 			},
-			state: { default: [], error: [], success: [], warning: [] },
-			size: { sm: ['px-3', 'py-1.5', 'text-sm'], md: ['px-4', 'py-2', 'text-base'] },
-			fullWidth: { true: 'w-full', false: 'w-auto' },
+			state: {
+				default: [],
+				error: [],
+				success: [],
+				warning: [],
+			},
+			size: {
+				sm: ['px-3', 'py-1.5', 'text-sm'],
+				md: ['px-4', 'py-2', 'text-base'],
+				lg: ['px-6', 'py-3', 'text-lg'],
+			},
+			fullWidth: {
+				true: 'w-full',
+				false: 'w-auto',
+			},
 		},
 		compoundVariants: [
-			{ variant: 'default', state: 'default', class: 'border-input-border text-foreground focus:border-primary-500' },
+			{
+				variant: 'default',
+				state: 'default',
+				class: 'border-input-border text-foreground hover:border-primary-400 focus:border-primary-500',
+			},
 			{ variant: 'default', state: 'error', class: 'border-error-500 text-foreground focus:border-error-600' },
+			{ variant: 'default', state: 'success', class: 'border-success-500 text-foreground focus:border-success-600' },
+			{ variant: 'default', state: 'warning', class: 'border-warning-500 text-foreground focus:border-warning-600' },
 		],
-		defaultVariants: { variant: 'default', state: 'default', size: 'md', fullWidth: true },
+		defaultVariants: {
+			variant: 'default',
+			state: 'default',
+			size: 'md',
+			fullWidth: true,
+		},
 	}
 );
 ```
 
-### Display Components (Card, Typography, etc.)
+**Types Template:**
 
-**Variants:**
+```typescript
+import type { InputVariantProps } from './Input.variants';
+
+export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement>, InputVariantProps {
+	/**
+	 * Label text for the input
+	 */
+	label?: string;
+
+	/**
+	 * Helper text displayed below the input
+	 */
+	helperText?: string;
+
+	/**
+	 * Error message to display
+	 */
+	error?: string;
+
+	/**
+	 * Icon displayed on the left side
+	 */
+	leftIcon?: React.ReactNode;
+
+	/**
+	 * Icon displayed on the right side
+	 */
+	rightIcon?: React.ReactNode;
+}
+```
+
+### Display Components (Card, Badge, Alert)
+
+**Variants Template:**
 
 ```typescript
 export const cardVariants = cva(['rounded-md', 'border'], {
@@ -143,30 +295,295 @@ export const cardVariants = cva(['rounded-md', 'border'], {
 		variant: {
 			default: ['bg-card', 'border-border'],
 			elevated: ['bg-card', 'shadow-md', 'border-transparent'],
+			outlined: ['bg-transparent', 'border-border'],
 		},
-		padding: { sm: ['p-4'], md: ['p-6'], lg: ['p-8'] },
+		padding: {
+			none: 'p-0',
+			sm: 'p-4',
+			md: 'p-6',
+			lg: 'p-8',
+		},
 	},
-	defaultVariants: { variant: 'default', padding: 'md' },
+	defaultVariants: {
+		variant: 'default',
+		padding: 'md',
+	},
 });
 ```
 
-## 📝 Types Template
+**Types Template:**
 
 ```typescript
-import type { ComponentVariantProps } from './Component.variants';
+import type { CardVariantProps } from './Card.variants';
 
-export interface ComponentProps extends React.ButtonHTMLAttributes<HTMLButtonElement>, ComponentVariantProps {}
-
-export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement>, InputVariantProps {
-	label?: string;
-	helperText?: string;
-	error?: string;
+export interface CardProps extends React.HTMLAttributes<HTMLDivElement>, CardVariantProps {
+	/**
+	 * Content to render inside the card
+	 */
+	children: React.ReactNode;
 }
-
-export interface CardProps extends React.HTMLAttributes<HTMLDivElement>, CardVariantProps {}
 ```
 
-## 📖 Stories Template
+---
+
+## Code Organization
+
+### Import Order (Enforced by Linter)
+
+```typescript
+// 1. React
+import React from 'react';
+
+// 2. External packages (alphabetical)
+import { mergeClassNames } from '@mirai-ui/utils';
+
+// 3. Shared hooks (alphabetical)
+import { useEventListener } from '../../hooks';
+
+// 4. Local components (alphabetical)
+import { SelectIcon } from './SelectIcon';
+import { SelectOption } from './SelectOption';
+
+// 5. Local modules (alphabetical)
+import { selectVariants } from './Select.variants';
+
+// 6. Types (last)
+import type { SelectProps } from './Select.types';
+```
+
+### Component Structure Order
+
+```typescript
+import React from 'react';
+
+// 1. Internal sub-components (if small, < 15 lines, and only used once)
+const Icon: React.FC<Props> = (props) => <svg>{/* ... */}</svg>;
+Icon.displayName = 'Icon';
+
+// 2. Main component
+export const Component = React.forwardRef<HTMLElement, Props>((props, ref) => {
+	// 3. Props destructuring
+	const { variant = 'default', size = 'md', ...rest } = props;
+
+	// 4. Refs
+	const elementRef = useRef<HTMLElement>(null);
+
+	// 5. State
+	const [isOpen, setIsOpen] = useState(false);
+
+	// 6. Imperative handle
+	useImperativeHandle(ref, () => elementRef.current!);
+
+	// 7. Side effects
+	useEffect(() => {
+		// Side effect logic
+	}, [deps]);
+
+	// 8. Shared hooks
+	useEventListener('click', handleClick, document);
+
+	// 9. Component-specific hooks
+	const { handleKeyDown } = useKeyboardNavigation(config);
+
+	// 10. Callbacks (use useCallback)
+	const handleClick = useCallback(() => {
+		// Handler logic
+	}, [deps]);
+
+	// 11. Derived values
+	const displayText = getDisplayText(value);
+
+	// 12. Render
+	return <div>{/* JSX */}</div>;
+});
+
+// 13. Display name
+Component.displayName = 'Component';
+```
+
+### When to Extract Code
+
+#### Create `.hooks.ts` when:
+- ✅ You have 2+ custom hooks
+- ✅ Hook logic exceeds 20 lines
+- ✅ Complex state management needs separation
+
+```typescript
+// Component.hooks.ts
+import { useCallback } from 'react';
+import { useEventListener } from '../../hooks';
+
+export const useClickOutside = (
+	refs: Array<React.RefObject<HTMLElement | null>>,
+	handler: () => void,
+	enabled = true
+): void => {
+	const handleClickOutside = useCallback(
+		(event: MouseEvent): void => {
+			if (!enabled) return;
+			const isOutside = refs.every((ref) => ref.current && !ref.current.contains(event.target as Node));
+			if (isOutside) handler();
+		},
+		[refs, handler, enabled]
+	);
+
+	useEventListener('mousedown', handleClickOutside, document);
+};
+```
+
+#### Create `.utils.ts` when:
+- ✅ Function is pure (no side effects)
+- ✅ Function is reused 3+ times
+- ✅ Logic can be tested independently
+
+```typescript
+// Component.utils.ts
+export const isOptionDisabled = (option: SelectOption): boolean => {
+	return option.disabled ?? false;
+};
+
+export const getSelectedOption = (options: SelectOption[], value?: string): SelectOption | undefined => {
+	return options.find((opt) => opt.value === value);
+};
+
+export const getDisplayText = (option: SelectOption | undefined, placeholder: string): string => {
+	return option?.label ?? placeholder;
+};
+```
+
+#### Create `SubComponent/` when:
+- ✅ Component exceeds 30 lines
+- ✅ Used in multiple places
+- ✅ Has its own types/variants
+
+---
+
+## Shared Resources
+
+### Always Check `src/hooks/` First!
+
+Before creating component-specific hooks, check if a shared hook exists:
+
+**Available Shared Hooks:**
+
+#### `useEventListener`
+
+Safely add/remove event listeners to DOM elements.
+
+```typescript
+import { useEventListener } from '../../hooks';
+
+// Document events
+useEventListener('mousedown', handleClickOutside, document);
+
+// Window events
+useEventListener('resize', handleResize, window);
+
+// Element events
+useEventListener('scroll', handleScroll, elementRef.current);
+
+// With options
+useEventListener('wheel', handleWheel, element, { passive: true });
+```
+
+**Features:**
+- ✅ Automatic cleanup on unmount
+- ✅ Prevents memory leaks
+- ✅ Properly typed for different elements
+- ✅ Handler can update without re-attaching
+
+---
+
+## Design Tokens
+
+### Color Schemes
+`primary` | `secondary` | `success` | `warning` | `error` | `info` | `muted` | `accent`
+
+### Sizes
+`sm` | `md` | `lg` | `xl`
+
+### Spacing
+- **sm:** `px-3 py-1.5`
+- **md:** `px-4 py-2`
+- **lg:** `px-6 py-3`
+- **xl:** `px-8 py-4`
+
+### Always Use Semantic Tokens
+
+```typescript
+// ✅ DO: Use semantic tokens
+'bg-primary-600', 'text-foreground', 'border-input-border'
+'text-error-600', 'bg-success-50', 'border-warning-500'
+
+// ❌ DON'T: Use base colors
+'bg-indigo-600', 'text-blue-500', 'border-gray-300'
+```
+
+---
+
+## Best Practices
+
+### Performance
+
+```typescript
+// ✅ Memoize event handlers
+const handleClick = useCallback(() => {
+	onChange?.(value);
+}, [onChange, value]);
+
+// ✅ Memoize expensive calculations
+const filteredOptions = useMemo(() => options.filter((opt) => !opt.disabled), [options]);
+
+// ❌ Avoid inline object/array creation
+<Component style={{ padding: 10 }} /> // Bad
+const style = useMemo(() => ({ padding: 10 }), []); // Good
+<Component style={style} />
+```
+
+### Accessibility
+
+Every component must include:
+
+```typescript
+// ✅ Semantic HTML
+<button> not <div onClick={...}>
+
+// ✅ ARIA attributes
+aria-label="Close dialog"
+aria-describedby="helper-text"
+aria-invalid={state === 'error'}
+aria-disabled={disabled}
+
+// ✅ Keyboard support
+onKeyDown={handleKeyDown} // Handle Enter, Space, Escape, Arrows
+
+// ✅ Focus management
+focus-visible:outline-none
+focus-visible:ring-2
+focus-visible:ring-ring
+```
+
+### TypeScript
+
+```typescript
+// ✅ Extend correct HTML interfaces
+export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement>, ButtonVariantProps {}
+
+// ✅ Make optional props explicit
+disabled?: boolean; // Good
+disabled: boolean; // Only if required
+
+// ✅ Use union types for variants
+variant?: 'default' | 'outlined' | 'filled';
+
+// ❌ Never use 'any'
+handler: (event: MouseEvent) => void; // Good
+handler: any; // Bad
+```
+
+---
+
+## Storybook Stories Template
 
 ```typescript
 import type { Meta, StoryObj } from '@storybook/react-vite';
@@ -176,17 +593,27 @@ const meta: Meta<typeof Component> = {
 	title: 'Components/Component',
 	component: Component,
 	tags: ['autodocs'],
-	args: { children: 'Component', variant: 'solid', colorScheme: 'primary', size: 'md' },
+	args: {
+		children: 'Component',
+		variant: 'solid',
+		colorScheme: 'primary',
+		size: 'md',
+	},
+	argTypes: {
+		onClick: { action: 'clicked' },
+	},
 };
 
 export default meta;
 type Story = StoryObj<typeof Component>;
 
+// 1. Default (required)
 export const Default: Story = {};
 
-export const AllVariants: Story = {
+// 2. All Variants (required)
+export const Variants: Story = {
 	render: () => (
-		<div className="flex gap-4">
+		<div className="flex gap-4 flex-wrap">
 			<Component variant="solid">Solid</Component>
 			<Component variant="outline">Outline</Component>
 			<Component variant="ghost">Ghost</Component>
@@ -194,29 +621,187 @@ export const AllVariants: Story = {
 		</div>
 	),
 };
+
+// 3. Color Schemes (required for colored components)
+export const ColorSchemes: Story = {
+	render: () => (
+		<div className="flex gap-3 flex-wrap">
+			<Component colorScheme="primary">Primary</Component>
+			<Component colorScheme="secondary">Secondary</Component>
+			<Component colorScheme="success">Success</Component>
+			<Component colorScheme="warning">Warning</Component>
+			<Component colorScheme="error">Error</Component>
+		</div>
+	),
+};
+
+// 4. Sizes (required)
+export const Sizes: Story = {
+	render: () => (
+		<div className="flex items-start gap-3">
+			<Component size="sm">Small</Component>
+			<Component size="md">Medium</Component>
+			<Component size="lg">Large</Component>
+			<Component size="xl">Extra Large</Component>
+		</div>
+	),
+};
+
+// 5. States (required for interactive components)
+export const States: Story = {
+	render: () => (
+		<div className="flex gap-3">
+			<Component>Default</Component>
+			<Component loading>Loading</Component>
+			<Component disabled>Disabled</Component>
+		</div>
+	),
+};
+
+// 6. Real-World Usage (recommended)
+export const RealWorld: Story = {
+	render: () => (
+		<div className="flex gap-3">
+			<Component variant="solid" colorScheme="primary">
+				Save Changes
+			</Component>
+			<Component variant="outline" colorScheme="secondary">
+				Cancel
+			</Component>
+		</div>
+	),
+};
 ```
 
-## 🎨 Design Tokens
+---
 
-**Colors:** `primary`, `secondary`, `success`, `warning`, `error`, `info`, `muted`, `accent`
-**Sizes:** `sm`, `md`, `lg`, `xl`
-**Spacing:** `px-3 py-1.5` (sm), `px-4 py-2` (md), `px-6 py-3` (lg)
+## Real-World Example: Select Component
 
-## ✅ Checklist
+See how all principles come together in a complex component:
 
-- [ ] Use `React.forwardRef` + `displayName`
-- [ ] CVA for styling variants
-- [ ] Extend appropriate HTML interfaces
-- [ ] Use `mergeClassNames` utility
-- [ ] Add accessibility attributes
-- [ ] Create Storybook stories
-- [ ] Export from `index.ts` and main `src/components/index.ts`
+**File Structure:**
+```
+Select/
+├── Select.component.tsx      (147 lines)
+├── Select.types.ts
+├── Select.variants.ts
+├── Select.hooks.ts           (useClickOutside, useKeyboardNavigation)
+├── Select.utils.ts           (isOptionDisabled, getDisplayText)
+├── Select.stories.tsx
+├── Select.test.tsx           (30 tests)
+├── SelectIcon/
+│   ├── SelectIcon.component.tsx
+│   ├── SelectIcon.types.ts
+│   └── index.ts
+└── SelectOption/
+    ├── SelectOption.component.tsx
+    ├── SelectOption.types.ts
+    ├── SelectOption.variants.ts
+    └── index.ts
+```
 
-### Post-Generation Verification
+**Key Takeaways:**
+- Main component: 147 lines (clean and focused)
+- Extracted hooks for complex logic
+- Extracted utils for repeated checks
+- Sub-components in separate folders
+- Uses shared `useEventListener`
+- Uses `useCallback` for performance
+- Full accessibility support
+- 30 passing tests
 
-Before committing, follow the workflow in `docs/code-generation-workflow.mdx`:
+See `docs/REFACTORING_CHECKLIST.md` for detailed refactoring patterns.
 
-1. Write/update tests, including accessibility
-2. Run linting and fix issues
-3. Run type checking and fix errors
-4. Run tests and ensure everything passes
+---
+
+## Component Creation Checklist
+
+### Structure
+- [ ] All required files created (.component, .types, .variants, .stories, .test, index)
+- [ ] Extracted hooks if 2+ or > 20 lines
+- [ ] Extracted utils if 3+ or reused
+- [ ] Extracted internal components if > 30 lines
+
+### Code Quality
+- [ ] Component file < 150 lines
+- [ ] Used `React.forwardRef` + `displayName`
+- [ ] Followed import order
+- [ ] Used `useCallback` for event handlers
+- [ ] Used semantic tokens (no base colors)
+
+### Shared Resources
+- [ ] Checked `src/hooks/` for existing hooks
+- [ ] Used `useEventListener` instead of manual listeners
+- [ ] Used `mergeClassNames` for className composition
+
+### Accessibility
+- [ ] Semantic HTML elements
+- [ ] ARIA attributes (label, describedby, invalid, etc.)
+- [ ] Keyboard navigation support
+- [ ] Focus management (`focus-visible:ring`)
+
+### Testing
+- [ ] Rendering tests
+- [ ] Interaction tests (use `userEvent`)
+- [ ] Accessibility tests
+- [ ] States tests
+- [ ] Ref forwarding tests
+
+### Documentation
+- [ ] Storybook stories (Default, Variants, ColorSchemes, Sizes, States)
+- [ ] JSDoc comments for public APIs
+- [ ] Real-world usage examples
+
+### Verification
+- [ ] Component exported from `src/components/index.ts`
+- [ ] Run `npm run lint` → no errors
+- [ ] Run `npm run typecheck` → no errors
+- [ ] Run `npm test` → all tests pass
+
+---
+
+## Post-Generation Workflow
+
+Before committing:
+
+1. **Write/update tests** - See `docs/testing-guidelines.mdx`
+2. **Run linting** - `npm run lint` and fix all issues
+3. **Type check** - `npm run typecheck` and fix all errors
+4. **Run tests** - `npm test` and ensure everything passes
+5. **Check Storybook** - Verify stories render correctly
+
+---
+
+## Additional Resources
+
+- **Refactoring Guide:** `docs/REFACTORING_CHECKLIST.md`
+- **Testing Guidelines:** `docs/testing-guidelines.mdx`
+- **Storybook Standards:** `docs/storybook-guidelines.mdx`
+- **Semantic Tokens:** `docs/semantic-tokens.mdx`
+- **Shared Hooks:** `src/hooks/README.md`
+
+---
+
+## Quick Commands
+
+```bash
+# Create component (use Cursor command)
+/component create a Badge component...
+
+# Lint
+npm run lint
+
+# Type check
+npm run typecheck
+
+# Test
+npm test
+
+# Test specific component
+npm test -- ComponentName
+
+# Storybook
+npm run storybook
+```
+
+Happy coding! 🚀
