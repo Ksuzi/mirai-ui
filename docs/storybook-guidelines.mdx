@@ -152,9 +152,51 @@ export const MyStory: Story = {
 
 Keep descriptions concise - one or two sentences maximum.
 
+### Interactive Stories with Hooks
+
+For stories that need state or hooks (controlled components, forms), use **named function expressions** instead of arrow functions or separate components. This ensures readable code in Storybook's "Show Code" feature:
+
+```tsx
+// ✅ GOOD: Code is inline and visible in "Show Code"
+export const Controlled: Story = {
+	render: function ControlledExample() {
+		const [value, setValue] = React.useState('option2');
+
+		return (
+			<RadioGroup name="example" value={value} onChange={setValue}>
+				<Radio value="option1">Option 1</Radio>
+				<Radio value="option2">Option 2</Radio>
+			</RadioGroup>
+		);
+	},
+};
+
+// ❌ BAD: Separate component hides implementation
+const ControlledExample = () => {
+	const [value, setValue] = React.useState('option2');
+	return (
+		<RadioGroup name="example" value={value} onChange={setValue}>
+			...
+		</RadioGroup>
+	);
+};
+
+export const Controlled: Story = {
+	render: () => <ControlledExample />, // Users only see this line in "Show Code"
+};
+```
+
+**Why named function expressions?**
+
+- Shows complete implementation in Storybook's "Show Code" panel
+- Allows React hooks (named function = valid component)
+- Avoids ESLint `react-hooks/rules-of-hooks` errors
+- Keeps code collocated without separate helper components
+
 ### Best Practices
 
 - **Prefer `args`** for simple prop variations; use custom `render` for complex layouts
+- **Use named function expressions** for stories with hooks/state (see above)
 - **Show semantic combinations** (`variant` × `colorScheme` × `size`) that users actually need
 - **Keep layout helpers minimal** - use basic Tailwind classes (`flex`, `gap`, `space-y-*`)
 - **Use meaningful content** - avoid "lorem ipsum" when real examples are clearer
