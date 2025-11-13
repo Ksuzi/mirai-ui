@@ -3,6 +3,7 @@ export * from './Checkbox';
 export * from './Field';
 export * from './Heading';
 export * from './Input';
+export * from './Select';
 export * from './Spinner';
 export * from './Text';
 export * from './Textarea';
