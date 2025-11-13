@@ -35,27 +35,6 @@ export type FieldRootProps = {
 } & React.HTMLAttributes<HTMLDivElement> &
 	FieldRootVariantProps;
 
-export type FieldLabelProps = {
-	/**
-	 * Content of the label
-	 */
-	children?: React.ReactNode;
-} & React.LabelHTMLAttributes<HTMLLabelElement>;
-
-export type FieldControlProps = {
-	/**
-	 * The form control element (Input, Select, Textarea, etc.)
-	 */
-	children: React.ReactElement;
-} & React.HTMLAttributes<HTMLDivElement>;
-
-export type FieldMessageProps = {
-	/**
-	 * Content of the message (overrides root error/helperText)
-	 */
-	children?: React.ReactNode;
-} & React.HTMLAttributes<HTMLDivElement>;
-
 export type FieldContextValue = {
 	id: string;
 	size: FieldSize;
