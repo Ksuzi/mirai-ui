@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { useFieldContext } from '../Field.context';
-import { getDisplayMessage, getFieldMessageId, getFieldAriaProps } from '../Field.utils';
+import { fieldUtils } from '../Field.utils';
 
 import type { FieldControlProps } from './FieldControl.types';
 
@@ -9,10 +9,10 @@ export const FieldControl = React.forwardRef<HTMLDivElement, FieldControlProps>(
 	({ className, children, ...props }, ref) => {
 		const { id, size, state, required, disabled, error, helperText } = useFieldContext();
 
-		const displayMessage = getDisplayMessage(error, helperText);
-		const messageId = getFieldMessageId(id);
+		const displayMessage = fieldUtils.getDisplayMessage(error, helperText);
+		const messageId = fieldUtils.getFieldMessageId(id);
 		const ariaDescribedBy = displayMessage ? messageId : undefined;
-		const ariaProps = getFieldAriaProps(state, required, ariaDescribedBy);
+		const ariaProps = fieldUtils.getFieldAriaProps(state, required, ariaDescribedBy);
 
 		const control = React.cloneElement(
 			children,
