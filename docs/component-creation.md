@@ -4,10 +4,10 @@ Complete guide for creating maintainable, accessible components in Mirai UI.
 
 ## Related Documentation
 
-- **Semantic tokens:** `docs/semantic-tokens.mdx`
-- **Storybook standards:** `docs/storybook-guidelines.mdx`
-- **Testing guidelines:** `docs/testing-guidelines.mdx`
-- **Memoization guidelines:** `docs/memoization-guidelines.mdx`
+- **Semantic tokens:** `docs/semantic-tokens.md`
+- **Storybook standards:** `docs/storybook-guidelines.md`
+- **Testing guidelines:** `docs/testing-guidelines.md`
+- **Memoization guidelines:** `docs/memoization-guidelines.md`
 - **Refactoring guide:** `docs/refactoring-checklist.md`
 
 ---
@@ -732,7 +732,7 @@ useEventListener('scroll', handleScroll, elementRef.current);
 
 ### Performance
 
-For comprehensive memoization guidelines, see **`docs/memoization-guidelines.mdx`**.
+For comprehensive memoization guidelines, see **`docs/memoization-guidelines.md`**.
 
 Quick reference:
 
@@ -940,7 +940,7 @@ export const States: Story = {
 
 Before committing:
 
-1. **Write/update tests** - See `docs/testing-guidelines.mdx`
+1. **Write/update tests** - See `docs/testing-guidelines.md`
 2. **Run linting** - `npm run lint` and fix all issues
 3. **Type check** - `npm run typecheck` and fix all errors
 4. **Run tests** - `npm test` and ensure everything passes
@@ -951,10 +951,10 @@ Before committing:
 ## Additional Resources
 
 - **Refactoring Guide:** `docs/refactoring-checklist.md`
-- **Testing Guidelines:** `docs/testing-guidelines.mdx`
-- **Storybook Standards:** `docs/storybook-guidelines.mdx`
-- **Semantic Tokens:** `docs/semantic-tokens.mdx`
-- **Memoization Guidelines:** `docs/memoization-guidelines.mdx`
+- **Testing Guidelines:** `docs/testing-guidelines.md`
+- **Storybook Standards:** `docs/storybook-guidelines.md`
+- **Semantic Tokens:** `docs/semantic-tokens.md`
+- **Memoization Guidelines:** `docs/memoization-guidelines.md`
 - **Shared Hooks:** `src/hooks/README.md`
 
 ---

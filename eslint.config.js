@@ -18,7 +18,6 @@ export default [
 			'**/*.config.js',
 			'**/*.config.ts',
 			'**/*.md',
-			'**/*.mdx',
 		],
 	},
 

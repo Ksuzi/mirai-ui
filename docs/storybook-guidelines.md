@@ -201,9 +201,9 @@ export const Controlled: Story = {
 - **Keep layout helpers minimal** - use basic Tailwind classes (`flex`, `gap`, `space-y-*`)
 - **Use meaningful content** - avoid "lorem ipsum" when real examples are clearer
 - **Group related examples** - use sections with headings in render functions
-- **Avoid testing logic** in stories; use tests for behavior (see `docs/testing-guidelines.mdx`)
+- **Avoid testing logic** in stories; use tests for behavior (see `docs/testing-guidelines.md`)
 
 ### Cross-References
 
-- See `docs/semantic-tokens.mdx` for token usage inside CVA.
-- See `docs/component-creation.mdx` for recommended component structure.
+- See `docs/semantic-tokens.md` for token usage inside CVA.
+- See `docs/component-creation.md` for recommended component structure.

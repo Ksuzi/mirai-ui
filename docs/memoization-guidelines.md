@@ -4,9 +4,9 @@ Comprehensive guide for implementing memoization in Mirai UI components. This do
 
 ## Related Documentation
 
-- **Component creation:** `docs/component-creation.mdx`
-- **Testing guidelines:** `docs/testing-guidelines.mdx`
-- **Storybook guidelines:** `docs/storybook-guidelines.mdx`
+- **Component creation:** `docs/component-creation.md`
+- **Testing guidelines:** `docs/testing-guidelines.md`
+- **Storybook guidelines:** `docs/storybook-guidelines.md`
 
 ---
 

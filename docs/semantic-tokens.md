@@ -145,5 +145,5 @@ export const textVariants = cva([], {
 
 ### Related
 
-- See `docs/component-creation.mdx` for recommended CVA structure.
-- See `docs/storybook-guidelines.mdx` for documenting variants and states.
+- See `docs/component-creation.md` for recommended CVA structure.
+- See `docs/storybook-guidelines.md` for documenting variants and states.
