@@ -1,7 +1,7 @@
-import { SelectContent } from './SelectContent';
-import { SelectOptionComposition } from './SelectOptionComposition';
+import { SelectContent } from './SelectContent/SelectContent.component';
+import { SelectOptionComposition } from './SelectOptionComposition/SelectOptionComposition.component';
 import { SelectRoot } from './SelectRoot';
-import { SelectTrigger } from './SelectTrigger';
+import { SelectTrigger } from './SelectTrigger/SelectTrigger.component';
 
 /**
  * Select - Main compound component with sub-components

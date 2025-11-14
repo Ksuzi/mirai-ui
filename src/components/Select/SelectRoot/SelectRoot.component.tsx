@@ -4,9 +4,9 @@ import { mergeClassNames } from '@mirai-ui/utils';
 
 import { SelectContext } from '../Select.context';
 import { useClickOutside } from '../Select.hooks';
-import { SelectContent } from '../SelectContent';
-import { SelectOption as SelectOptionLegacy } from '../SelectOption';
-import { SelectTrigger } from '../SelectTrigger';
+import { SelectContent } from '../SelectContent/SelectContent.component';
+import { SelectOption as SelectOptionLegacy } from '../SelectOption/SelectOption.component';
+import { SelectTrigger } from '../SelectTrigger/SelectTrigger.component';
 
 import type { SelectRootProps } from './SelectRoot.types';
 import type { SelectOption as SelectOptionType } from '../Select.types';
