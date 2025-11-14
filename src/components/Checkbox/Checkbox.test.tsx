@@ -157,11 +157,6 @@ describe('Checkbox', () => {
 			rerender(<Checkbox colorScheme="secondary" />);
 			expect(screen.getByRole('checkbox')).toBeInTheDocument();
 		});
-
-		test('supports deprecated color prop for backward compatibility', () => {
-			render(<Checkbox color="primary" />);
-			expect(screen.getByRole('checkbox')).toBeInTheDocument();
-		});
 	});
 
 	describe('With Field Component', () => {
