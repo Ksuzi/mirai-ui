@@ -476,12 +476,12 @@ import { componentUtils } from './Component.utils';
 export const Component = React.forwardRef<HTMLElement, ComponentProps>(
 	({ options, value }, ref) => {
 		const selectedOption = componentUtils.getSelectedOption(options, value);
-		
+
 		const handleSelect = (option: Option) => {
 			if (componentUtils.isOptionDisabled(option)) return;
 			onChange?.(option.value);
 		};
-		
+
 		return <div>{displayText}</div>;
 	}
 );
@@ -614,15 +614,18 @@ export type { SelectProps, SelectOption } from './Select.types';
 ### What to Export
 
 **Always export:**
+
 - ✅ Main component
 - ✅ Component props types
 
 **Sometimes export:**
+
 - ⚠️ Variant props types (only if useful for external custom styling)
 - ⚠️ Sub-components (only for Pattern 2: compound with Context)
 - ⚠️ Utility types (if useful for consumers)
 
 **Never export:**
+
 - ❌ Internal helpers
 - ❌ Utils (keep internal only)
 - ❌ Internal sub-components (unless Pattern 2)
@@ -635,6 +638,7 @@ export type { SelectProps, SelectOption } from './Select.types';
 ### Utils Pattern Rules
 
 **✅ DO:**
+
 - Keep functions as `const` (not exported directly)
 - Export a single grouped object (`componentUtils`)
 - Add brief inline documentation
@@ -642,6 +646,7 @@ export type { SelectProps, SelectOption } from './Select.types';
 - Test thoroughly
 
 **❌ DON'T:**
+
 - Export functions individually
 - Export utils from `index.ts` (internal only)
 - Use hooks in utils (create `.hooks.ts` instead)
@@ -685,6 +690,7 @@ useEventListener('scroll', handleScroll, elementRef.current);
 ```
 
 **Features:**
+
 - ✅ Automatic cleanup on unmount
 - ✅ Prevents memory leaks
 - ✅ Properly typed for different elements
@@ -740,13 +746,11 @@ const handleClick = useCallback(() => {
 const filteredOptions = useMemo(() => options.filter((opt) => !opt.disabled), [options]);
 
 // ✅ Memoize context values (ALWAYS for Context.Provider)
-const contextValue = useMemo(
-	() => ({ value, onChange: handleChange, size }),
-	[value, handleChange, size]
-);
+const contextValue = useMemo(() => ({ value, onChange: handleChange, size }), [value, handleChange, size]);
 ```
 
 **Key rules:**
+
 - Always use `useCallback` for event handlers in components
 - Always use `useMemo` for context values passed to Context.Provider
 - Always use `React.memo` for list items and icon components
