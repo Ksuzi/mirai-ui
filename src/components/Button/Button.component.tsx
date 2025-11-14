@@ -23,34 +23,33 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 			children,
 			className,
 			disabled,
+			type,
+			'aria-label': ariaLabel,
+			onClick,
 			...props
 		},
 		ref
 	) => {
-		const { onClick, type, ...restProps } = props;
 		const effectiveIconSize = iconSize ?? size;
 		const iconSizeClass = iconSizes[effectiveIconSize as IconSize];
 
+		React.useEffect(() => {
+			if (process.env.NODE_ENV !== 'production') {
+				const isIconOnly = !children && (leftIcon ?? rightIcon);
+				if (isIconOnly && !ariaLabel && !props['aria-labelledby']) {
+					console.warn(
+						'Button: Icon-only buttons must have an accessible label. Provide an `aria-label` or `aria-labelledby` prop.'
+					);
+				}
+			}
+		}, []);
+
 		const handleKeyDown = React.useCallback(
 			(event: React.KeyboardEvent<HTMLButtonElement>) => {
-				if (event.key === 'Enter' || event.key === ' ') {
+				if (event.key === ' ') {
 					event.preventDefault();
 					if (!disabled && !loading && onClick) {
-						const syntheticEvent = {
-							...event,
-							button: 0,
-							buttons: 1,
-							clientX: 0,
-							clientY: 0,
-							movementX: 0,
-							movementY: 0,
-							screenX: 0,
-							screenY: 0,
-							pageX: 0,
-							pageY: 0,
-							relatedTarget: null,
-						} as unknown as React.MouseEvent<HTMLButtonElement>;
-						onClick(syntheticEvent);
+						onClick(event as unknown as React.MouseEvent<HTMLButtonElement>);
 					}
 				}
 			},
@@ -74,19 +73,26 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 				disabled={Boolean(disabled ?? loading)}
 				aria-disabled={Boolean(disabled ?? loading)}
 				aria-busy={Boolean(loading)}
+				aria-label={ariaLabel}
 				onClick={onClick}
 				onKeyDown={handleKeyDown}
-				{...restProps}
+				{...props}
 			>
 				{loading && <Spinner size={effectiveIconSize as IconSize} />}
 
 				{leftIcon && !loading && (
-					<span className={mergeClassNames('flex items-center', iconSizeClass)}>{leftIcon}</span>
+					<span className={mergeClassNames('flex items-center', iconSizeClass)} aria-hidden="true">
+						{leftIcon}
+					</span>
 				)}
 
 				{children}
 
-				{rightIcon && <span className={mergeClassNames('flex items-center', iconSizeClass)}>{rightIcon}</span>}
+				{rightIcon && (
+					<span className={mergeClassNames('flex items-center', iconSizeClass)} aria-hidden="true">
+						{rightIcon}
+					</span>
+				)}
 			</button>
 		);
 	}
