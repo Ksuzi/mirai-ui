@@ -7,6 +7,7 @@ Complete guide for creating maintainable, accessible components in Mirai UI.
 - **Semantic tokens:** `docs/semantic-tokens.mdx`
 - **Storybook standards:** `docs/storybook-guidelines.mdx`
 - **Testing guidelines:** `docs/testing-guidelines.mdx`
+- **Memoization guidelines:** `docs/memoization-guidelines.mdx`
 - **Refactoring guide:** `docs/refactoring-checklist.md`
 
 ---
@@ -725,6 +726,10 @@ useEventListener('scroll', handleScroll, elementRef.current);
 
 ### Performance
 
+For comprehensive memoization guidelines, see **`docs/memoization-guidelines.mdx`**.
+
+Quick reference:
+
 ```typescript
 // ✅ Memoize event handlers
 const handleClick = useCallback(() => {
@@ -733,7 +738,19 @@ const handleClick = useCallback(() => {
 
 // ✅ Memoize expensive calculations
 const filteredOptions = useMemo(() => options.filter((opt) => !opt.disabled), [options]);
+
+// ✅ Memoize context values (ALWAYS for Context.Provider)
+const contextValue = useMemo(
+	() => ({ value, onChange: handleChange, size }),
+	[value, handleChange, size]
+);
 ```
+
+**Key rules:**
+- Always use `useCallback` for event handlers in components
+- Always use `useMemo` for context values passed to Context.Provider
+- Always use `React.memo` for list items and icon components
+- Profile before optimizing - don't memoize unnecessarily
 
 ### Accessibility
 
@@ -933,6 +950,7 @@ Before committing:
 - **Testing Guidelines:** `docs/testing-guidelines.mdx`
 - **Storybook Standards:** `docs/storybook-guidelines.mdx`
 - **Semantic Tokens:** `docs/semantic-tokens.mdx`
+- **Memoization Guidelines:** `docs/memoization-guidelines.mdx`
 - **Shared Hooks:** `src/hooks/README.md`
 
 ---
