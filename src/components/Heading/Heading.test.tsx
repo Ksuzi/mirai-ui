@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test, vi } from 'vitest';
 
 import { render, screen } from '@mirai-ui/test';
 
@@ -130,6 +130,91 @@ describe('Heading', () => {
 			expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Main Title');
 			expect(screen.getByRole('heading', { level: 2 })).toHaveTextContent('Subtitle');
 			expect(screen.getByRole('heading', { level: 3 })).toHaveTextContent('Section');
+		});
+
+		test('warns when heading is empty', () => {
+			const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {
+				// Intentionally empty to suppress console output in tests
+			});
+
+			render(<Heading> </Heading>);
+
+			expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('Headings should not be empty'));
+
+			consoleSpy.mockRestore();
+		});
+
+		test('warns when semantic level does not match visual variant', () => {
+			const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {
+				// Intentionally empty to suppress console output in tests
+			});
+
+			render(
+				<Heading as="h1" variant="h6">
+					Mismatched Heading
+				</Heading>
+			);
+
+			expect(consoleSpy).toHaveBeenCalledWith(
+				expect.stringContaining('Semantic level (as="h1") doesn\'t match visual variant')
+			);
+
+			consoleSpy.mockRestore();
+		});
+
+		test('does not warn when semantic level matches visual variant', () => {
+			const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {
+				// Intentionally empty to suppress console output in tests
+			});
+
+			render(
+				<Heading as="h1" variant="h1">
+					Matching Heading
+				</Heading>
+			);
+
+			expect(consoleSpy).not.toHaveBeenCalledWith(
+				expect.stringContaining("Semantic level doesn't match visual variant")
+			);
+
+			consoleSpy.mockRestore();
+		});
+
+		test('does not warn for display variant (no semantic level)', () => {
+			const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {
+				// Intentionally empty to suppress console output in tests
+			});
+
+			render(
+				<Heading as="h1" variant="display">
+					Display Heading
+				</Heading>
+			);
+
+			expect(consoleSpy).not.toHaveBeenCalledWith(
+				expect.stringContaining("Semantic level doesn't match visual variant")
+			);
+
+			consoleSpy.mockRestore();
+		});
+
+		test('renders with proper semantic HTML element', () => {
+			const { container } = render(<Heading as="h3">Semantic Heading</Heading>);
+			const heading = container.querySelector('h3');
+			expect(heading).toBeInTheDocument();
+			expect(heading).toHaveTextContent('Semantic Heading');
+		});
+
+		test('supports aria attributes for enhanced accessibility', () => {
+			render(
+				<Heading as="h2" id="section-heading" aria-describedby="section-description">
+					Section Title
+				</Heading>
+			);
+
+			const heading = screen.getByRole('heading', { level: 2 });
+			expect(heading).toHaveAttribute('id', 'section-heading');
+			expect(heading).toHaveAttribute('aria-describedby', 'section-description');
 		});
 	});
 
