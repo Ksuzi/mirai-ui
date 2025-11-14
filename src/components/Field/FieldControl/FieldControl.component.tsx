@@ -12,7 +12,9 @@ export const FieldControl = React.memo(
 		const displayMessage = fieldUtils.getDisplayMessage(error, helperText);
 		const messageId = fieldUtils.getFieldMessageId(id);
 		const ariaDescribedBy = displayMessage ? messageId : undefined;
-		const ariaProps = fieldUtils.getFieldAriaProps(state, required, ariaDescribedBy);
+		// aria-errormessage should only be set when there's an error (WCAG 4.1.2)
+		const ariaErrorMessage = state === 'error' && error ? messageId : undefined;
+		const ariaProps = fieldUtils.getFieldAriaProps(state, required, ariaDescribedBy, ariaErrorMessage);
 
 		const control = React.cloneElement(
 			children,

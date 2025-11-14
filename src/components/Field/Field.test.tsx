@@ -198,7 +198,57 @@ describe('Field', () => {
 			);
 
 			const errorMessage = screen.getByRole('alert');
-			expect(errorMessage).toHaveAttribute('aria-live', 'polite');
+			// role="alert" implies aria-live="assertive", so we don't set it explicitly
+			expect(errorMessage).not.toHaveAttribute('aria-live', 'polite');
+			expect(errorMessage).not.toHaveAttribute('aria-live', 'assertive');
+		});
+
+		test('helper text has role="status" with aria-live="polite"', () => {
+			render(
+				<Field helperText="Enter your email address">
+					<Field.Label>Email</Field.Label>
+					<Field.Control>
+						<Input />
+					</Field.Control>
+					<Field.Message />
+				</Field>
+			);
+
+			const helperText = screen.getByRole('status');
+			expect(helperText).toHaveAttribute('aria-live', 'polite');
+			expect(helperText).toHaveTextContent('Enter your email address');
+		});
+
+		test('sets aria-errormessage on input when error is present', () => {
+			render(
+				<Field id="email-field" error="Email is required">
+					<Field.Label>Email</Field.Label>
+					<Field.Control>
+						<Input />
+					</Field.Control>
+					<Field.Message />
+				</Field>
+			);
+
+			const input = screen.getByLabelText('Email');
+			expect(input).toHaveAttribute('aria-errormessage', 'email-field-message');
+			expect(input).toHaveAttribute('aria-invalid', 'true');
+		});
+
+		test('does not set aria-errormessage when no error', () => {
+			render(
+				<Field id="email-field" helperText="Enter your email">
+					<Field.Label>Email</Field.Label>
+					<Field.Control>
+						<Input />
+					</Field.Control>
+					<Field.Message />
+				</Field>
+			);
+
+			const input = screen.getByLabelText('Email');
+			expect(input).not.toHaveAttribute('aria-errormessage');
+			expect(input).not.toHaveAttribute('aria-invalid');
 		});
 	});
 

@@ -17,16 +17,13 @@ export const FieldMessage = React.memo(
 			return null;
 		}
 
+		const isError = state === 'error';
+		const role = isError ? 'alert' : 'status';
+		const ariaLive = isError ? undefined : 'polite';
+
 		return (
 			<div ref={ref} className={className} {...props}>
-				<Text
-					id={messageId}
-					variant="helper-text"
-					size={size}
-					colorScheme={state}
-					role={state === 'error' ? 'alert' : undefined}
-					aria-live={state === 'error' ? 'polite' : undefined}
-				>
+				<Text id={messageId} variant="helper-text" size={size} colorScheme={state} role={role} aria-live={ariaLive}>
 					{displayMessage}
 				</Text>
 			</div>

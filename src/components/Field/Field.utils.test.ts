@@ -96,12 +96,23 @@ describe('Field Utils', () => {
 			expect(props['aria-describedby']).toBeUndefined();
 		});
 
+		test('returns aria-errormessage when provided for error state', () => {
+			const props = fieldUtils.getFieldAriaProps('error', false, undefined, 'error-message-id');
+			expect(props['aria-errormessage']).toBe('error-message-id');
+		});
+
+		test('returns aria-errormessage undefined when not provided', () => {
+			const props = fieldUtils.getFieldAriaProps('error', false, undefined);
+			expect(props['aria-errormessage']).toBeUndefined();
+		});
+
 		test('returns all props correctly when all conditions met', () => {
-			const props = fieldUtils.getFieldAriaProps('error', true, 'field-123-message');
+			const props = fieldUtils.getFieldAriaProps('error', true, 'field-123-message', 'field-123-message');
 			expect(props).toEqual({
 				'aria-invalid': true,
 				'aria-required': true,
 				'aria-describedby': 'field-123-message',
+				'aria-errormessage': 'field-123-message',
 			});
 		});
 
@@ -111,6 +122,7 @@ describe('Field Utils', () => {
 				'aria-invalid': undefined,
 				'aria-required': undefined,
 				'aria-describedby': 'success-message',
+				'aria-errormessage': undefined,
 			});
 		});
 
@@ -120,6 +132,7 @@ describe('Field Utils', () => {
 				'aria-invalid': undefined,
 				'aria-required': true,
 				'aria-describedby': 'warning-message',
+				'aria-errormessage': undefined,
 			});
 		});
 	});

@@ -11,16 +11,19 @@ const getDisplayMessage = (error?: string, helperText?: string, children?: React
 const getFieldAriaProps = (
 	state: FieldState,
 	required: boolean,
-	ariaDescribedBy?: string
+	ariaDescribedBy?: string,
+	ariaErrorMessage?: string
 ): {
 	'aria-invalid'?: boolean;
 	'aria-describedby'?: string;
 	'aria-required'?: boolean;
+	'aria-errormessage'?: string;
 } => {
 	return {
 		'aria-invalid': state === 'error' || undefined,
 		'aria-describedby': ariaDescribedBy,
 		'aria-required': required || undefined,
+		'aria-errormessage': ariaErrorMessage,
 	};
 };
 
