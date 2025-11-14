@@ -83,3 +83,4 @@ describe('useEventListener', () => {
 		addEventListenerSpy.mockRestore();
 	});
 });
+
