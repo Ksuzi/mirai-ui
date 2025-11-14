@@ -10,7 +10,12 @@ export const checkboxVariants = cva(
 		'rounded',
 		'transition-all',
 		'duration-200',
+		'motion-reduce:transition-none',
 		'focus:outline-none',
+		'focus-visible:outline-none',
+		'focus-visible:ring-2',
+		'focus-visible:ring-ring',
+		'focus-visible:ring-offset-2',
 		'cursor-pointer',
 		'disabled:cursor-not-allowed',
 		'disabled:opacity-50',
@@ -42,3 +47,14 @@ export const checkboxVariants = cva(
 );
 
 export type CheckboxVariantProps = VariantProps<typeof checkboxVariants>;
+
+/**
+ * Wrapper size classes for accessibility - ensures minimum 24x24px touch target (WCAG 2.2 - 2.5.8)
+ * while keeping visual size small
+ */
+export const checkboxWrapperSizeClasses: Record<'sm' | 'md' | 'lg' | 'xl', string> = {
+	sm: 'min-w-6 min-h-6 p-1',
+	md: 'min-w-6 min-h-6 p-0.5',
+	lg: 'min-w-6 min-h-6',
+	xl: 'min-w-7 min-h-7',
+} as const;

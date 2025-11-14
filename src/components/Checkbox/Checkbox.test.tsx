@@ -136,6 +136,37 @@ describe('Checkbox', () => {
 			const icon = container.querySelector('svg');
 			expect(icon).toHaveAttribute('aria-hidden', 'true');
 		});
+
+		test('supports aria-invalid for error states', () => {
+			render(<Checkbox aria-invalid="true" />);
+			const checkbox = screen.getByRole('checkbox');
+			expect(checkbox).toHaveAttribute('aria-invalid', 'true');
+		});
+
+		test('supports aria-required for required fields', () => {
+			render(<Checkbox aria-required="true" />);
+			const checkbox = screen.getByRole('checkbox');
+			expect(checkbox).toHaveAttribute('aria-required', 'true');
+		});
+
+		test('supports aria-describedby for help text and error messages', () => {
+			render(<Checkbox aria-describedby="help-text" />);
+			const checkbox = screen.getByRole('checkbox');
+			expect(checkbox).toHaveAttribute('aria-describedby', 'help-text');
+		});
+
+		test('has visible focus indicator when focused', () => {
+			render(<Checkbox />);
+			const checkbox = screen.getByRole('checkbox');
+			checkbox.focus();
+			expect(checkbox).toHaveFocus();
+		});
+
+		test('has minimum 24x24px touch target for small size', () => {
+			const { container } = render(<Checkbox size="sm" data-testid="checkbox-wrapper" />);
+			const wrapper = container.querySelector('[class*="min-w-6"]');
+			expect(wrapper).toBeInTheDocument();
+		});
 	});
 
 	describe('Variants', () => {

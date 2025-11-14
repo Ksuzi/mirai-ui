@@ -2,6 +2,7 @@ import React from 'react';
 
 import { mergeClassNames } from '@mirai-ui/utils';
 
+import { checkboxUtils } from './Checkbox.utils';
 import { checkboxVariants } from './Checkbox.variants';
 import { CheckboxIcon } from './CheckboxIcon';
 
@@ -23,8 +24,10 @@ export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
 			[isControlled, onChange]
 		);
 
+		const wrapperSizeClasses = checkboxUtils.getCheckboxWrapperClasses(size);
+
 		return (
-			<div className="relative inline-flex">
+			<div className={`relative inline-flex items-center justify-center ${wrapperSizeClasses}`}>
 				<input
 					ref={ref}
 					type="checkbox"
