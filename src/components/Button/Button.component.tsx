@@ -27,32 +27,35 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 		},
 		ref
 	) => {
+		const { onClick, type, ...restProps } = props;
 		const effectiveIconSize = iconSize ?? size;
 		const iconSizeClass = iconSizes[effectiveIconSize as IconSize];
 
-		const handleKeyDown = (event: React.KeyboardEvent<HTMLButtonElement>) => {
-			if (event.key === 'Enter' || event.key === ' ') {
-				event.preventDefault();
-				if (!disabled && !loading && props.onClick) {
-					// Simulate a mouse event for keyboard activation
-					const syntheticEvent = {
-						...event,
-						button: 0,
-						buttons: 1,
-						clientX: 0,
-						clientY: 0,
-						movementX: 0,
-						movementY: 0,
-						screenX: 0,
-						screenY: 0,
-						pageX: 0,
-						pageY: 0,
-						relatedTarget: null,
-					} as unknown as React.MouseEvent<HTMLButtonElement>;
-					props.onClick(syntheticEvent);
+		const handleKeyDown = React.useCallback(
+			(event: React.KeyboardEvent<HTMLButtonElement>) => {
+				if (event.key === 'Enter' || event.key === ' ') {
+					event.preventDefault();
+					if (!disabled && !loading && onClick) {
+						const syntheticEvent = {
+							...event,
+							button: 0,
+							buttons: 1,
+							clientX: 0,
+							clientY: 0,
+							movementX: 0,
+							movementY: 0,
+							screenX: 0,
+							screenY: 0,
+							pageX: 0,
+							pageY: 0,
+							relatedTarget: null,
+						} as unknown as React.MouseEvent<HTMLButtonElement>;
+						onClick(syntheticEvent);
+					}
 				}
-			}
-		};
+			},
+			[disabled, loading, onClick]
+		);
 
 		return (
 			<button
@@ -67,12 +70,13 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 					}),
 					className
 				)}
-				type={props.type ?? 'button'}
+				type={type ?? 'button'}
 				disabled={Boolean(disabled ?? loading)}
 				aria-disabled={Boolean(disabled ?? loading)}
 				aria-busy={Boolean(loading)}
+				onClick={onClick}
 				onKeyDown={handleKeyDown}
-				{...props}
+				{...restProps}
 			>
 				{loading && <Spinner size={effectiveIconSize as IconSize} />}
 
