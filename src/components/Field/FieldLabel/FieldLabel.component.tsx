@@ -8,8 +8,8 @@ import { fieldUtils } from '../Field.utils';
 
 import type { FieldLabelProps } from './FieldLabel.types';
 
-export const FieldLabel = React.forwardRef<HTMLLabelElement, FieldLabelProps>(
-	({ className, children, ...props }, ref) => {
+export const FieldLabel = React.memo(
+	React.forwardRef<HTMLLabelElement, FieldLabelProps>(({ className, children, ...props }, ref) => {
 		const { id, size, required } = useFieldContext();
 
 		return (
@@ -25,7 +25,7 @@ export const FieldLabel = React.forwardRef<HTMLLabelElement, FieldLabelProps>(
 				{children}
 			</Text>
 		);
-	}
+	})
 );
 
 FieldLabel.displayName = 'FieldLabel';

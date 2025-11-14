@@ -6,8 +6,8 @@ import { fieldUtils } from '../Field.utils';
 
 import type { FieldMessageProps } from './FieldMessage.types';
 
-export const FieldMessage = React.forwardRef<HTMLDivElement, FieldMessageProps>(
-	({ className, children, ...props }, ref) => {
+export const FieldMessage = React.memo(
+	React.forwardRef<HTMLDivElement, FieldMessageProps>(({ className, children, ...props }, ref) => {
 		const { id, size, state, error, helperText } = useFieldContext();
 
 		const displayMessage = fieldUtils.getDisplayMessage(error, helperText, children);
@@ -31,7 +31,7 @@ export const FieldMessage = React.forwardRef<HTMLDivElement, FieldMessageProps>(
 				</Text>
 			</div>
 		);
-	}
+	})
 );
 
 FieldMessage.displayName = 'FieldMessage';

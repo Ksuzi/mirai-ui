@@ -5,8 +5,8 @@ import { fieldUtils } from '../Field.utils';
 
 import type { FieldControlProps } from './FieldControl.types';
 
-export const FieldControl = React.forwardRef<HTMLDivElement, FieldControlProps>(
-	({ className, children, ...props }, ref) => {
+export const FieldControl = React.memo(
+	React.forwardRef<HTMLDivElement, FieldControlProps>(({ className, children, ...props }, ref) => {
 		const { id, size, state, required, disabled, error, helperText } = useFieldContext();
 
 		const displayMessage = fieldUtils.getDisplayMessage(error, helperText);
@@ -32,7 +32,7 @@ export const FieldControl = React.forwardRef<HTMLDivElement, FieldControlProps>(
 				{control}
 			</div>
 		);
-	}
+	})
 );
 
 FieldControl.displayName = 'FieldControl';
