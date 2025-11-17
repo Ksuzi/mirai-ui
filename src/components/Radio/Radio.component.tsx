@@ -17,6 +17,7 @@ const RadioBase = React.memo(
 			const [internalChecked, setInternalChecked] = React.useState(defaultChecked ?? false);
 
 			const isInGroup = context !== undefined;
+			const contextOnChange = context?.onChange;
 
 			const effectiveSize = size ?? context?.size ?? 'md';
 			const effectiveColorScheme = colorScheme ?? context?.colorScheme ?? 'primary';
@@ -28,7 +29,7 @@ const RadioBase = React.memo(
 			const handleChange = React.useCallback(
 				(e: React.ChangeEvent<HTMLInputElement>) => {
 					if (isInGroup) {
-						context.onChange?.(value);
+						contextOnChange?.(value);
 					} else {
 						if (checked === undefined) {
 							setInternalChecked(e.target.checked);
