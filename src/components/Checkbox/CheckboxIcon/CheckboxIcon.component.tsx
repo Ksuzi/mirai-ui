@@ -1,16 +1,19 @@
+import React from 'react';
+
 import { sizeMap } from './CheckboxIcon.variants';
 
 import type { CheckboxIconProps } from './CheckboxIcon.types';
 
-export const CheckboxIcon: React.FC<CheckboxIconProps> = ({ size, checked }) => {
+export const CheckboxIcon = React.memo<CheckboxIconProps>(({ size = 'md', checked }) => {
 	if (!checked) return null;
 
 	return (
 		<svg
-			className={`${sizeMap[size]} text-white absolute inset-0 m-auto pointer-events-none`}
+			className={`${sizeMap[size ?? 'md']} text-white absolute inset-0 m-auto pointer-events-none`}
 			fill="currentColor"
 			viewBox="0 0 20 20"
 			xmlns="http://www.w3.org/2000/svg"
+			aria-hidden="true"
 		>
 			<path
 				fillRule="evenodd"
@@ -19,4 +22,6 @@ export const CheckboxIcon: React.FC<CheckboxIconProps> = ({ size, checked }) => 
 			/>
 		</svg>
 	);
-};
+});
+
+CheckboxIcon.displayName = 'CheckboxIcon';

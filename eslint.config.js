@@ -1,3 +1,4 @@
+import storybook from 'eslint-plugin-storybook';
 import js from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import reactPlugin from 'eslint-plugin-react';
@@ -18,12 +19,9 @@ export default [
 			'**/*.config.js',
 			'**/*.config.ts',
 			'**/*.md',
-			'**/*.mdx',
 		],
 	},
-
 	js.configs.recommended,
-
 	...tseslint.configs.recommendedTypeChecked.map((config) => ({
 		...config,
 		files: ['**/*.ts', '**/*.tsx'],
@@ -32,7 +30,6 @@ export default [
 		...config,
 		files: ['**/*.ts', '**/*.tsx'],
 	})),
-
 	{
 		files: ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx'],
 		languageOptions: {
@@ -169,15 +166,7 @@ export default [
 			'import/order': [
 				'error',
 				{
-					groups: [
-						'builtin',
-						'external',
-						'internal',
-						'parent',
-						'sibling',
-						'index',
-						'type',
-					],
+					groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index', 'type'],
 					pathGroups: [
 						{
 							pattern: 'react',
@@ -222,12 +211,10 @@ export default [
 			'no-lonely-if': 'error',
 		},
 	},
-
 	{
 		files: ['**/*.js', '**/*.mjs', '**/*.cjs'],
 		...tseslint.configs.disableTypeChecked,
 	},
-
 	prettierConfig,
+	...storybook.configs['flat/recommended'],
 ];
-

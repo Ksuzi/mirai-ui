@@ -1,0 +1,209 @@
+## Storybook Guidelines
+
+Standards for writing stories for Mirai UI components. Storybook serves as the primary documentation for the library.
+
+### Philosophy
+
+- **Simple but Clear**: Keep stories easy to understand without overwhelming detail
+- **Show, Don't Just Tell**: Use visual examples over lengthy descriptions
+- **Real-World Focus**: Demonstrate practical use cases
+- **Consistent Structure**: Follow the same pattern across all components
+
+### File Location & Naming
+
+- Collocate stories with components: `ComponentName/ComponentName.stories.tsx`
+- Title: `Components/ComponentName` (or nested like `Components/Form/Input`)
+- Use `tags: ['autodocs']` for auto-generated docs pages
+
+### Base Template
+
+```ts
+import type { Meta, StoryObj } from '@storybook/react-vite';
+import { Button } from './Button.component';
+
+const meta: Meta<typeof Button> = {
+	title: 'Components/Button',
+	component: Button,
+	tags: ['autodocs'],
+	args: {
+		children: 'Button',
+		variant: 'solid',
+		colorScheme: 'primary',
+		size: 'md',
+	},
+	argTypes: {
+		onClick: { action: 'click' },
+	},
+};
+
+export default meta;
+type Story = StoryObj<typeof Button>;
+
+export const Default: Story = {};
+```
+
+### Variants & States
+
+Document important combinations explicitly. Prefer small matrices with meaningful coverage over exhaustive grids.
+
+```tsx
+export const Variants: Story = {
+	render: () => (
+		<div className="flex gap-3 items-start flex-wrap">
+			<Button variant="solid">Solid</Button>
+			<Button variant="outline">Outline</Button>
+			<Button variant="ghost">Ghost</Button>
+			<Button variant="link">Link</Button>
+		</div>
+	),
+};
+
+export const ColorSchemes: Story = {
+	render: () => (
+		<div className="flex gap-3 items-start flex-wrap">
+			<Button colorScheme="primary">Primary</Button>
+			<Button colorScheme="secondary">Secondary</Button>
+			<Button colorScheme="success">Success</Button>
+			<Button colorScheme="warning">Warning</Button>
+			<Button colorScheme="error">Error</Button>
+			<Button colorScheme="info">Info</Button>
+			<Button colorScheme="muted">Muted</Button>
+		</div>
+	),
+};
+
+export const Sizes: Story = {
+	render: () => (
+		<div className="flex items-start gap-3">
+			<Button size="sm">sm</Button>
+			<Button size="md">md</Button>
+			<Button size="lg">lg</Button>
+			<Button size="xl">xl</Button>
+		</div>
+	),
+};
+```
+
+### Accessibility Stories
+
+Include at least one story that demonstrates keyboard focus and disabled states.
+
+```tsx
+export const Accessibility: Story = {
+	render: () => (
+		<div className="flex gap-3">
+			<Button>Focusable</Button>
+			<Button disabled>Disabled</Button>
+		</div>
+	),
+};
+```
+
+### Form Components
+
+Show label, helper, and error states clearly.
+
+```tsx
+import { Input } from '../Input.component';
+
+export const InputStates: StoryObj<typeof Input> = {
+	render: () => (
+		<div className="flex flex-col gap-4 w-[320px]">
+			<Input label="Email" placeholder="you@example.com" />
+			<Input label="Email" placeholder="you@example.com" error="Required" />
+			<Input label="Email" placeholder="you@example.com" helperText="We will not share it." />
+			<Input label="Email" placeholder="you@example.com" disabled />
+		</div>
+	),
+};
+```
+
+### Story Types
+
+Each component should include these core stories:
+
+1. **Default** - Basic usage with default props
+2. **Variants/Sizes/ColorSchemes** - Visual options side by side
+3. **States** - Different states (disabled, error, loading, etc.)
+4. **Real-World Examples** - Practical use cases showing component combinations
+
+Optional stories based on component complexity:
+
+- **Interactive** - Controlled examples with state (for complex components)
+- **Composition** - How component works with others
+- **Accessibility** - Focus states, keyboard navigation (when notable)
+
+### Adding Descriptions
+
+Add brief descriptions to help users understand when to use each story:
+
+```tsx
+export const MyStory: Story = {
+	render: () => <Component />,
+	parameters: {
+		docs: {
+			description: {
+				story: 'Brief explanation of what this demonstrates and when to use it.',
+			},
+		},
+	},
+};
+```
+
+Keep descriptions concise - one or two sentences maximum.
+
+### Interactive Stories with Hooks
+
+For stories that need state or hooks (controlled components, forms), use **named function expressions** instead of arrow functions or separate components. This ensures readable code in Storybook's "Show Code" feature:
+
+```tsx
+// ✅ GOOD: Code is inline and visible in "Show Code"
+export const Controlled: Story = {
+	render: function ControlledExample() {
+		const [value, setValue] = React.useState('option2');
+
+		return (
+			<RadioGroup name="example" value={value} onChange={setValue}>
+				<Radio value="option1">Option 1</Radio>
+				<Radio value="option2">Option 2</Radio>
+			</RadioGroup>
+		);
+	},
+};
+
+// ❌ BAD: Separate component hides implementation
+const ControlledExample = () => {
+	const [value, setValue] = React.useState('option2');
+	return (
+		<RadioGroup name="example" value={value} onChange={setValue}>
+			...
+		</RadioGroup>
+	);
+};
+
+export const Controlled: Story = {
+	render: () => <ControlledExample />, // Users only see this line in "Show Code"
+};
+```
+
+**Why named function expressions?**
+
+- Shows complete implementation in Storybook's "Show Code" panel
+- Allows React hooks (named function = valid component)
+- Avoids ESLint `react-hooks/rules-of-hooks` errors
+- Keeps code collocated without separate helper components
+
+### Best Practices
+
+- **Prefer `args`** for simple prop variations; use custom `render` for complex layouts
+- **Use named function expressions** for stories with hooks/state (see above)
+- **Show semantic combinations** (`variant` × `colorScheme` × `size`) that users actually need
+- **Keep layout helpers minimal** - use basic Tailwind classes (`flex`, `gap`, `space-y-*`)
+- **Use meaningful content** - avoid "lorem ipsum" when real examples are clearer
+- **Group related examples** - use sections with headings in render functions
+- **Avoid testing logic** in stories; use tests for behavior (see `docs/testing-guidelines.md`)
+
+### Cross-References
+
+- See `docs/semantic-tokens.md` for token usage inside CVA.
+- See `docs/component-creation.md` for recommended component structure.

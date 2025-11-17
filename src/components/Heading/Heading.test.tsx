@@ -1,0 +1,251 @@
+import { describe, expect, test, vi } from 'vitest';
+
+import { render, screen } from '@mirai-ui/test';
+
+import { Heading } from './Heading.component';
+
+describe('Heading', () => {
+	describe('Rendering', () => {
+		test('renders heading content', () => {
+			render(<Heading>Hello World</Heading>);
+			expect(screen.getByText('Hello World')).toBeInTheDocument();
+		});
+
+		test('renders as h2 by default', () => {
+			render(<Heading>Default Heading</Heading>);
+			const heading = screen.getByRole('heading', { level: 2 });
+			expect(heading).toHaveTextContent('Default Heading');
+		});
+
+		test('renders as h1 when as="h1"', () => {
+			render(<Heading as="h1">H1 Heading</Heading>);
+			const heading = screen.getByRole('heading', { level: 1 });
+			expect(heading).toHaveTextContent('H1 Heading');
+		});
+
+		test('renders as h2 when as="h2"', () => {
+			render(<Heading as="h2">H2 Heading</Heading>);
+			const heading = screen.getByRole('heading', { level: 2 });
+			expect(heading).toHaveTextContent('H2 Heading');
+		});
+
+		test('renders as h3 when as="h3"', () => {
+			render(<Heading as="h3">H3 Heading</Heading>);
+			const heading = screen.getByRole('heading', { level: 3 });
+			expect(heading).toHaveTextContent('H3 Heading');
+		});
+
+		test('renders as h4 when as="h4"', () => {
+			render(<Heading as="h4">H4 Heading</Heading>);
+			const heading = screen.getByRole('heading', { level: 4 });
+			expect(heading).toHaveTextContent('H4 Heading');
+		});
+
+		test('renders as h5 when as="h5"', () => {
+			render(<Heading as="h5">H5 Heading</Heading>);
+			const heading = screen.getByRole('heading', { level: 5 });
+			expect(heading).toHaveTextContent('H5 Heading');
+		});
+
+		test('renders as h6 when as="h6"', () => {
+			render(<Heading as="h6">H6 Heading</Heading>);
+			const heading = screen.getByRole('heading', { level: 6 });
+			expect(heading).toHaveTextContent('H6 Heading');
+		});
+
+		test('applies custom className', () => {
+			render(<Heading className="custom-class">Heading</Heading>);
+			expect(screen.getByText('Heading')).toHaveClass('custom-class');
+		});
+	});
+
+	describe('Variants', () => {
+		test('renders with different semantic variants', () => {
+			const { rerender } = render(<Heading variant="display">Display</Heading>);
+			expect(screen.getByRole('heading')).toHaveTextContent('Display');
+
+			rerender(<Heading variant="h1">H1</Heading>);
+			expect(screen.getByRole('heading')).toHaveTextContent('H1');
+
+			rerender(<Heading variant="h2">H2</Heading>);
+			expect(screen.getByRole('heading')).toHaveTextContent('H2');
+
+			rerender(<Heading variant="h3">H3</Heading>);
+			expect(screen.getByRole('heading')).toHaveTextContent('H3');
+
+			rerender(<Heading variant="h4">H4</Heading>);
+			expect(screen.getByRole('heading')).toHaveTextContent('H4');
+
+			rerender(<Heading variant="h5">H5</Heading>);
+			expect(screen.getByRole('heading')).toHaveTextContent('H5');
+
+			rerender(<Heading variant="h6">H6</Heading>);
+			expect(screen.getByRole('heading')).toHaveTextContent('H6');
+		});
+
+		test('renders with color schemes', () => {
+			const { rerender } = render(<Heading colorScheme="primary">Primary Heading</Heading>);
+			expect(screen.getByRole('heading')).toHaveTextContent('Primary Heading');
+
+			rerender(<Heading colorScheme="success">Success Heading</Heading>);
+			expect(screen.getByRole('heading')).toHaveTextContent('Success Heading');
+
+			rerender(<Heading colorScheme="error">Error Heading</Heading>);
+			expect(screen.getByRole('heading')).toHaveTextContent('Error Heading');
+		});
+
+		test('variant is independent of semantic heading level', () => {
+			render(
+				<Heading as="h1" variant="h6">
+					H1 element with H6 style
+				</Heading>
+			);
+			const heading = screen.getByRole('heading', { level: 1 });
+			expect(heading).toHaveTextContent('H1 element with H6 style');
+		});
+	});
+
+	describe('Props', () => {
+		test('accepts and applies HTML attributes', () => {
+			render(
+				<Heading data-testid="test-heading" id="my-heading">
+					Heading with props
+				</Heading>
+			);
+			const element = screen.getByTestId('test-heading');
+			expect(element).toHaveAttribute('id', 'my-heading');
+		});
+	});
+
+	describe('Accessibility', () => {
+		test('maintains proper heading hierarchy with different sizes', () => {
+			render(
+				<>
+					<Heading as="h1">Main Title</Heading>
+					<Heading as="h2">Subtitle</Heading>
+					<Heading as="h3">Section</Heading>
+				</>
+			);
+
+			expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Main Title');
+			expect(screen.getByRole('heading', { level: 2 })).toHaveTextContent('Subtitle');
+			expect(screen.getByRole('heading', { level: 3 })).toHaveTextContent('Section');
+		});
+
+		test('warns when heading is empty', () => {
+			const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {
+				// Intentionally empty to suppress console output in tests
+			});
+
+			render(<Heading> </Heading>);
+
+			expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('Headings should not be empty'));
+
+			consoleSpy.mockRestore();
+		});
+
+		test('warns when semantic level does not match visual variant', () => {
+			const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {
+				// Intentionally empty to suppress console output in tests
+			});
+
+			render(
+				<Heading as="h1" variant="h6">
+					Mismatched Heading
+				</Heading>
+			);
+
+			expect(consoleSpy).toHaveBeenCalledWith(
+				expect.stringContaining('Semantic level (as="h1") doesn\'t match visual variant')
+			);
+
+			consoleSpy.mockRestore();
+		});
+
+		test('does not warn when semantic level matches visual variant', () => {
+			const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {
+				// Intentionally empty to suppress console output in tests
+			});
+
+			render(
+				<Heading as="h1" variant="h1">
+					Matching Heading
+				</Heading>
+			);
+
+			expect(consoleSpy).not.toHaveBeenCalledWith(
+				expect.stringContaining("Semantic level doesn't match visual variant")
+			);
+
+			consoleSpy.mockRestore();
+		});
+
+		test('does not warn for display variant (no semantic level)', () => {
+			const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {
+				// Intentionally empty to suppress console output in tests
+			});
+
+			render(
+				<Heading as="h1" variant="display">
+					Display Heading
+				</Heading>
+			);
+
+			expect(consoleSpy).not.toHaveBeenCalledWith(
+				expect.stringContaining("Semantic level doesn't match visual variant")
+			);
+
+			consoleSpy.mockRestore();
+		});
+
+		test('renders with proper semantic HTML element', () => {
+			const { container } = render(<Heading as="h3">Semantic Heading</Heading>);
+			const heading = container.querySelector('h3');
+			expect(heading).toBeInTheDocument();
+			expect(heading).toHaveTextContent('Semantic Heading');
+		});
+
+		test('supports aria attributes for enhanced accessibility', () => {
+			render(
+				<Heading as="h2" id="section-heading" aria-describedby="section-description">
+					Section Title
+				</Heading>
+			);
+
+			const heading = screen.getByRole('heading', { level: 2 });
+			expect(heading).toHaveAttribute('id', 'section-heading');
+			expect(heading).toHaveAttribute('aria-describedby', 'section-description');
+		});
+	});
+
+	describe('Ref Forwarding', () => {
+		test('forwards ref to h2 element by default', () => {
+			const ref = { current: null as HTMLHeadingElement | null };
+			render(<Heading ref={ref}>Heading</Heading>);
+			expect(ref.current).toBeInstanceOf(HTMLHeadingElement);
+			expect(ref.current?.tagName).toBe('H2');
+		});
+
+		test('forwards ref to h1 element when as="h1"', () => {
+			const ref = { current: null as HTMLHeadingElement | null };
+			render(
+				<Heading as="h1" ref={ref}>
+					Heading
+				</Heading>
+			);
+			expect(ref.current).toBeInstanceOf(HTMLHeadingElement);
+			expect(ref.current?.tagName).toBe('H1');
+		});
+
+		test('forwards ref to h3 element when as="h3"', () => {
+			const ref = { current: null as HTMLHeadingElement | null };
+			render(
+				<Heading as="h3" ref={ref}>
+					Heading
+				</Heading>
+			);
+			expect(ref.current).toBeInstanceOf(HTMLHeadingElement);
+			expect(ref.current?.tagName).toBe('H3');
+		});
+	});
+});

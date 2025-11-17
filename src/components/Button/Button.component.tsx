@@ -2,7 +2,9 @@ import React from 'react';
 
 import { mergeClassNames } from '@mirai-ui/utils';
 
-import { buttonVariants, iconSizes, iconSpacing } from './Button.variants';
+import { Spinner } from '../Spinner';
+
+import { buttonVariants, iconSizes } from './Button.variants';
 
 import type { ButtonProps } from './Button.types';
 import type { IconSize } from './Button.variants';
@@ -11,6 +13,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 	(
 		{
 			variant,
+			colorScheme,
 			size = 'md',
 			fullWidth,
 			loading = false,
@@ -20,6 +23,9 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 			children,
 			className,
 			disabled,
+			type,
+			'aria-label': ariaLabel,
+			onClick,
 			...props
 		},
 		ref
@@ -27,32 +33,29 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 		const effectiveIconSize = iconSize ?? size;
 		const iconSizeClass = iconSizes[effectiveIconSize as IconSize];
 
-		const leftIconSpacing = iconSpacing.left[size as IconSize];
-		const rightIconSpacing = iconSpacing.right[size as IconSize];
-
-		const handleKeyDown = (event: React.KeyboardEvent<HTMLButtonElement>) => {
-			if (event.key === 'Enter' || event.key === ' ') {
-				event.preventDefault();
-				if (!disabled && !loading && props.onClick) {
-					// Simulate a mouse event for keyboard activation
-					const syntheticEvent = {
-						...event,
-						button: 0,
-						buttons: 1,
-						clientX: 0,
-						clientY: 0,
-						movementX: 0,
-						movementY: 0,
-						screenX: 0,
-						screenY: 0,
-						pageX: 0,
-						pageY: 0,
-						relatedTarget: null,
-					} as unknown as React.MouseEvent<HTMLButtonElement>;
-					props.onClick(syntheticEvent);
+		React.useEffect(() => {
+			if (process.env.NODE_ENV !== 'production') {
+				const isIconOnly = !children && (leftIcon ?? rightIcon);
+				if (isIconOnly && !ariaLabel && !props['aria-labelledby']) {
+					console.warn(
+						'Button: Icon-only buttons must have an accessible label. Provide an `aria-label` or `aria-labelledby` prop.'
+					);
 				}
 			}
-		};
+			// eslint-disable-next-line react-hooks/exhaustive-deps
+		}, []);
+
+		const handleKeyDown = React.useCallback(
+			(event: React.KeyboardEvent<HTMLButtonElement>) => {
+				if (event.key === ' ') {
+					event.preventDefault();
+					if (!disabled && !loading && onClick) {
+						onClick(event as unknown as React.MouseEvent<HTMLButtonElement>);
+					}
+				}
+			},
+			[disabled, loading, onClick]
+		);
 
 		return (
 			<button
@@ -60,44 +63,36 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 				className={mergeClassNames(
 					buttonVariants({
 						variant,
+						colorScheme,
 						size,
 						fullWidth,
 						loading,
 					}),
 					className
 				)}
+				type={type ?? 'button'}
 				disabled={Boolean(disabled ?? loading)}
 				aria-disabled={Boolean(disabled ?? loading)}
 				aria-busy={Boolean(loading)}
+				aria-label={ariaLabel}
+				onClick={onClick}
 				onKeyDown={handleKeyDown}
 				{...props}
 			>
-				{loading && (
-					<svg
-						className={mergeClassNames('animate-spin', leftIconSpacing, iconSizeClass)}
-						fill="none"
-						viewBox="0 0 24 24"
-						aria-hidden="true"
-						role="img"
-						aria-label="Loading"
-					>
-						<circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-						<path
-							className="opacity-75"
-							fill="currentColor"
-							d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-						/>
-					</svg>
-				)}
+				{loading && <Spinner size={effectiveIconSize as IconSize} />}
 
 				{leftIcon && !loading && (
-					<span className={mergeClassNames('flex items-center', leftIconSpacing, iconSizeClass)}>{leftIcon}</span>
+					<span className={mergeClassNames('flex items-center', iconSizeClass)} aria-hidden="true">
+						{leftIcon}
+					</span>
 				)}
 
 				{children}
 
 				{rightIcon && (
-					<span className={mergeClassNames('flex items-center', rightIconSpacing, iconSizeClass)}>{rightIcon}</span>
+					<span className={mergeClassNames('flex items-center', iconSizeClass)} aria-hidden="true">
+						{rightIcon}
+					</span>
 				)}
 			</button>
 		);

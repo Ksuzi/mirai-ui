@@ -2,7 +2,7 @@ import React from 'react';
 
 import { mergeClassNames } from '@mirai-ui/utils';
 
-import { inputVariants, labelVariants, helperTextVariants } from './Input.variants';
+import { inputVariants } from './Input.variants';
 
 import type { InputProps } from './Input.types';
 
@@ -10,97 +10,78 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
 	(
 		{
 			variant = 'default',
+			state = 'default',
 			size = 'md',
 			fullWidth = true,
-			label,
-			helperText,
-			error,
 			leftIcon,
 			rightIcon,
 			className,
 			required,
+			disabled,
 			id,
+			'aria-invalid': ariaInvalidProp,
+			'aria-required': ariaRequiredProp,
+			'aria-describedby': ariaDescribedBy,
+			'aria-errormessage': ariaErrorMessage,
 			...props
 		},
 		ref
 	) => {
-		const inputId = id ?? `input-${Math.random().toString(36).substring(2, 11)}`;
-		const helperTextId = `${inputId}-helper`;
-		const errorId = `${inputId}-error`;
+		const generatedId = React.useId();
+		const inputId = id ?? `input-${generatedId}`;
 
-		const effectiveVariant = error ? 'error' : variant;
-		const helperVariant = error ? 'error' : 'default';
-
-		const displayHelperText = error ?? helperText;
-
-		let ariaDescribedBy: string | undefined;
-		if (displayHelperText) {
-			ariaDescribedBy = error ? errorId : helperTextId;
-		}
+		const ariaInvalid = ariaInvalidProp ?? (state === 'error' ? true : undefined);
+		const ariaRequired = ariaRequiredProp ?? (required ? true : undefined);
 
 		return (
-			<div className="w-full">
-				{label && (
-					<label
-						htmlFor={inputId}
-						className={mergeClassNames(
-							labelVariants({
-								size,
-								required,
-							})
-						)}
+			<div className="relative">
+				{leftIcon && (
+					<div
+						className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none"
+						aria-hidden="true"
+						role="presentation"
+						data-slot="input-left-icon"
 					>
-						{label}
-					</label>
+						<span className="text-muted-400" aria-hidden="true">
+							{leftIcon}
+						</span>
+					</div>
 				)}
 
-				<div className="relative">
-					{leftIcon && (
-						<div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-							<span className="text-gray-400">{leftIcon}</span>
-						</div>
+				<input
+					ref={ref}
+					id={inputId}
+					className={mergeClassNames(
+						inputVariants({
+							variant,
+							state,
+							size,
+							fullWidth,
+						}),
+						Boolean(leftIcon) && 'pl-10',
+						Boolean(rightIcon) && 'pr-10',
+						className
 					)}
+					required={required}
+					disabled={disabled}
+					aria-invalid={ariaInvalid}
+					aria-required={ariaRequired}
+					aria-describedby={ariaDescribedBy}
+					aria-errormessage={ariaErrorMessage}
+					{...props}
+				/>
 
-					<input
-						ref={ref}
-						id={inputId}
-						className={mergeClassNames(
-							inputVariants({
-								variant: effectiveVariant,
-								size,
-								fullWidth,
-							}),
-							leftIcon && 'pl-10',
-							rightIcon && 'pr-10',
-							className
-						)}
-						required={required}
-						aria-invalid={Boolean(error)}
-						aria-describedby={ariaDescribedBy}
-						{...props}
-					/>
-
-					{rightIcon && (
-						<div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-							<span className="text-gray-400">{rightIcon}</span>
-						</div>
-					)}
-				</div>
-
-				{displayHelperText && (
-					<p
-						id={error ? errorId : helperTextId}
-						className={mergeClassNames(
-							helperTextVariants({
-								size,
-								variant: helperVariant,
-							})
-						)}
-						role={error ? 'alert' : undefined}
-						aria-live={error ? 'polite' : undefined}
+				{rightIcon && (
+					<div
+						className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none"
+						aria-hidden="true"
+						role="presentation"
+						data-slot="input-right-icon"
 					>
-						{displayHelperText}
-					</p>
+						<span className="text-muted-400" aria-hidden="true">
+							{rightIcon}
+						</span>
+					</div>
 				)}
 			</div>
 		);
