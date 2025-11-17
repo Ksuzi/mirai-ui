@@ -18,12 +18,18 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
 			className,
 			required,
 			disabled,
+			id,
 			'aria-invalid': ariaInvalidProp,
 			'aria-required': ariaRequiredProp,
+			'aria-describedby': ariaDescribedBy,
+			'aria-errormessage': ariaErrorMessage,
 			...props
 		},
 		ref
 	) => {
+		const generatedId = React.useId();
+		const inputId = id ?? `input-${generatedId}`;
+
 		const ariaInvalid = ariaInvalidProp ?? (state === 'error' ? true : undefined);
 		const ariaRequired = ariaRequiredProp ?? (required ? true : undefined);
 
@@ -44,6 +50,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
 
 				<input
 					ref={ref}
+					id={inputId}
 					className={mergeClassNames(
 						inputVariants({
 							variant,
@@ -59,6 +66,8 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
 					disabled={disabled}
 					aria-invalid={ariaInvalid}
 					aria-required={ariaRequired}
+					aria-describedby={ariaDescribedBy}
+					aria-errormessage={ariaErrorMessage}
 					{...props}
 				/>
 

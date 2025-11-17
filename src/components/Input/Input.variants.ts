@@ -10,9 +10,6 @@ export const inputVariants = cva(
 		'duration-200',
 		'focus:outline-none',
 		'focus-visible:outline-none',
-		'focus-visible:ring-2',
-		'focus-visible:ring-ring',
-		'focus-visible:ring-offset-2',
 		'disabled:opacity-50',
 		'disabled:cursor-not-allowed',
 		'disabled:bg-disabled',
@@ -43,7 +40,6 @@ export const inputVariants = cva(
 				xl: ['px-8', 'py-4', 'text-xl'],
 			},
 
-			// UTILITIES
 			fullWidth: {
 				true: 'w-full',
 				false: 'w-auto',
@@ -51,7 +47,6 @@ export const inputVariants = cva(
 		},
 
 		compoundVariants: [
-			// ========== DEFAULT VARIANT + STATES ==========
 			{
 				variant: 'default',
 				state: 'default',

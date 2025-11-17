@@ -79,9 +79,9 @@ describe('Input', () => {
 		});
 
 		test('applies fullWidth by default', () => {
-			const { container } = render(<Input />);
-			const wrapper = container.querySelector('.relative');
-			expect(wrapper?.parentElement).toBeInTheDocument();
+			render(<Input />);
+			const input = screen.getByRole('textbox');
+			expect(input).toHaveClass('w-full');
 		});
 	});
 
@@ -159,6 +159,11 @@ describe('Input', () => {
 
 			expect(leftWrapper).toHaveAttribute('aria-hidden', 'true');
 			expect(rightWrapper).toHaveAttribute('aria-hidden', 'true');
+		});
+
+		test('allows custom aria-describedby passthrough', () => {
+			render(<Input aria-describedby="helper-id" />);
+			expect(screen.getByRole('textbox')).toHaveAttribute('aria-describedby', 'helper-id');
 		});
 	});
 
