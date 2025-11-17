@@ -28,8 +28,8 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
 							size,
 							fullWidth,
 						}),
-						leftIcon && 'pl-10',
-						rightIcon && 'pr-10',
+						Boolean(leftIcon) && 'pl-10',
+						Boolean(rightIcon) && 'pr-10',
 						className
 					)}
 					{...props}
