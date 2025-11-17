@@ -37,7 +37,7 @@ export type SelectContextValue = {
 	/**
 	 * Function to toggle dropdown open state
 	 */
-	setIsOpen: (open: boolean) => void;
+	setIsOpen: (open: boolean | ((prev: boolean) => boolean)) => void;
 
 	/**
 	 * Index of the highlighted option (for keyboard navigation)

@@ -4,7 +4,7 @@ import { mergeClassNames } from '@mirai-ui/utils';
 
 import type { SelectIconProps } from './SelectIcon.types';
 
-export const SelectIcon: React.FC<SelectIconProps> = ({ isOpen }) => (
+export const SelectIcon: React.FC<SelectIconProps> = React.memo(({ isOpen }) => (
 	<div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
 		<svg
 			className={mergeClassNames('w-5 h-5 text-muted-400 transition-transform duration-200', isOpen && 'rotate-180')}
@@ -20,6 +20,6 @@ export const SelectIcon: React.FC<SelectIconProps> = ({ isOpen }) => (
 			/>
 		</svg>
 	</div>
-);
+));
 
 SelectIcon.displayName = 'SelectIcon';
