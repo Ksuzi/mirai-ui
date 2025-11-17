@@ -42,6 +42,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 					);
 				}
 			}
+			// eslint-disable-next-line react-hooks/exhaustive-deps
 		}, []);
 
 		const handleKeyDown = React.useCallback(
