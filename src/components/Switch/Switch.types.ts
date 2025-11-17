@@ -1,6 +1,6 @@
 import type { SwitchVariantProps } from './Switch.variants';
 
-export type SwitchProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'> &
+export type SwitchProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size' | 'children'> &
 	SwitchVariantProps & {
 		/**
 		 * Whether the switch is in a loading state

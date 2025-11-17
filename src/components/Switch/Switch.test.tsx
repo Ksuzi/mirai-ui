@@ -10,21 +10,20 @@ describe('Switch', () => {
 	describe('Rendering', () => {
 		test('renders switch', () => {
 			render(<Switch />);
-			const switchElement = screen.getByRole('checkbox');
+			const switchElement = screen.getByRole('switch');
 			expect(switchElement).toBeInTheDocument();
-			expect(switchElement.closest('label')).toHaveAttribute('role', 'switch');
 		});
 
 		test('applies custom className to track', () => {
 			render(<Switch className="custom-class" />);
-			const label = screen.getByRole('checkbox').closest('label');
-			const track = label?.querySelector('span:not(.sr-only)');
+			const switchElement = screen.getByRole('switch');
+			const track = switchElement.nextElementSibling as HTMLElement | null;
 			expect(track).toHaveClass('custom-class');
 		});
 
 		test('renders with default unchecked state', () => {
 			render(<Switch />);
-			expect(screen.getByRole('checkbox')).not.toBeChecked();
+			expect(screen.getByRole('switch')).not.toBeChecked();
 		});
 	});
 
@@ -32,7 +31,7 @@ describe('Switch', () => {
 		test('works as uncontrolled component with defaultChecked', async () => {
 			const user = userEvent.setup();
 			render(<Switch defaultChecked={false} />);
-			const switchElement = screen.getByRole('checkbox');
+			const switchElement = screen.getByRole('switch');
 
 			expect(switchElement).not.toBeChecked();
 
@@ -47,7 +46,7 @@ describe('Switch', () => {
 			const user = userEvent.setup();
 			const handleChange = vi.fn();
 			const { rerender } = render(<Switch checked={false} onChange={handleChange} />);
-			const switchElement = screen.getByRole('checkbox');
+			const switchElement = screen.getByRole('switch');
 
 			expect(switchElement).not.toBeChecked();
 
@@ -67,14 +66,14 @@ describe('Switch', () => {
 
 			// Uncontrolled
 			const { rerender } = render(<Switch onChange={handleChange} />);
-			await user.click(screen.getByRole('checkbox'));
+			await user.click(screen.getByRole('switch'));
 			expect(handleChange).toHaveBeenCalledTimes(1);
 
 			handleChange.mockClear();
 
 			// Controlled
 			rerender(<Switch checked={false} onChange={handleChange} />);
-			await user.click(screen.getByRole('checkbox'));
+			await user.click(screen.getByRole('switch'));
 			expect(handleChange).toHaveBeenCalledTimes(1);
 		});
 	});
@@ -83,7 +82,7 @@ describe('Switch', () => {
 		test('can be toggled on and off', async () => {
 			const user = userEvent.setup();
 			render(<Switch />);
-			const switchElement = screen.getByRole('checkbox');
+			const switchElement = screen.getByRole('switch');
 
 			expect(switchElement).not.toBeChecked();
 
@@ -97,7 +96,7 @@ describe('Switch', () => {
 		test('can be toggled with Space key', async () => {
 			const user = userEvent.setup();
 			render(<Switch />);
-			const switchElement = screen.getByRole('checkbox');
+			const switchElement = screen.getByRole('switch');
 
 			switchElement.focus();
 			expect(switchElement).not.toBeChecked();
@@ -113,14 +112,14 @@ describe('Switch', () => {
 	describe('States', () => {
 		test('can be disabled', () => {
 			render(<Switch disabled />);
-			expect(screen.getByRole('checkbox')).toBeDisabled();
+			expect(screen.getByRole('switch')).toBeDisabled();
 		});
 
 		test('cannot be clicked when disabled', async () => {
 			const user = userEvent.setup();
 			const handleChange = vi.fn();
 			render(<Switch disabled onChange={handleChange} />);
-			const switchElement = screen.getByRole('checkbox');
+			const switchElement = screen.getByRole('switch');
 
 			await user.click(switchElement);
 			expect(handleChange).not.toHaveBeenCalled();
@@ -128,19 +127,19 @@ describe('Switch', () => {
 
 		test('starts checked when defaultChecked is true', () => {
 			render(<Switch defaultChecked />);
-			expect(screen.getByRole('checkbox')).toBeChecked();
+			expect(screen.getByRole('switch')).toBeChecked();
 		});
 
 		test('is disabled when loading', () => {
 			render(<Switch loading />);
-			expect(screen.getByRole('checkbox')).toBeDisabled();
+			expect(screen.getByRole('switch')).toBeDisabled();
 		});
 
 		test('cannot be clicked when loading', async () => {
 			const user = userEvent.setup();
 			const handleChange = vi.fn();
 			render(<Switch loading onChange={handleChange} />);
-			const switchElement = screen.getByRole('checkbox');
+			const switchElement = screen.getByRole('switch');
 
 			await user.click(switchElement);
 			expect(handleChange).not.toHaveBeenCalled();
@@ -148,36 +147,28 @@ describe('Switch', () => {
 	});
 
 	describe('Accessibility', () => {
-		test('has proper role="switch" on label', () => {
-			render(<Switch />);
-			const label = screen.getByRole('checkbox').closest('label');
-			expect(label).toHaveAttribute('role', 'switch');
-		});
-
 		test('sets aria-checked based on checked state', () => {
 			const { rerender } = render(<Switch defaultChecked={false} />);
-			const label = screen.getByRole('checkbox').closest('label');
-
-			expect(label).toHaveAttribute('aria-checked', 'false');
+			expect(screen.getByRole('switch')).toHaveAttribute('aria-checked', 'false');
 
 			rerender(<Switch checked />);
-			expect(label).toHaveAttribute('aria-checked', 'true');
+			expect(screen.getByRole('switch')).toHaveAttribute('aria-checked', 'true');
 		});
 
 		test('sets aria-disabled when disabled', () => {
 			render(<Switch disabled />);
-			const label = screen.getByRole('checkbox').closest('label');
-			expect(label).toHaveAttribute('aria-disabled', 'true');
+			const input = screen.getByRole('switch');
+			expect(input).toHaveAttribute('aria-disabled', 'true');
 		});
 
 		test('sets aria-busy when loading', () => {
 			render(<Switch loading />);
-			expect(screen.getByRole('checkbox')).toHaveAttribute('aria-busy', 'true');
+			expect(screen.getByRole('switch')).toHaveAttribute('aria-busy', 'true');
 		});
 
 		test('supports aria-label for switches without visible labels', () => {
 			render(<Switch aria-label="Toggle notifications" />);
-			const switchElement = screen.getByLabelText('Toggle notifications');
+			const switchElement = screen.getByRole('switch', { name: 'Toggle notifications' });
 			expect(switchElement).toBeInTheDocument();
 		});
 	});
@@ -185,27 +176,27 @@ describe('Switch', () => {
 	describe('Variants', () => {
 		test('renders different sizes', () => {
 			const { rerender } = render(<Switch size="sm" />);
-			expect(screen.getByRole('checkbox')).toBeInTheDocument();
+			expect(screen.getByRole('switch')).toBeInTheDocument();
 
 			rerender(<Switch size="md" />);
-			expect(screen.getByRole('checkbox')).toBeInTheDocument();
+			expect(screen.getByRole('switch')).toBeInTheDocument();
 
 			rerender(<Switch size="lg" />);
-			expect(screen.getByRole('checkbox')).toBeInTheDocument();
+			expect(screen.getByRole('switch')).toBeInTheDocument();
 
 			rerender(<Switch size="xl" />);
-			expect(screen.getByRole('checkbox')).toBeInTheDocument();
+			expect(screen.getByRole('switch')).toBeInTheDocument();
 		});
 
 		test('renders different color schemes', () => {
 			const { rerender } = render(<Switch colorScheme="primary" defaultChecked />);
-			expect(screen.getByRole('checkbox')).toBeInTheDocument();
+			expect(screen.getByRole('switch')).toBeInTheDocument();
 
 			rerender(<Switch colorScheme="secondary" defaultChecked />);
-			expect(screen.getByRole('checkbox')).toBeInTheDocument();
+			expect(screen.getByRole('switch')).toBeInTheDocument();
 
 			rerender(<Switch colorScheme="success" defaultChecked />);
-			expect(screen.getByRole('checkbox')).toBeInTheDocument();
+			expect(screen.getByRole('switch')).toBeInTheDocument();
 		});
 	});
 
@@ -221,7 +212,7 @@ describe('Switch', () => {
 			const user = userEvent.setup();
 			const handleChange = vi.fn();
 			render(<Switch loading onChange={handleChange} />);
-			const switchElement = screen.getByRole('checkbox');
+			const switchElement = screen.getByRole('switch');
 
 			expect(switchElement).toBeDisabled();
 			await user.click(switchElement);

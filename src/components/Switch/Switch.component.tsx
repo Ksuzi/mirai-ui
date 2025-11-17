@@ -21,10 +21,17 @@ export const Switch = React.memo(
 				defaultChecked,
 				disabled,
 				onChange,
+				id,
+				'aria-label': ariaLabel,
+				'aria-labelledby': ariaLabelledBy,
+				'aria-describedby': ariaDescribedBy,
 				...props
 			},
 			ref
 		) => {
+			const generatedId = React.useId();
+			const inputId = id ?? `switch-${generatedId}`;
+
 			const [internalChecked, setInternalChecked] = React.useState(defaultChecked ?? false);
 			const isControlled = checked !== undefined;
 			const isChecked = isControlled ? checked : internalChecked;
@@ -44,19 +51,27 @@ export const Switch = React.memo(
 
 			return (
 				<label
-					className={mergeClassNames('inline-flex items-center', isDisabled ? 'cursor-not-allowed' : 'cursor-pointer')}
-					role="switch"
-					aria-checked={isChecked}
-					aria-disabled={isDisabled}
+					className={mergeClassNames(
+						'inline-flex items-center gap-2',
+						isDisabled ? 'cursor-not-allowed opacity-70' : 'cursor-pointer'
+					)}
+					htmlFor={inputId}
 				>
 					<input
 						ref={ref}
+						id={inputId}
 						type="checkbox"
 						className="sr-only"
+						role="switch"
 						checked={isChecked}
 						disabled={isDisabled}
 						onChange={handleChange}
-						aria-busy={loading}
+						aria-busy={loading || undefined}
+						aria-checked={isChecked}
+						aria-disabled={isDisabled}
+						aria-label={ariaLabel}
+						aria-labelledby={ariaLabel ? undefined : ariaLabelledBy}
+						aria-describedby={ariaDescribedBy}
 						{...props}
 					/>
 					<span
@@ -70,6 +85,7 @@ export const Switch = React.memo(
 							}),
 							className
 						)}
+						aria-hidden="true"
 					>
 						<span className={switchThumbVariants({ size, checked: isChecked })}>
 							{loading && <Spinner size={spinnerSize} />}
