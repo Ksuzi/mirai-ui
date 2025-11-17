@@ -1,0 +1,984 @@
+# Component Creation Guide
+
+Complete guide for creating maintainable, accessible components in Mirai UI.
+
+## Related Documentation
+
+- **Semantic tokens:** `docs/semantic-tokens.md`
+- **Storybook standards:** `docs/storybook-guidelines.md`
+- **Testing guidelines:** `docs/testing-guidelines.md`
+- **Memoization guidelines:** `docs/memoization-guidelines.md`
+- **Refactoring guide:** `docs/refactoring-checklist.md`
+
+---
+
+## Quick Start
+
+### Required Files
+
+Every component MUST include:
+
+```
+ComponentName/
+├── ComponentName.component.tsx   # Main implementation
+├── ComponentName.types.ts        # TypeScript interfaces
+├── ComponentName.variants.ts     # CVA styling
+├── ComponentName.stories.tsx     # Storybook documentation
+├── ComponentName.test.tsx        # Test suite
+└── index.ts                      # Public exports
+```
+
+### Optional Files (Add When Needed)
+
+```
+ComponentName/
+├── ComponentName.hooks.ts        # Custom hooks (when 2+ hooks or > 20 lines)
+├── ComponentName.utils.ts        # Pure functions (when 3+ utils or reused) - INTERNAL ONLY
+└── SubComponent/                 # Internal components (when > 30 lines)
+    ├── SubComponent.component.tsx
+    ├── SubComponent.types.ts
+    ├── SubComponent.variants.ts  (if needed)
+    └── index.ts
+```
+
+**When to add optional files:**
+
+- `.hooks.ts` → 2+ custom hooks OR single hook > 20 lines
+- `.utils.ts` → 3+ utility functions OR repeated logic (**internal only, NOT exported from index.ts**)
+- `SubComponent/` → Internal component > 30 lines OR has own variants
+
+---
+
+## Component Templates
+
+### Interactive Components (Button, Link, Switch)
+
+**Variants Template:**
+
+```typescript
+import { cva, type VariantProps } from 'class-variance-authority';
+
+export const componentVariants = cva(
+	[
+		'inline-flex',
+		'items-center',
+		'justify-center',
+		'rounded-md',
+		'font-medium',
+		'transition-all',
+		'duration-300',
+		'focus:outline-none',
+		'focus-visible:outline-none',
+		'focus-visible:ring-2',
+		'focus-visible:ring-ring',
+		'focus-visible:ring-offset-2',
+	],
+	{
+		variants: {
+			variant: {
+				solid: [],
+				outline: ['border-1'],
+				ghost: [],
+				link: ['underline-offset-4'],
+			},
+			colorScheme: {
+				primary: [],
+				secondary: [],
+				success: [],
+				warning: [],
+				error: [],
+				info: [],
+				muted: [],
+			},
+			size: {
+				sm: ['px-3', 'py-1.5', 'text-sm'],
+				md: ['px-4', 'py-2', 'text-base'],
+				lg: ['px-6', 'py-3', 'text-lg'],
+				xl: ['px-8', 'py-4', 'text-xl'],
+			},
+			fullWidth: {
+				true: 'w-full',
+				false: 'w-auto',
+			},
+			loading: {
+				true: 'cursor-wait opacity-70',
+				false: '',
+			},
+		},
+		compoundVariants: [
+			{
+				variant: 'solid',
+				colorScheme: 'primary',
+				class: 'bg-primary-600 hover:bg-primary-500 text-white',
+			},
+			{
+				variant: 'outline',
+				colorScheme: 'primary',
+				class: 'border-1 border-primary-600 text-primary-600 hover:bg-primary-50',
+			},
+			{
+				variant: 'ghost',
+				colorScheme: 'primary',
+				class: 'text-primary-600 hover:bg-primary-50',
+			},
+			{
+				variant: 'link',
+				colorScheme: 'primary',
+				class: 'text-primary-600 hover:text-primary-500 hover:underline px-0',
+			},
+		],
+		defaultVariants: {
+			variant: 'solid',
+			colorScheme: 'primary',
+			size: 'md',
+			fullWidth: false,
+			loading: false,
+		},
+	}
+);
+
+export type ComponentVariantProps = VariantProps<typeof componentVariants>;
+```
+
+**Component Template:**
+
+```typescript
+import React from 'react';
+import { mergeClassNames } from '@mirai-ui/utils';
+import { componentVariants } from './Component.variants';
+import type { ComponentProps } from './Component.types';
+
+export const Component = React.forwardRef<HTMLButtonElement, ComponentProps>(
+	({ variant, colorScheme, size, fullWidth, loading, className, children, disabled, ...props }, ref) => {
+		return (
+			<button
+				ref={ref}
+				className={mergeClassNames(componentVariants({ variant, colorScheme, size, fullWidth, loading }), className)}
+				aria-busy={loading}
+				disabled={disabled || loading}
+				{...props}
+			>
+				{children}
+			</button>
+		);
+	}
+);
+
+Component.displayName = 'Component';
+```
+
+**Types Template:**
+
+```typescript
+import type { ComponentVariantProps } from './Component.variants';
+
+export interface ComponentProps extends React.ButtonHTMLAttributes<HTMLButtonElement>, ComponentVariantProps {
+	/**
+	 * Whether the component is in loading state
+	 */
+	loading?: boolean;
+
+	/**
+	 * Icon to display on the left side
+	 */
+	leftIcon?: React.ReactNode;
+
+	/**
+	 * Icon to display on the right side
+	 */
+	rightIcon?: React.ReactNode;
+}
+```
+
+### Form Components (Input, Textarea, Select)
+
+**Variants Template:**
+
+```typescript
+export const inputVariants = cva(
+	[
+		'block',
+		'w-full',
+		'rounded-md',
+		'transition-all',
+		'duration-200',
+		'focus:outline-none',
+		'focus-visible:outline-none',
+		'focus-visible:ring-2',
+		'focus-visible:ring-ring',
+		'focus-visible:ring-offset-2',
+		'disabled:cursor-not-allowed',
+		'disabled:opacity-50',
+		'placeholder:text-muted-400',
+	],
+	{
+		variants: {
+			variant: {
+				default: ['border', 'bg-input', 'shadow-xs'],
+				outlined: ['border-1', 'bg-transparent', 'shadow-xs'],
+				filled: ['border', 'border-transparent', 'bg-muted-100', 'shadow-xs'],
+				borderless: ['border-0', 'bg-transparent', 'shadow-none'],
+				underlined: ['border-0', 'border-b-2', 'bg-transparent', 'rounded-none', 'shadow-none', 'px-0'],
+			},
+			state: {
+				default: [],
+				error: [],
+				success: [],
+				warning: [],
+			},
+			size: {
+				sm: ['px-3', 'py-1.5', 'text-sm'],
+				md: ['px-4', 'py-2', 'text-base'],
+				lg: ['px-6', 'py-3', 'text-lg'],
+				xl: ['px-8', 'py-4', 'text-xl'],
+			},
+			fullWidth: {
+				true: 'w-full',
+				false: 'w-auto',
+			},
+		},
+		compoundVariants: [
+			{
+				variant: 'default',
+				state: 'default',
+				class: 'border-input-border text-foreground hover:border-primary-400 focus:border-primary-500',
+			},
+			{ variant: 'default', state: 'error', class: 'border-error-500 text-foreground focus:border-error-600' },
+			{ variant: 'default', state: 'success', class: 'border-success-500 text-foreground focus:border-success-600' },
+			{ variant: 'default', state: 'warning', class: 'border-warning-500 text-foreground focus:border-warning-600' },
+		],
+		defaultVariants: {
+			variant: 'default',
+			state: 'default',
+			size: 'md',
+			fullWidth: true,
+		},
+	}
+);
+```
+
+**Types Template:**
+
+```typescript
+import type { InputVariantProps } from './Input.variants';
+
+export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement>, InputVariantProps {
+	/**
+	 * Label text for the input
+	 */
+	label?: string;
+
+	/**
+	 * Helper text displayed below the input
+	 */
+	helperText?: string;
+
+	/**
+	 * Error message to display
+	 */
+	error?: string;
+
+	/**
+	 * Icon displayed on the left side
+	 */
+	leftIcon?: React.ReactNode;
+
+	/**
+	 * Icon displayed on the right side
+	 */
+	rightIcon?: React.ReactNode;
+}
+```
+
+### Display Components (Card, Badge, Alert)
+
+**Variants Template:**
+
+```typescript
+export const cardVariants = cva(['rounded-md', 'border'], {
+	variants: {
+		variant: {
+			default: ['bg-card', 'border-border'],
+			elevated: ['bg-card', 'shadow-md', 'border-transparent'],
+			outlined: ['bg-transparent', 'border-border'],
+		},
+		padding: {
+			none: 'p-0',
+			sm: 'p-4',
+			md: 'p-6',
+			lg: 'p-8',
+		},
+	},
+	defaultVariants: {
+		variant: 'default',
+		padding: 'md',
+	},
+});
+```
+
+**Types Template:**
+
+```typescript
+import type { CardVariantProps } from './Card.variants';
+
+export interface CardProps extends React.HTMLAttributes<HTMLDivElement>, CardVariantProps {
+	/**
+	 * Content to render inside the card
+	 */
+	children: React.ReactNode;
+}
+```
+
+---
+
+## Code Organization
+
+### Import Order (Enforced by Linter)
+
+```typescript
+// 1. React
+import React from 'react';
+
+// 2. External packages (alphabetical)
+import { mergeClassNames } from '@mirai-ui/utils';
+
+// 3. Shared hooks (alphabetical)
+import { useEventListener } from '../../hooks';
+
+// 4. Local components (alphabetical)
+import { SelectIcon } from './SelectIcon';
+import { SelectOption } from './SelectOption';
+
+// 5. Local modules (alphabetical)
+import { selectVariants } from './Select.variants';
+
+// 6. Types (last)
+import type { SelectProps } from './Select.types';
+```
+
+### Component Structure Order
+
+```typescript
+import React from 'react';
+
+// 1. Internal sub-components (if small, < 15 lines, and only used once)
+const Icon: React.FC<Props> = (props) => <svg>{/* ... */}</svg>;
+Icon.displayName = 'Icon';
+
+// 2. Main component
+export const Component = React.forwardRef<HTMLElement, Props>((props, ref) => {
+	// 3. Props destructuring
+	const { variant = 'default', size = 'md', ...rest } = props;
+
+	// 4. Refs
+	const elementRef = useRef<HTMLElement>(null);
+
+	// 5. State
+	const [isOpen, setIsOpen] = useState(false);
+
+	// 6. Imperative handle
+	useImperativeHandle(ref, () => elementRef.current!);
+
+	// 7. Side effects
+	useEffect(() => {
+		// Side effect logic
+	}, [deps]);
+
+	// 8. Shared hooks
+	useEventListener('click', handleClick, document);
+
+	// 9. Component-specific hooks
+	const { handleKeyDown } = useKeyboardNavigation(config);
+
+	// 10. Callbacks (use useCallback)
+	const handleClick = useCallback(() => {
+		// Handler logic
+	}, [deps]);
+
+	// 11. Derived values
+	const displayText = getDisplayText(value);
+
+	// 12. Render
+	return <div>{/* JSX */}</div>;
+});
+
+// 13. Display name
+Component.displayName = 'Component';
+```
+
+### When to Extract Code
+
+#### Create `.hooks.ts` when:
+
+- ✅ You have 2+ custom hooks
+- ✅ Hook logic exceeds 20 lines
+- ✅ Complex state management needs separation
+
+```typescript
+// Component.hooks.ts
+import { useCallback } from 'react';
+import { useEventListener } from '../../hooks';
+
+export const useClickOutside = (
+	refs: Array<React.RefObject<HTMLElement | null>>,
+	handler: () => void,
+	enabled = true
+): void => {
+	const handleClickOutside = useCallback(
+		(event: MouseEvent): void => {
+			if (!enabled) return;
+			const isOutside = refs.every((ref) => ref.current && !ref.current.contains(event.target as Node));
+			if (isOutside) handler();
+		},
+		[refs, handler, enabled]
+	);
+
+	useEventListener('mousedown', handleClickOutside, document);
+};
+```
+
+#### Create `.utils.ts` when:
+
+- ✅ Function is pure (no side effects)
+- ✅ Function is reused 2+ times
+- ✅ Logic can be tested independently
+- ✅ **Note: Utils are internal-only, NOT exported from index.ts**
+
+**Utils File Structure:**
+
+```typescript
+// Component.utils.ts
+import type { ComponentOption } from './Component.types';
+
+const isOptionDisabled = (option: ComponentOption): boolean => {
+	return option.disabled ?? false;
+};
+
+const getSelectedOption = (options: ComponentOption[], value?: string): ComponentOption | undefined => {
+	return options.find((opt) => opt.value === value);
+};
+
+// Export single grouped object with brief inline docs
+export const componentUtils = {
+	/** Checks if an option is disabled */
+	isOptionDisabled,
+	/** Gets the selected option from options array by value */
+	getSelectedOption,
+};
+```
+
+**Using Utils in Components:**
+
+```typescript
+// Component.component.tsx
+import { componentUtils } from './Component.utils';
+
+export const Component = React.forwardRef<HTMLElement, ComponentProps>(
+	({ options, value }, ref) => {
+		const selectedOption = componentUtils.getSelectedOption(options, value);
+
+		const handleSelect = (option: Option) => {
+			if (componentUtils.isOptionDisabled(option)) return;
+			onChange?.(option.value);
+		};
+
+		return <div>{displayText}</div>;
+	}
+);
+```
+
+**Testing Utils:**
+
+```typescript
+// Component.utils.test.ts
+import { describe, expect, test } from 'vitest';
+import { componentUtils } from './Component.utils';
+
+describe('Component Utils', () => {
+	test('isOptionDisabled returns false when disabled property is not set', () => {
+		const option = { value: 'test', label: 'Test' };
+		expect(componentUtils.isOptionDisabled(option)).toBe(false);
+	});
+
+	test('isOptionDisabled returns true when disabled is true', () => {
+		const option = { value: 'test', label: 'Test', disabled: true };
+		expect(componentUtils.isOptionDisabled(option)).toBe(true);
+	});
+});
+```
+
+---
+
+## Component Export Patterns
+
+Use **explicit named exports** for clarity, tree-shaking, and TypeScript support.
+
+### Pattern 1: Simple Component (Most Common)
+
+For standalone components without sub-components.
+
+**When to use:** Button, Input, Text, Heading, Spinner
+
+**index.ts:**
+
+```typescript
+export { ComponentName } from './ComponentName.component';
+export type { ComponentNameProps } from './ComponentName.types';
+// Export variant props only if useful for external styling (optional)
+export type { ComponentNameVariantProps } from './ComponentName.variants';
+```
+
+**Example: Button exports variant props and IconSize for external use**
+
+```typescript
+export { Button } from './Button.component';
+export type { ButtonProps } from './Button.types';
+export type { ButtonVariantProps, IconSize } from './Button.variants';
+```
+
+### Pattern 2: Compound Component with Context
+
+For components where sub-parts share state via Context API.
+
+**When to use:** Field, Tabs, Accordion, RadioGroup
+
+**index.ts:**
+
+```typescript
+// Export all parts individually for tree-shaking
+export { ComponentName, ComponentNameLabel, ComponentNameControl } from './ComponentName.component';
+
+export type { ComponentNameProps, ComponentNameLabelProps } from './ComponentName.types';
+
+// Variant props optional
+export type { ComponentNameVariantProps } from './ComponentName.variants';
+```
+
+**Component.component.tsx:**
+
+```typescript
+// Sub-components use shared context
+export const FieldLabel = React.forwardRef<...>((props, ref) => {
+  const context = useFieldContext();
+  // ...
+});
+
+// Namespace pattern for convenience
+export const Field = Object.assign(FieldRoot, {
+  Label: FieldLabel,
+  Control: FieldControl,
+  Message: FieldMessage,
+});
+```
+
+**Usage:**
+
+```typescript
+// Option 1: Namespace syntax
+<Field>
+  <Field.Label>Email</Field.Label>
+  <Field.Control><Input /></Field.Control>
+</Field>
+
+// Option 2: Named imports
+<Field>
+  <FieldLabel>Email</FieldLabel>
+  <FieldControl><Input /></FieldControl>
+</Field>
+```
+
+### Pattern 3: Component with Internal Sub-Components
+
+For components where sub-parts are internal implementation details.
+
+**When to use:** Select, Checkbox (with internal icons/options)
+
+**index.ts:**
+
+```typescript
+// Export ONLY the main component
+export { Select } from './Select.component';
+export type { SelectProps, SelectOption } from './Select.types';
+// DON'T export internal SelectOption or SelectIcon components
+// Variant props optional
+```
+
+### Export Pattern Decision Matrix
+
+| Component Type              | Pattern   | Export Sub-Components? | Export Variant Props? | Example                |
+| --------------------------- | --------- | ---------------------- | --------------------- | ---------------------- |
+| **Simple standalone**       | Pattern 1 | No                     | Optional              | Button, Input, Text    |
+| **Compound with Context**   | Pattern 2 | Yes, all parts         | Optional              | Field, Tabs, Accordion |
+| **Internal sub-components** | Pattern 3 | No                     | Optional              | Select, Checkbox       |
+
+### What to Export
+
+**Always export:**
+
+- ✅ Main component
+- ✅ Component props types
+
+**Sometimes export:**
+
+- ⚠️ Variant props types (only if useful for external custom styling)
+- ⚠️ Sub-components (only for Pattern 2: compound with Context)
+- ⚠️ Utility types (if useful for consumers)
+
+**Never export:**
+
+- ❌ Internal helpers
+- ❌ Utils (keep internal only)
+- ❌ Internal sub-components (unless Pattern 2)
+- ❌ Hook internals
+
+---
+
+## Utility Functions Best Practices
+
+### Utils Pattern Rules
+
+**✅ DO:**
+
+- Keep functions as `const` (not exported directly)
+- Export a single grouped object (`componentUtils`)
+- Add brief inline documentation
+- Keep functions pure (no side effects, no hooks)
+- Test thoroughly
+
+**❌ DON'T:**
+
+- Export functions individually
+- Export utils from `index.ts` (internal only)
+- Use hooks in utils (create `.hooks.ts` instead)
+- Create utils for one-time use code
+
+### Utils vs Hooks
+
+| Utils (.utils.ts)      | Hooks (.hooks.ts)   |
+| ---------------------- | ------------------- |
+| ✅ Pure functions      | ✅ Uses React hooks |
+| ✅ Data transformation | ✅ State management |
+| ✅ Validation          | ✅ Side effects     |
+| ✅ Calculations        | ✅ Event listeners  |
+| ✅ Formatting          | ✅ Lifecycle logic  |
+
+---
+
+## Shared Resources
+
+### Always Check `src/hooks/` First!
+
+Before creating component-specific hooks, check if a shared hook exists:
+
+**Available Shared Hooks:**
+
+#### `useEventListener`
+
+Safely add/remove event listeners to DOM elements.
+
+```typescript
+import { useEventListener } from '../../hooks';
+
+// Document events
+useEventListener('mousedown', handleClickOutside, document);
+
+// Window events
+useEventListener('resize', handleResize, window);
+
+// Element events
+useEventListener('scroll', handleScroll, elementRef.current);
+```
+
+**Features:**
+
+- ✅ Automatic cleanup on unmount
+- ✅ Prevents memory leaks
+- ✅ Properly typed for different elements
+- ✅ Handler can update without re-attaching
+
+---
+
+## Design Tokens
+
+### Color Schemes
+
+`primary` | `secondary` | `success` | `warning` | `error` | `info` | `muted` | `accent`
+
+### Sizes
+
+`sm` | `md` | `lg` | `xl`
+
+### Spacing
+
+- **sm:** `px-3 py-1.5`
+- **md:** `px-4 py-2`
+- **lg:** `px-6 py-3`
+- **xl:** `px-8 py-4`
+
+### Always Use Semantic Tokens
+
+```typescript
+// ✅ DO: Use semantic tokens
+('bg-primary-600', 'text-foreground', 'border-input-border');
+('text-error-600', 'bg-success-50', 'border-warning-500');
+
+// ❌ DON'T: Use base colors
+('bg-indigo-600', 'text-blue-500', 'border-gray-300');
+```
+
+---
+
+## Best Practices
+
+### Performance
+
+For comprehensive memoization guidelines, see **`docs/memoization-guidelines.md`**.
+
+Quick reference:
+
+```typescript
+// ✅ Memoize event handlers
+const handleClick = useCallback(() => {
+	onChange?.(value);
+}, [onChange, value]);
+
+// ✅ Memoize expensive calculations
+const filteredOptions = useMemo(() => options.filter((opt) => !opt.disabled), [options]);
+
+// ✅ Memoize context values (ALWAYS for Context.Provider)
+const contextValue = useMemo(() => ({ value, onChange: handleChange, size }), [value, handleChange, size]);
+```
+
+**Key rules:**
+
+- Always use `useCallback` for event handlers in components
+- Always use `useMemo` for context values passed to Context.Provider
+- Always use `React.memo` for list items and icon components
+- Profile before optimizing - don't memoize unnecessarily
+
+### Accessibility
+
+Every component must include:
+
+```typescript
+// ✅ Semantic HTML
+<button> not <div onClick={...}>
+
+// ✅ ARIA attributes
+aria-label="Close dialog"
+aria-describedby="helper-text"
+aria-invalid={state === 'error'}
+aria-disabled={disabled}
+
+// ✅ Keyboard support
+onKeyDown={handleKeyDown} // Handle Enter, Space, Escape, Arrows
+
+// ✅ Focus management
+focus:outline-none
+focus-visible:outline-none
+focus-visible:ring-2
+focus-visible:ring-ring
+```
+
+### TypeScript
+
+```typescript
+// ✅ Extend correct HTML interfaces
+export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement>, ButtonVariantProps {}
+
+// ✅ Make optional props explicit
+disabled?: boolean; // Good
+
+// ✅ Use union types for variants
+variant?: 'default' | 'outlined' | 'filled';
+
+// ❌ Never use 'any'
+handler: (event: MouseEvent) => void; // Good
+handler: any; // Bad
+```
+
+---
+
+## Storybook Stories Template
+
+```typescript
+import type { Meta, StoryObj } from '@storybook/react-vite';
+import { Component } from './Component.component';
+
+const meta: Meta<typeof Component> = {
+	title: 'Components/Component',
+	component: Component,
+	tags: ['autodocs'],
+	args: {
+		children: 'Component',
+		variant: 'solid',
+		colorScheme: 'primary',
+		size: 'md',
+	},
+	argTypes: {
+		onClick: { action: 'clicked' },
+	},
+};
+
+export default meta;
+type Story = StoryObj<typeof Component>;
+
+// 1. Default (required)
+export const Default: Story = {};
+
+// 2. All Variants (required)
+export const Variants: Story = {
+	render: () => (
+		<div className="flex gap-4 flex-wrap">
+			<Component variant="solid">Solid</Component>
+			<Component variant="outline">Outline</Component>
+			<Component variant="ghost">Ghost</Component>
+			<Component variant="link">Link</Component>
+		</div>
+	),
+};
+
+// 3. Color Schemes (required for colored components)
+export const ColorSchemes: Story = {
+	render: () => (
+		<div className="flex gap-3 flex-wrap">
+			<Component colorScheme="primary">Primary</Component>
+			<Component colorScheme="secondary">Secondary</Component>
+			<Component colorScheme="success">Success</Component>
+			<Component colorScheme="warning">Warning</Component>
+			<Component colorScheme="error">Error</Component>
+		</div>
+	),
+};
+
+// 4. Sizes (required)
+export const Sizes: Story = {
+	render: () => (
+		<div className="flex items-start gap-3">
+			<Component size="sm">Small</Component>
+			<Component size="md">Medium</Component>
+			<Component size="lg">Large</Component>
+			<Component size="xl">Extra Large</Component>
+		</div>
+	),
+};
+
+// 5. States (required for interactive components)
+export const States: Story = {
+	render: () => (
+		<div className="flex gap-3">
+			<Component>Default</Component>
+			<Component loading>Loading</Component>
+			<Component disabled>Disabled</Component>
+		</div>
+	),
+};
+```
+
+---
+
+## Component Creation Checklist
+
+### Structure
+
+- [ ] All required files created (.component, .types, .variants, .stories, .test, index)
+- [ ] Extracted hooks if 2+ or > 20 lines (`.hooks.ts`)
+- [ ] Extracted utils if 3+ or reused (`.utils.ts` with `componentUtils` export)
+- [ ] Extracted internal components if > 30 lines
+- [ ] Utils are internal only (NOT exported from `index.ts`)
+- [ ] Utils tests created (`.utils.test.ts`)
+
+### Code Quality
+
+- [ ] Component file < 150 lines
+- [ ] Used `React.forwardRef` + `displayName`
+- [ ] Sizes include sm, md, lg, xl
+- [ ] Focus states use both `focus:` and `focus-visible:` patterns
+- [ ] Followed import order
+- [ ] Used `useCallback` for event handlers
+- [ ] Used semantic tokens (no base colors)
+
+### Shared Resources
+
+- [ ] Checked `src/hooks/` for existing hooks
+- [ ] Used `useEventListener` instead of manual listeners
+- [ ] Used `mergeClassNames` for className composition
+
+### Accessibility
+
+- [ ] Semantic HTML elements
+- [ ] ARIA attributes (label, describedby, invalid, etc.)
+- [ ] Keyboard navigation support
+- [ ] Focus management (`focus-visible:ring`)
+
+### Testing
+
+- [ ] Rendering tests
+- [ ] Interaction tests (use `userEvent`)
+- [ ] Accessibility tests
+- [ ] States tests
+- [ ] Ref forwarding tests
+- [ ] Utils tests (if utils exist)
+
+### Documentation
+
+- [ ] Storybook stories (Default, Variants, ColorSchemes, Sizes, States)
+- [ ] JSDoc comments for public APIs
+- [ ] Real-world usage examples
+
+### Verification
+
+- [ ] Component exported from `src/components/index.ts`
+- [ ] Variant props exported only if useful for external styling
+- [ ] Run `npm run lint` → no errors
+- [ ] Run `npm run typecheck` → no errors
+- [ ] Run `npm test` → all tests pass
+
+---
+
+## Post-Generation Workflow
+
+Before committing:
+
+1. **Write/update tests** - See `docs/testing-guidelines.md`
+2. **Run linting** - `npm run lint` and fix all issues
+3. **Type check** - `npm run typecheck` and fix all errors
+4. **Run tests** - `npm test` and ensure everything passes
+5. **Check Storybook** - Verify stories render correctly
+
+---
+
+## Additional Resources
+
+- **Refactoring Guide:** `docs/refactoring-checklist.md`
+- **Testing Guidelines:** `docs/testing-guidelines.md`
+- **Storybook Standards:** `docs/storybook-guidelines.md`
+- **Semantic Tokens:** `docs/semantic-tokens.md`
+- **Memoization Guidelines:** `docs/memoization-guidelines.md`
+- **Shared Hooks:** `src/hooks/README.md`
+
+---
+
+## Quick Commands
+
+```bash
+# Create component (use Cursor command)
+/component create a Badge component...
+
+# Lint
+npm run lint
+
+# Type check
+npm run typecheck
+
+# Test
+npm test
+
+# Test specific component
+npm test -- ComponentName
+
+# Storybook
+npm run storybook
+```
+
+Happy coding! 🚀

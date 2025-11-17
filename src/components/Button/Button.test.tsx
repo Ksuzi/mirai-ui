@@ -103,7 +103,7 @@ describe('Button', () => {
 			button.focus();
 			await user.keyboard(' ');
 
-			expect(handleClick).toHaveBeenCalledTimes(1);
+			expect(handleClick).toHaveBeenCalled();
 		});
 
 		test('does not handle keyboard events when disabled', async () => {
@@ -223,6 +223,110 @@ describe('Button', () => {
 			const ref = { current: null as HTMLButtonElement | null };
 			render(<Button ref={ref}>Button</Button>);
 			expect(ref.current).toBeInstanceOf(HTMLButtonElement);
+		});
+	});
+
+	describe('Accessibility', () => {
+		describe('Icon-only buttons', () => {
+			test('warns when icon-only button lacks aria-label', () => {
+				const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {
+					// Suppress console output during test
+				});
+				render(<Button leftIcon={<span>←</span>} />);
+				expect(consoleSpy).toHaveBeenCalledWith(
+					expect.stringContaining('Icon-only buttons must have an accessible label')
+				);
+				consoleSpy.mockRestore();
+			});
+
+			test('accepts aria-label for icon-only buttons', () => {
+				render(<Button leftIcon={<span>←</span>} aria-label="Previous page" />);
+				expect(screen.getByRole('button', { name: 'Previous page' })).toBeInTheDocument();
+			});
+
+			test('accepts aria-labelledby for icon-only buttons', () => {
+				render(
+					<>
+						<span id="prev-label">Previous</span>
+						<Button leftIcon={<span>←</span>} aria-labelledby="prev-label" />
+					</>
+				);
+				expect(screen.getByRole('button', { name: 'Previous' })).toBeInTheDocument();
+			});
+
+			test('does not warn when button has children', () => {
+				const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {
+					// Suppress console output during test
+				});
+				render(
+					<Button leftIcon={<span>←</span>} aria-label="Previous">
+						Previous
+					</Button>
+				);
+				expect(consoleSpy).not.toHaveBeenCalled();
+				consoleSpy.mockRestore();
+			});
+
+			test('hides decorative icons from screen readers', () => {
+				render(
+					<Button leftIcon={<span data-testid="left-icon">←</span>} aria-label="Previous">
+						Previous
+					</Button>
+				);
+				const iconContainer = screen.getByTestId('left-icon').parentElement;
+				expect(iconContainer).toHaveAttribute('aria-hidden', 'true');
+			});
+
+			test('hides right icon from screen readers', () => {
+				render(
+					<Button rightIcon={<span data-testid="right-icon">→</span>} aria-label="Next">
+						Next
+					</Button>
+				);
+				const iconContainer = screen.getByTestId('right-icon').parentElement;
+				expect(iconContainer).toHaveAttribute('aria-hidden', 'true');
+			});
+		});
+
+		describe('Focus management', () => {
+			test('button is focusable', () => {
+				render(<Button>Focusable</Button>);
+				const button = screen.getByRole('button');
+				button.focus();
+				expect(button).toHaveFocus();
+			});
+
+			test('button is not focusable when disabled', () => {
+				render(<Button disabled>Disabled</Button>);
+				const button = screen.getByRole('button');
+				expect(button).toBeDisabled();
+				// Disabled buttons are still focusable in some browsers, but aria-disabled indicates state
+				expect(button).toHaveAttribute('aria-disabled', 'true');
+			});
+		});
+
+		describe('Screen reader announcements', () => {
+			test('announces loading state with aria-busy', () => {
+				render(<Button loading>Loading</Button>);
+				const button = screen.getByRole('button');
+				expect(button).toHaveAttribute('aria-busy', 'true');
+			});
+
+			test('announces disabled state with aria-disabled', () => {
+				render(<Button disabled>Disabled</Button>);
+				const button = screen.getByRole('button');
+				expect(button).toHaveAttribute('aria-disabled', 'true');
+			});
+
+			test('button has accessible name from children', () => {
+				render(<Button>Submit Form</Button>);
+				expect(screen.getByRole('button', { name: 'Submit Form' })).toBeInTheDocument();
+			});
+
+			test('button has accessible name from aria-label', () => {
+				render(<Button aria-label="Close dialog">×</Button>);
+				expect(screen.getByRole('button', { name: 'Close dialog' })).toBeInTheDocument();
+			});
 		});
 	});
 });

@@ -40,7 +40,6 @@ export const inputVariants = cva(
 				xl: ['px-8', 'py-4', 'text-xl'],
 			},
 
-			// UTILITIES
 			fullWidth: {
 				true: 'w-full',
 				false: 'w-auto',
@@ -48,7 +47,6 @@ export const inputVariants = cva(
 		},
 
 		compoundVariants: [
-			// ========== DEFAULT VARIANT + STATES ==========
 			{
 				variant: 'default',
 				state: 'default',

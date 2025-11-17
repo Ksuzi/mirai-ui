@@ -1,8 +1,10 @@
+import React from 'react';
+
 import { sizeMap } from './CheckboxIcon.variants';
 
 import type { CheckboxIconProps } from './CheckboxIcon.types';
 
-export const CheckboxIcon: React.FC<CheckboxIconProps> = ({ size = 'md', checked }) => {
+export const CheckboxIcon = React.memo<CheckboxIconProps>(({ size = 'md', checked }) => {
 	if (!checked) return null;
 
 	return (
@@ -20,4 +22,6 @@ export const CheckboxIcon: React.FC<CheckboxIconProps> = ({ size = 'md', checked
 			/>
 		</svg>
 	);
-};
+});
+
+CheckboxIcon.displayName = 'CheckboxIcon';

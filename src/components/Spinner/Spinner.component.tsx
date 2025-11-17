@@ -6,8 +6,8 @@ import { spinnerVariants } from './Spinner.variants';
 
 import type { SpinnerProps } from './Spinner.types';
 
-export const Spinner = React.forwardRef<SVGSVGElement, SpinnerProps>(
-	({ size, colorScheme, className, ...props }, ref) => {
+export const Spinner = React.memo(
+	React.forwardRef<SVGSVGElement, SpinnerProps>(({ size, colorScheme, className, ...props }, ref) => {
 		return (
 			<svg
 				ref={ref}
@@ -26,7 +26,7 @@ export const Spinner = React.forwardRef<SVGSVGElement, SpinnerProps>(
 				/>
 			</svg>
 		);
-	}
+	})
 );
 
 Spinner.displayName = 'Spinner';

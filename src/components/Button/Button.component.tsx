@@ -23,6 +23,9 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 			children,
 			className,
 			disabled,
+			type,
+			'aria-label': ariaLabel,
+			onClick,
 			...props
 		},
 		ref
@@ -30,29 +33,29 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 		const effectiveIconSize = iconSize ?? size;
 		const iconSizeClass = iconSizes[effectiveIconSize as IconSize];
 
-		const handleKeyDown = (event: React.KeyboardEvent<HTMLButtonElement>) => {
-			if (event.key === 'Enter' || event.key === ' ') {
-				event.preventDefault();
-				if (!disabled && !loading && props.onClick) {
-					// Simulate a mouse event for keyboard activation
-					const syntheticEvent = {
-						...event,
-						button: 0,
-						buttons: 1,
-						clientX: 0,
-						clientY: 0,
-						movementX: 0,
-						movementY: 0,
-						screenX: 0,
-						screenY: 0,
-						pageX: 0,
-						pageY: 0,
-						relatedTarget: null,
-					} as unknown as React.MouseEvent<HTMLButtonElement>;
-					props.onClick(syntheticEvent);
+		React.useEffect(() => {
+			if (process.env.NODE_ENV !== 'production') {
+				const isIconOnly = !children && (leftIcon ?? rightIcon);
+				if (isIconOnly && !ariaLabel && !props['aria-labelledby']) {
+					console.warn(
+						'Button: Icon-only buttons must have an accessible label. Provide an `aria-label` or `aria-labelledby` prop.'
+					);
 				}
 			}
-		};
+			// eslint-disable-next-line react-hooks/exhaustive-deps
+		}, []);
+
+		const handleKeyDown = React.useCallback(
+			(event: React.KeyboardEvent<HTMLButtonElement>) => {
+				if (event.key === ' ') {
+					event.preventDefault();
+					if (!disabled && !loading && onClick) {
+						onClick(event as unknown as React.MouseEvent<HTMLButtonElement>);
+					}
+				}
+			},
+			[disabled, loading, onClick]
+		);
 
 		return (
 			<button
@@ -67,22 +70,30 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 					}),
 					className
 				)}
-				type={props.type ?? 'button'}
+				type={type ?? 'button'}
 				disabled={Boolean(disabled ?? loading)}
 				aria-disabled={Boolean(disabled ?? loading)}
 				aria-busy={Boolean(loading)}
+				aria-label={ariaLabel}
+				onClick={onClick}
 				onKeyDown={handleKeyDown}
 				{...props}
 			>
 				{loading && <Spinner size={effectiveIconSize as IconSize} />}
 
 				{leftIcon && !loading && (
-					<span className={mergeClassNames('flex items-center', iconSizeClass)}>{leftIcon}</span>
+					<span className={mergeClassNames('flex items-center', iconSizeClass)} aria-hidden="true">
+						{leftIcon}
+					</span>
 				)}
 
 				{children}
 
-				{rightIcon && <span className={mergeClassNames('flex items-center', iconSizeClass)}>{rightIcon}</span>}
+				{rightIcon && (
+					<span className={mergeClassNames('flex items-center', iconSizeClass)} aria-hidden="true">
+						{rightIcon}
+					</span>
+				)}
 			</button>
 		);
 	}

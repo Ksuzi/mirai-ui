@@ -2,39 +2,36 @@ import React from 'react';
 
 import { mergeClassNames } from '@mirai-ui/utils';
 
+import { checkboxUtils } from './Checkbox.utils';
 import { checkboxVariants } from './Checkbox.variants';
 import { CheckboxIcon } from './CheckboxIcon';
 
 import type { CheckboxProps } from './Checkbox.types';
 
-/**
- * Checkbox - Базовий checkbox елемент
- * Для використання з label використовуйте Field компонент
- */
 export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
-	({ size = 'md', colorScheme, className, color, ...props }, ref) => {
+	({ size = 'md', colorScheme, className, onChange, ...props }, ref) => {
 		const [checked, setChecked] = React.useState(props.defaultChecked ?? false);
 		const isControlled = props.checked !== undefined;
 		const checkboxChecked = isControlled ? props.checked : checked;
 
-		// Backward compatibility: map deprecated color prop to colorScheme
-		let effectiveColorScheme = colorScheme;
-		effectiveColorScheme ??= color === 'primary' || color === 'secondary' ? color : undefined;
-		effectiveColorScheme ??= 'primary';
+		const handleChange = React.useCallback(
+			(e: React.ChangeEvent<HTMLInputElement>) => {
+				if (!isControlled) {
+					setChecked(e.target.checked);
+				}
+				onChange?.(e);
+			},
+			[isControlled, onChange]
+		);
 
-		const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-			if (!isControlled) {
-				setChecked(e.target.checked);
-			}
-			props.onChange?.(e);
-		};
+		const wrapperSizeClasses = checkboxUtils.getCheckboxWrapperClasses(size);
 
 		return (
-			<div className="relative inline-flex">
+			<div className={`relative inline-flex items-center justify-center ${wrapperSizeClasses}`}>
 				<input
 					ref={ref}
 					type="checkbox"
-					className={mergeClassNames(checkboxVariants({ size, colorScheme: effectiveColorScheme }), className)}
+					className={mergeClassNames(checkboxVariants({ size, colorScheme: colorScheme ?? 'primary' }), className)}
 					{...props}
 					checked={checkboxChecked}
 					onChange={handleChange}

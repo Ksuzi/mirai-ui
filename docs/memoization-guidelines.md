@@ -1,0 +1,1057 @@
+# Memoization Guidelines
+
+Comprehensive guide for implementing memoization in Mirai UI components. This document provides clear, actionable guidelines for when and how to use `React.memo`, `useCallback`, and `useMemo` to optimize component performance.
+
+## Related Documentation
+
+- **Component creation:** `docs/component-creation.md`
+- **Testing guidelines:** `docs/testing-guidelines.md`
+- **Storybook guidelines:** `docs/storybook-guidelines.md`
+
+---
+
+## Introduction
+
+Memoization is a performance optimization technique that prevents unnecessary re-renders and recalculations in React components. In UI libraries, memoization is critical for:
+
+- **Compound components** that share state via Context API
+- **List items** rendered in loops (Select options, Radio groups)
+- **Event handlers** passed as props to child components
+- **Expensive computations** that don't need to run on every render
+
+### When Memoization Matters
+
+Memoization provides the most benefit when:
+
+- Components render frequently with the same props
+- Components are expensive to render (complex DOM, many children)
+- Components receive callbacks or objects as props
+- Components are used in lists or repeated contexts
+
+### When Memoization Doesn't Help
+
+Avoid memoization when:
+
+- Components are simple and cheap to render
+- Props change frequently (memoization overhead > benefit)
+- Components rely heavily on context that changes often
+- No measurable performance issue exists
+
+---
+
+## Core Concepts
+
+### React.memo
+
+`React.memo` is a higher-order component that memoizes functional components, preventing re-renders when props haven't changed (shallow comparison).
+
+#### When to Use
+
+- **List items** rendered in arrays (SelectOption, Radio items)
+- **Icon components** that render frequently (CheckboxIcon, RadioIcon, Spinner)
+- **Pure presentational components** with stable props
+- **Components that receive complex objects** as props (when parent memoizes those objects)
+
+#### When NOT to Use
+
+- **Simple components** without event handlers (Text, Heading when simple)
+- **Components with frequently changing props**
+- **Root components** that manage state (they'll re-render anyway)
+- **Components that rely on context** that changes often
+
+#### Implementation
+
+```typescript
+// ✅ Good: Memoize list items
+export const SelectOption = React.memo<SelectOptionProps>(({
+  option,
+  isSelected,
+  isHighlighted,
+  onSelect,
+  onHighlight,
+  className,
+  ...props
+}) => {
+  // Component implementation
+});
+
+SelectOption.displayName = 'SelectOption';
+
+// ✅ Good: Memoize icon components
+export const CheckboxIcon = React.memo<CheckboxIconProps>(({ size = 'md', checked }) => {
+  if (!checked) return null;
+  return <svg>{/* ... */}</svg>;
+});
+
+// ❌ Avoid: Don't memoize simple components unnecessarily
+export const Text = React.forwardRef<HTMLElement, TextProps>((props, ref) => {
+  // Simple rendering - no memoization needed
+});
+```
+
+#### Best Practices from Popular Libraries
+
+- **Material-UI**: Uses `React.memo` selectively on expensive components with stable props
+- **Chakra UI**: Memoizes icon components and small reusable elements
+- **Radix UI**: Uses `React.memo` on list items and repeated components
+- **Ant Design**: Applies `React.memo` to table rows and form items
+
+---
+
+### useCallback
+
+`useCallback` returns a memoized version of a callback function, ensuring it maintains the same reference between renders unless dependencies change.
+
+#### When to Use
+
+- **Event handlers** passed as props to memoized child components
+- **Callbacks** used in dependency arrays of other hooks (useEffect, useMemo)
+- **Handlers** passed to compound components via Context
+- **Functions** that are dependencies of memoized values
+
+#### When NOT to Use
+
+- **Functions not passed as props** to child components
+- **Functions without dependencies** that don't cause re-renders
+- **Simple inline handlers** in components that aren't memoized
+
+#### Implementation
+
+```typescript
+// ✅ Good: Memoize event handlers in components
+export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+  ({ disabled, loading, onClick, ...props }, ref) => {
+    const handleKeyDown = React.useCallback(
+      (event: React.KeyboardEvent<HTMLButtonElement>) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          if (!disabled && !loading && onClick) {
+            onClick(event as unknown as React.MouseEvent<HTMLButtonElement>);
+          }
+        }
+      },
+      [disabled, loading, onClick]
+    );
+
+    return (
+      <button ref={ref} onKeyDown={handleKeyDown} {...props}>
+        {/* ... */}
+      </button>
+    );
+  }
+);
+
+// ✅ Good: Memoize handlers in compound components
+export const RadioGroup = React.forwardRef<HTMLDivElement, RadioGroupProps>(
+  ({ value, defaultValue, onChange, ...props }, ref) => {
+    const [internalValue, setInternalValue] = React.useState(defaultValue);
+    const isControlled = value !== undefined;
+    const effectiveValue = isControlled ? value : internalValue;
+
+    const handleChange = React.useCallback(
+      (newValue: string) => {
+        if (!isControlled) {
+          setInternalValue(newValue);
+        }
+        onChange?.(newValue);
+      },
+      [isControlled, onChange]
+    );
+
+    // Use handleChange in context value
+    const contextValue = React.useMemo(
+      () => ({ value: effectiveValue, onChange: handleChange }),
+      [effectiveValue, handleChange]
+    );
+
+    return (
+      <RadioContext.Provider value={contextValue}>
+        {/* ... */}
+      </RadioContext.Provider>
+    );
+  }
+);
+
+// ✅ Good: Memoize handlers in Select component
+export const SelectRoot = React.forwardRef<HTMLDivElement, SelectRootProps>(
+  ({ onChange, ...props }, ref) => {
+    const handleSelect = React.useCallback(
+      (optionValue: string): void => {
+        setSelectedValue(optionValue);
+        setIsOpen(false);
+        onChange?.(optionValue);
+      },
+      [onChange]
+    );
+
+    // Use handleSelect in context
+    const contextValue = React.useMemo(
+      () => ({ handleSelect, /* ... */ }),
+      [handleSelect, /* ... */]
+    );
+  }
+);
+
+// ❌ Avoid: Don't memoize functions that aren't passed as props
+const Component = () => {
+  // This function is only used locally, no need to memoize
+  const handleClick = () => {
+    console.log('clicked');
+  };
+  
+  return <button onClick={handleClick}>Click</button>;
+};
+```
+
+#### Best Practices from Popular Libraries
+
+- **Material-UI**: Uses `useCallback` extensively for event handlers in compound components
+- **Chakra UI**: Memoizes all callbacks passed to child components
+- **Radix UI**: Critical for callback stability in headless components
+- **Ant Design**: Uses `useCallback` for handlers in complex form components
+
+---
+
+### useMemo
+
+`useMemo` memoizes the result of a computation, recalculating only when dependencies change.
+
+#### When to Use
+
+- **Context values** passed to Context.Provider
+- **Expensive calculations** (filtering, sorting, transforming data)
+- **Derived state** computed from props or state
+- **Objects or arrays** passed as props to memoized components
+
+#### When NOT to Use
+
+- **Simple calculations** (addition, string concatenation)
+- **Primitive values** (strings, numbers, booleans)
+- **Values that change on every render** anyway
+- **Premature optimization** without profiling
+
+#### Implementation
+
+```typescript
+// ✅ Good: Memoize context values (ALWAYS do this)
+export const FieldRoot = React.forwardRef<HTMLDivElement, FieldRootProps>(
+  ({ id, size, state, error, required, disabled, helperText, ...props }, ref) => {
+    const fieldId = id ?? `field-${React.useId()}`;
+    const effectiveState = error ? 'error' : state;
+
+    const contextValue: FieldContextValue = React.useMemo(
+      () => ({
+        id: fieldId,
+        size,
+        state: effectiveState,
+        required,
+        disabled,
+        error,
+        helperText,
+      }),
+      [fieldId, size, effectiveState, required, disabled, error, helperText]
+    );
+
+    return (
+      <FieldContext.Provider value={contextValue}>
+        {/* ... */}
+      </FieldContext.Provider>
+    );
+  }
+);
+
+// ✅ Good: Memoize expensive computations
+export const RadioGroup = React.forwardRef<HTMLDivElement, RadioGroupProps>(
+  ({ options, children, ...props }, ref) => {
+    const content = React.useMemo((): React.ReactNode => {
+      if (options) {
+        return options.map((option: RadioOption) => (
+          <Radio key={option.value} value={option.value} disabled={option.disabled}>
+            {option.label}
+          </Radio>
+        ));
+      }
+      return children;
+    }, [options, children]);
+
+    return (
+      <RadioContext.Provider value={contextValue}>
+        <div>{content}</div>
+      </RadioContext.Provider>
+    );
+  }
+);
+
+// ✅ Good: Memoize complex context values
+export const SelectRoot = React.forwardRef<HTMLDivElement, SelectRootProps>(
+  ({ variant, state, size, disabled, fullWidth, options, ...props }, ref) => {
+    const handleSelect = React.useCallback(/* ... */, [onChange]);
+
+    const contextValue = React.useMemo(
+      () => ({
+        value: selectedValue,
+        onChange,
+        isOpen,
+        setIsOpen,
+        highlightedIndex,
+        setHighlightedIndex,
+        triggerRef,
+        contentRef,
+        variant,
+        state,
+        size,
+        disabled,
+        fullWidth,
+        options,
+        handleSelect,
+      }),
+      [
+        selectedValue,
+        onChange,
+        isOpen,
+        highlightedIndex,
+        variant,
+        state,
+        size,
+        disabled,
+        fullWidth,
+        options,
+        handleSelect,
+      ]
+    );
+
+    return (
+      <SelectContext.Provider value={contextValue}>
+        {/* ... */}
+      </SelectContext.Provider>
+    );
+  }
+);
+
+// ❌ Avoid: Don't memoize simple values
+const Component = ({ name }: { name: string }) => {
+  // No need to memoize - string concatenation is cheap
+  const displayName = `Hello, ${name}`;
+  
+  return <div>{displayName}</div>;
+};
+
+// ❌ Avoid: Don't memoize values that change every render
+const Component = () => {
+  // This creates a new object every render anyway
+  const config = React.useMemo(() => ({ timestamp: Date.now() }), []);
+  
+  return <Child config={config} />;
+};
+```
+
+#### Best Practices from Popular Libraries
+
+- **Material-UI**: Always memoizes context values in compound components
+- **Chakra UI**: Uses `useMemo` for derived state and context values
+- **Radix UI**: Memoizes all context values to prevent unnecessary re-renders
+- **Ant Design**: Uses `useMemo` for filtered/sorted data in tables
+
+---
+
+## Component-Specific Guidelines
+
+### Simple Presentational Components
+
+**Examples:** Text, Heading, Spinner (when simple)
+
+**Guidelines:**
+- **Don't use React.memo** - These components are cheap to render
+- **Don't use useCallback** - No event handlers
+- **Don't use useMemo** - No expensive computations
+
+```typescript
+// ✅ Good: Simple component, no memoization needed
+export const Text = React.forwardRef<HTMLElement, TextProps>(
+  ({ variant, size, children, className, ...props }, ref) => {
+    const variantClasses = textVariants({ variant, size });
+    return (
+      <Component ref={ref} className={mergeClassNames(variantClasses, className)} {...props}>
+        {children}
+      </Component>
+    );
+  }
+);
+```
+
+### Interactive Components
+
+**Examples:** Button, Input, Checkbox, Radio, Switch
+
+**Guidelines:**
+- **Use useCallback** for all event handlers (onClick, onChange, onKeyDown)
+- **Consider React.memo** only if component receives stable props and renders in lists
+- **Don't use useMemo** unless computing expensive values
+
+```typescript
+// ✅ Good: Memoize event handlers
+export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
+  ({ checked, defaultChecked, onChange, ...props }, ref) => {
+    const [internalChecked, setInternalChecked] = React.useState(defaultChecked ?? false);
+    const isControlled = checked !== undefined;
+    const checkboxChecked = isControlled ? checked : internalChecked;
+
+    const handleChange = React.useCallback(
+      (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (!isControlled) {
+          setInternalChecked(e.target.checked);
+        }
+        onChange?.(e);
+      },
+      [isControlled, onChange]
+    );
+
+    return (
+      <input
+        ref={ref}
+        type="checkbox"
+        checked={checkboxChecked}
+        onChange={handleChange}
+        {...props}
+      />
+    );
+  }
+);
+```
+
+### Compound Components with Context
+
+**Examples:** Field, Select, RadioGroup
+
+**Guidelines:**
+- **Always use useMemo** for context values
+- **Always use useCallback** for handlers passed via context
+- **Consider React.memo** for sub-components that consume context
+
+```typescript
+// ✅ Good: Memoize context value and handlers
+export const FieldRoot = React.forwardRef<HTMLDivElement, FieldRootProps>(
+  ({ size, state, error, required, disabled, helperText, ...props }, ref) => {
+    const contextValue: FieldContextValue = React.useMemo(
+      () => ({
+        id: fieldId,
+        size,
+        state: effectiveState,
+        required,
+        disabled,
+        error,
+        helperText,
+      }),
+      [fieldId, size, effectiveState, required, disabled, error, helperText]
+    );
+
+    return (
+      <FieldContext.Provider value={contextValue}>
+        <div ref={ref}>{children}</div>
+      </FieldContext.Provider>
+    );
+  }
+);
+```
+
+### List Items and Repeated Components
+
+**Examples:** SelectOption, Radio items in loops
+
+**Guidelines:**
+- **Always use React.memo** to prevent re-renders when parent updates
+- **Always use useCallback** for event handlers
+- **Ensure parent memoizes callbacks** passed to list items
+
+```typescript
+// ✅ Good: Memoize list item component
+export const SelectOption = React.memo<SelectOptionProps>(({
+  option,
+  isSelected,
+  isHighlighted,
+  onSelect,
+  onHighlight,
+  index,
+  className,
+  ...props
+}) => {
+  const disabled = selectUtils.isOptionDisabled(option);
+
+  const handleClick = React.useCallback((): void => {
+    if (!disabled) {
+      onSelect(option);
+    }
+  }, [disabled, onSelect, option]);
+
+  const handleMouseEnter = React.useCallback((): void => {
+    if (!disabled) {
+      onHighlight(index);
+    }
+  }, [disabled, onHighlight, index]);
+
+  return (
+    <div
+      className={mergeClassNames(selectOptionVariants({ selected: isSelected, highlighted: isHighlighted, disabled }), className)}
+      onClick={handleClick}
+      onMouseEnter={handleMouseEnter}
+      {...props}
+    >
+      {option.label}
+    </div>
+  );
+});
+
+SelectOption.displayName = 'SelectOption';
+```
+
+### Icon Components
+
+**Examples:** CheckboxIcon, RadioIcon, Spinner, SelectIcon
+
+**Guidelines:**
+- **Use React.memo** for icon components (they render frequently)
+- **Don't use useCallback** - No event handlers typically
+- **Don't use useMemo** - Simple rendering logic
+
+```typescript
+// ✅ Good: Memoize icon components
+export const CheckboxIcon = React.memo<CheckboxIconProps>(({ size = 'md', checked }) => {
+  if (!checked) return null;
+
+  return (
+    <svg
+      className={`${sizeMap[size]} text-white absolute inset-0 m-auto pointer-events-none`}
+      fill="currentColor"
+      viewBox="0 0 20 20"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+    >
+      <path fillRule="evenodd" d="..." clipRule="evenodd" />
+    </svg>
+  );
+});
+```
+
+---
+
+## Decision Matrix
+
+Use this decision tree to determine when to apply memoization:
+
+### React.memo
+
+```
+Is component rendered in a list/array?
+├─ Yes → Use React.memo
+└─ No → Continue
+
+Is component an icon or small visual element?
+├─ Yes → Use React.memo
+└─ No → Continue
+
+Does component receive stable props?
+├─ Yes → Consider React.memo (profile first)
+└─ No → Don't use React.memo
+
+Is component expensive to render?
+├─ Yes → Use React.memo (after profiling confirms benefit)
+└─ No → Don't use React.memo
+```
+
+### useCallback
+
+```
+Is function an event handler (onClick, onChange, onKeyDown)?
+├─ Yes → Use useCallback
+└─ No → Continue
+
+Is function passed as prop to memoized child component?
+├─ Yes → Use useCallback
+└─ No → Continue
+
+Is function used in dependency array of useMemo or useEffect?
+├─ Yes → Use useCallback
+└─ No → Don't use useCallback
+
+Is function passed via Context to child components?
+├─ Yes → Use useCallback
+└─ No → Don't use useCallback
+```
+
+### useMemo
+
+```
+Is value a context value for Context.Provider?
+├─ Yes → ALWAYS use useMemo
+└─ No → Continue
+
+Is computation expensive (filtering large arrays, complex calculations)?
+├─ Yes → Use useMemo
+└─ No → Continue
+
+Is value an object/array passed as prop to memoized component?
+├─ Yes → Use useMemo (if parent can't memoize it)
+└─ No → Don't use useMemo
+
+Does value depend on props/state that change frequently?
+├─ Yes → Consider useMemo (profile first)
+└─ No → Don't use useMemo
+```
+
+---
+
+## Common Pitfalls
+
+### 1. Over-Memoization
+
+**Problem:** Memoizing everything without understanding the cost/benefit.
+
+```typescript
+// ❌ Bad: Unnecessary memoization
+const Component = React.memo(({ name }: { name: string }) => {
+  const displayName = React.useMemo(() => `Hello, ${name}`, [name]);
+  const handleClick = React.useCallback(() => {
+    console.log(name);
+  }, [name]);
+  
+  return <div onClick={handleClick}>{displayName}</div>;
+});
+
+// ✅ Good: Only memoize when necessary
+const Component = ({ name }: { name: string }) => {
+  return <div onClick={() => console.log(name)}>Hello, {name}</div>;
+};
+```
+
+### 2. Incorrect Dependencies
+
+**Problem:** Missing dependencies or including unnecessary ones.
+
+```typescript
+// ❌ Bad: Missing dependencies
+const handleClick = React.useCallback(() => {
+  console.log(value); // 'value' not in dependencies
+}, []);
+
+// ✅ Good: Correct dependencies
+const handleClick = React.useCallback(() => {
+  console.log(value);
+}, [value]);
+
+// ❌ Bad: Unnecessary dependencies
+const contextValue = React.useMemo(
+  () => ({ id, size }),
+  [id, size, unusedValue] // 'unusedValue' not used in computation
+);
+
+// ✅ Good: Only include used dependencies
+const contextValue = React.useMemo(
+  () => ({ id, size }),
+  [id, size]
+);
+```
+
+### 3. Premature Optimization
+
+**Problem:** Adding memoization before identifying actual performance issues.
+
+```typescript
+// ❌ Bad: Memoizing without profiling
+const Component = React.memo(({ data }: { data: string }) => {
+  const processed = React.useMemo(() => data.toUpperCase(), [data]);
+  return <div>{processed}</div>;
+});
+
+// ✅ Good: Profile first, then optimize
+// If profiling shows performance issues, then add memoization
+const Component = ({ data }: { data: string }) => {
+  return <div>{data.toUpperCase()}</div>;
+};
+```
+
+### 4. Forgetting Context Value Memoization
+
+**Problem:** Not memoizing context values causes all consumers to re-render.
+
+```typescript
+// ❌ Bad: Context value recreated every render
+const FieldRoot = ({ size, state, ...props }) => {
+  const contextValue = {
+    size,
+    state,
+    // New object every render → all consumers re-render
+  };
+
+  return (
+    <FieldContext.Provider value={contextValue}>
+      {children}
+    </FieldContext.Provider>
+  );
+};
+
+// ✅ Good: Memoized context value
+const FieldRoot = ({ size, state, ...props }) => {
+  const contextValue = React.useMemo(
+    () => ({ size, state }),
+    [size, state]
+  );
+
+  return (
+    <FieldContext.Provider value={contextValue}>
+      {children}
+    </FieldContext.Provider>
+  );
+};
+```
+
+### 5. Memoizing Unstable Values
+
+**Problem:** Memoizing values that change every render anyway.
+
+```typescript
+// ❌ Bad: Value changes every render
+const Component = () => {
+  const config = React.useMemo(
+    () => ({ timestamp: Date.now() }),
+    [] // Still creates new object with new timestamp
+  );
+  
+  return <Child config={config} />;
+};
+
+// ✅ Good: Stable value or no memoization
+const Component = () => {
+  const config = React.useMemo(
+    () => ({ theme: 'dark' }),
+    [] // Stable value
+  );
+  
+  return <Child config={config} />;
+};
+```
+
+---
+
+## Performance Profiling
+
+### When to Profile
+
+Profile your components before adding memoization to:
+
+1. **Identify actual performance bottlenecks**
+2. **Measure the impact of memoization**
+3. **Avoid premature optimization**
+4. **Verify memoization is working correctly**
+
+### How to Profile
+
+1. **Install React Developer Tools**
+   - Browser extension for Chrome/Firefox
+   - Includes Profiler tab
+
+2. **Record a session**
+   - Click "Record" in Profiler tab
+   - Interact with your application
+   - Stop recording
+
+3. **Analyze results**
+   - Look for components with high render times
+   - Identify components that re-render unnecessarily
+   - Check if props are changing when they shouldn't
+
+4. **Apply memoization**
+   - Add memoization to identified bottlenecks
+   - Re-profile to verify improvements
+   - Measure before/after performance
+
+### Tools
+
+- **React Developer Tools Profiler** - Built-in profiling
+- **why-did-you-render** - Library to identify unnecessary re-renders
+- **Chrome DevTools Performance** - General performance profiling
+
+---
+
+## Guidelines for AI Code Generation
+
+When generating component code, follow these rules:
+
+### Always Do
+
+1. **Always use `useCallback` for event handlers** in components (onClick, onChange, onKeyDown, etc.)
+2. **Always use `useMemo` for context values** passed to Context.Provider
+3. **Always use `React.memo` for list items** rendered in arrays (SelectOption, Radio items in loops)
+4. **Always use `React.memo` for icon components** (CheckboxIcon, RadioIcon, Spinner)
+5. **Always include all dependencies** in useCallback and useMemo dependency arrays
+
+### Consider Doing
+
+1. **Consider `React.memo` for compound component sub-components** that consume context
+2. **Consider `useMemo` for expensive computations** (filtering large arrays, complex calculations)
+3. **Consider `useCallback` for handlers passed via Context** to child components
+
+### Never Do
+
+1. **Don't use `React.memo` on simple presentational components** without event handlers (Text, Heading when simple)
+2. **Don't use `useCallback` for functions not passed as props** to child components
+3. **Don't use `useMemo` for simple calculations** (string concatenation, simple arithmetic)
+4. **Don't memoize values that change every render** anyway
+5. **Don't add memoization without profiling** first (unless following established patterns)
+
+### Code Generation Template
+
+```typescript
+// Template for interactive components
+export const Component = React.forwardRef<HTMLElement, ComponentProps>(
+  ({ prop1, prop2, onChange, onClick, ...props }, ref) => {
+    // 1. State
+    const [state, setState] = React.useState(initialState);
+
+    // 2. Memoized handlers (ALWAYS use useCallback)
+    const handleChange = React.useCallback(
+      (value: string) => {
+        setState(value);
+        onChange?.(value);
+      },
+      [onChange]
+    );
+
+    const handleClick = React.useCallback(
+      (e: React.MouseEvent) => {
+        onClick?.(e);
+      },
+      [onClick]
+    );
+
+    // 3. Memoized context value (if using Context)
+    const contextValue = React.useMemo(
+      () => ({
+        value: state,
+        onChange: handleChange,
+        // ... other values
+      }),
+      [state, handleChange]
+    );
+
+    // 4. Render
+    return (
+      <Context.Provider value={contextValue}>
+        {/* JSX */}
+      </Context.Provider>
+    );
+  }
+);
+
+// Template for list items (ALWAYS use React.memo)
+export const ListItem = React.memo<ListItemProps>(({
+  item,
+  isSelected,
+  onSelect,
+  ...props
+}) => {
+  // Memoized handlers (ALWAYS use useCallback)
+  const handleClick = React.useCallback(() => {
+    onSelect(item);
+  }, [onSelect, item]);
+
+  return (
+    <div onClick={handleClick} {...props}>
+      {item.label}
+    </div>
+  );
+});
+
+ListItem.displayName = 'ListItem';
+
+// Template for icon components (ALWAYS use React.memo)
+export const Icon = React.memo<IconProps>(({ size, checked }) => {
+  if (!checked) return null;
+  return <svg>{/* ... */}</svg>;
+});
+```
+
+---
+
+## Examples from Codebase
+
+### Field Component (Context Memoization)
+
+```typescript
+// src/components/Field/Field.component.tsx
+const FieldRoot = React.forwardRef<HTMLDivElement, FieldRootProps>(
+  ({ id, size, state, error, required, disabled, helperText, ...props }, ref) => {
+    const fieldId = id ?? `field-${React.useId()}`;
+    const effectiveState = error ? 'error' : state;
+
+    // ✅ Always memoize context values
+    const contextValue: FieldContextValue = React.useMemo(
+      () => ({
+        id: fieldId,
+        size,
+        state: effectiveState,
+        required,
+        disabled,
+        error,
+        helperText,
+      }),
+      [fieldId, size, effectiveState, required, disabled, error, helperText]
+    );
+
+    return (
+      <FieldContext.Provider value={contextValue}>
+        <div ref={ref}>{children}</div>
+      </FieldContext.Provider>
+    );
+  }
+);
+```
+
+### RadioGroup Component (Handler and Context Memoization)
+
+```typescript
+// src/components/Radio/RadioGroup.component.tsx
+export const RadioGroup = React.forwardRef<HTMLDivElement, RadioGroupProps>(
+  ({ value, defaultValue, onChange, options, children, ...props }, ref) => {
+    const [internalValue, setInternalValue] = React.useState(defaultValue);
+    const isControlled = value !== undefined;
+    const effectiveValue = isControlled ? value : internalValue;
+
+    // ✅ Memoize event handler
+    const handleChange = React.useCallback(
+      (newValue: string) => {
+        if (!isControlled) {
+          setInternalValue(newValue);
+        }
+        onChange?.(newValue);
+      },
+      [isControlled, onChange]
+    );
+
+    // ✅ Memoize context value
+    const contextValue: RadioContextValue = React.useMemo(
+      () => ({
+        name,
+        value: effectiveValue,
+        onChange: handleChange,
+        size,
+        colorScheme,
+        disabled,
+      }),
+      [name, effectiveValue, handleChange, size, colorScheme, disabled]
+    );
+
+    // ✅ Memoize expensive computation (rendering options)
+    const content = React.useMemo((): React.ReactNode => {
+      if (options) {
+        return options.map((option: RadioOption) => (
+          <Radio key={option.value} value={option.value} disabled={option.disabled}>
+            {option.label}
+          </Radio>
+        ));
+      }
+      return children;
+    }, [options, children]);
+
+    return (
+      <RadioContext.Provider value={contextValue}>
+        <div ref={ref}>{content}</div>
+      </RadioContext.Provider>
+    );
+  }
+);
+```
+
+### SelectRoot Component (Complex Context Memoization)
+
+```typescript
+// src/components/Select/SelectRoot/SelectRoot.component.tsx
+export const SelectRoot = React.forwardRef<HTMLDivElement, SelectRootProps>(
+  ({ onChange, options, variant, state, size, disabled, fullWidth, ...props }, ref) => {
+    const [isOpen, setIsOpen] = React.useState(false);
+    const [selectedValue, setSelectedValue] = React.useState(value);
+
+    // ✅ Memoize handler
+    const handleSelect = React.useCallback(
+      (optionValue: string): void => {
+        setSelectedValue(optionValue);
+        setIsOpen(false);
+        onChange?.(optionValue);
+      },
+      [onChange]
+    );
+
+    // ✅ Memoize complex context value
+    const contextValue = React.useMemo(
+      () => ({
+        value: selectedValue,
+        onChange,
+        isOpen,
+        setIsOpen,
+        highlightedIndex,
+        setHighlightedIndex,
+        triggerRef,
+        contentRef,
+        variant,
+        state,
+        size,
+        disabled,
+        fullWidth,
+        options,
+        handleSelect,
+      }),
+      [
+        selectedValue,
+        onChange,
+        isOpen,
+        highlightedIndex,
+        variant,
+        state,
+        size,
+        disabled,
+        fullWidth,
+        options,
+        handleSelect,
+      ]
+    );
+
+    return (
+      <SelectContext.Provider value={contextValue}>
+        {/* ... */}
+      </SelectContext.Provider>
+    );
+  }
+);
+```
+
+---
+
+## Summary
+
+### Quick Reference
+
+| Technique | When to Use | When NOT to Use |
+|-----------|-------------|-----------------|
+| **React.memo** | List items, icon components, expensive components with stable props | Simple components, components with frequently changing props |
+| **useCallback** | Event handlers, functions passed as props, functions in dependency arrays | Functions not passed as props, simple local handlers |
+| **useMemo** | Context values, expensive computations, objects/arrays passed as props | Simple calculations, primitive values, values that change every render |
+
+### Key Principles
+
+1. **Profile first** - Don't optimize without measuring
+2. **Context values** - Always memoize with `useMemo`
+3. **Event handlers** - Always memoize with `useCallback` in components
+4. **List items** - Always wrap with `React.memo`
+5. **Icon components** - Always wrap with `React.memo`
+6. **Dependencies** - Always include all dependencies in arrays
+7. **Avoid over-optimization** - Keep it simple when possible
+
+---
+
+## Additional Resources
+
+- [React.memo documentation](https://react.dev/reference/react/memo)
+- [useCallback documentation](https://react.dev/reference/react/useCallback)
+- [useMemo documentation](https://react.dev/reference/react/useMemo)
+- [React Performance Optimization](https://react.dev/learn/render-and-commit)
+- [React Developer Tools](https://react.dev/learn/react-developer-tools)
+

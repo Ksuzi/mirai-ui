@@ -79,9 +79,9 @@ describe('Input', () => {
 		});
 
 		test('applies fullWidth by default', () => {
-			const { container } = render(<Input />);
-			const wrapper = container.querySelector('.relative');
-			expect(wrapper?.parentElement).toBeInTheDocument();
+			render(<Input />);
+			const input = screen.getByRole('textbox');
+			expect(input).toHaveClass('w-full');
 		});
 	});
 
@@ -124,6 +124,46 @@ describe('Input', () => {
 			await user.click(input);
 			await user.tab();
 			expect(handleBlur).toHaveBeenCalledTimes(1);
+		});
+	});
+
+	describe('Accessibility', () => {
+		test('sets aria-invalid when state is error', () => {
+			render(<Input state="error" />);
+			expect(screen.getByRole('textbox')).toHaveAttribute('aria-invalid', 'true');
+		});
+
+		test('does not override consumer-provided aria-invalid', () => {
+			render(<Input state="error" aria-invalid="false" />);
+			expect(screen.getByRole('textbox')).toHaveAttribute('aria-invalid', 'false');
+		});
+
+		test('marks input as required when required prop is true', () => {
+			render(<Input required />);
+			const input = screen.getByRole('textbox');
+			expect(input).toBeRequired();
+			expect(input).toHaveAttribute('aria-required', 'true');
+		});
+
+		test('hides decorative icons from assistive technologies', () => {
+			render(
+				<Input leftIcon={<span data-testid="left-icon">@</span>} rightIcon={<span data-testid="right-icon">✓</span>} />
+			);
+
+			const leftWrapper = screen.getByTestId('left-icon').closest('[data-slot="input-left-icon"]');
+			const rightWrapper = screen.getByTestId('right-icon').closest('[data-slot="input-right-icon"]');
+
+			if (!(leftWrapper instanceof HTMLElement) || !(rightWrapper instanceof HTMLElement)) {
+				throw new Error('Icon wrappers were not rendered as expected');
+			}
+
+			expect(leftWrapper).toHaveAttribute('aria-hidden', 'true');
+			expect(rightWrapper).toHaveAttribute('aria-hidden', 'true');
+		});
+
+		test('allows custom aria-describedby passthrough', () => {
+			render(<Input aria-describedby="helper-id" />);
+			expect(screen.getByRole('textbox')).toHaveAttribute('aria-describedby', 'helper-id');
 		});
 	});
 
