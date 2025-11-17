@@ -163,7 +163,7 @@ export const TypographyHierarchy: Story = {
 				<Heading variant="h3">Installation</Heading>
 				<Text className="mt-2">Install the package using your preferred package manager:</Text>
 				<Text variant="code" className="mt-2">
-					npm install @mirai-ui/core
+					npm install @mirai-ui/react
 				</Text>
 			</div>
 
