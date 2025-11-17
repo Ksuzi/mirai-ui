@@ -196,7 +196,7 @@ describe('Textarea', () => {
 		});
 
 		test('can be readonly', () => {
-			render(<Textarea readOnly value="Read only text" onChange={() => {}} />);
+			render(<Textarea readOnly value="Read only text" />);
 			const textarea = screen.getByRole('textbox');
 			expect(textarea).toHaveAttribute('readonly');
 		});
