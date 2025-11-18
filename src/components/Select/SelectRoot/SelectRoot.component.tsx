@@ -20,7 +20,7 @@ export const SelectRoot = React.forwardRef<HTMLDivElement, SelectRootProps>(
 			fullWidth = true,
 			value,
 			onChange,
-			options = [],
+			options,
 			placeholder = 'Select an option...',
 			leftIcon,
 			disabled = false,
@@ -53,6 +53,13 @@ export const SelectRoot = React.forwardRef<HTMLDivElement, SelectRootProps>(
 			[onChange]
 		);
 
+		const handleOnSelect = React.useCallback(
+			(option: SelectOptionType): void => {
+				handleSelect(option.value);
+			},
+			[handleSelect]
+		);
+
 		const contextValue = React.useMemo(
 			() => ({
 				value: selectedValue,
@@ -68,7 +75,7 @@ export const SelectRoot = React.forwardRef<HTMLDivElement, SelectRootProps>(
 				size,
 				disabled,
 				fullWidth,
-				options,
+				options: options ?? [],
 				handleSelect,
 			}),
 			[
@@ -103,7 +110,7 @@ export const SelectRoot = React.forwardRef<HTMLDivElement, SelectRootProps>(
 										isSelected={option.value === selectedValue}
 										isHighlighted={index === highlightedIndex}
 										index={index}
-										onSelect={(opt) => handleSelect(opt.value)}
+										onSelect={handleOnSelect}
 										onHighlight={setHighlightedIndex}
 									/>
 								))
