@@ -27,7 +27,7 @@ export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
 		const wrapperSizeClasses = checkboxUtils.getCheckboxWrapperClasses(size);
 
 		return (
-			<div className={`relative inline-flex items-center justify-center ${wrapperSizeClasses}`}>
+			<div className={mergeClassNames('relative inline-flex items-center justify-center', wrapperSizeClasses)}>
 				<input
 					ref={ref}
 					type="checkbox"
