@@ -4,7 +4,7 @@ import { sizeMap } from './CheckboxIcon.variants';
 
 import type { CheckboxIconProps } from './CheckboxIcon.types';
 
-export const CheckboxIcon = React.memo<CheckboxIconProps>(({ size = 'md', checked }) => {
+export const CheckboxIcon = React.memo<CheckboxIconProps>(({ size, checked }) => {
 	if (!checked) return null;
 
 	return (
