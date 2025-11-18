@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { useDevWarning } from '@mirai-ui/hooks';
 import { mergeClassNames } from '@mirai-ui/utils';
 
 import { checkboxUtils } from './Checkbox.utils';
@@ -9,10 +10,15 @@ import { CheckboxIcon } from './CheckboxIcon';
 import type { CheckboxProps } from './Checkbox.types';
 
 export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
-	({ size = 'md', colorScheme, className, onChange, ...props }, ref) => {
-		const [checked, setChecked] = React.useState(props.defaultChecked ?? false);
+	({ size = 'md', colorScheme, className, onChange, defaultChecked, ...props }, ref) => {
+		const [checked, setChecked] = React.useState(defaultChecked ?? false);
 		const isControlled = props.checked !== undefined;
-		const checkboxChecked = isControlled ? props.checked : checked;
+		const checkboxChecked: boolean = isControlled ? (props.checked ?? false) : checked;
+
+		useDevWarning(
+			Boolean(isControlled && defaultChecked !== undefined),
+			'Checkbox: Component is controlled (has `checked` prop) but also has `defaultChecked`. `defaultChecked` will be ignored. Use either `checked` (controlled) or `defaultChecked` (uncontrolled), not both.'
+		);
 
 		const handleChange = React.useCallback(
 			(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -35,8 +41,9 @@ export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
 					{...props}
 					checked={checkboxChecked}
 					onChange={handleChange}
+					defaultChecked={isControlled ? undefined : defaultChecked}
 				/>
-				<CheckboxIcon size={size} checked={checkboxChecked ?? false} />
+				<CheckboxIcon size={size} checked={checkboxChecked} />
 			</div>
 		);
 	}
