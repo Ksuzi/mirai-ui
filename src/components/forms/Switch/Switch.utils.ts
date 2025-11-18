@@ -1,5 +1,6 @@
+import type { SpinnerVariantProps } from '@mirai-ui/components/feedback/Spinner/Spinner.variants';
+
 import type { SwitchVariantProps } from './Switch.variants';
-import type { SpinnerVariantProps } from '../../feedback/Spinner/Spinner.variants';
 
 const getSpinnerSize = (size: SwitchVariantProps['size']): SpinnerVariantProps['size'] => {
 	if (size === 'xl') return 'lg';

@@ -1,9 +1,8 @@
 import React from 'react';
 
+import { Spinner } from '@mirai-ui/components/feedback/Spinner';
 import { useDevWarning } from '@mirai-ui/hooks';
 import { mergeClassNames } from '@mirai-ui/utils';
-
-import { Spinner } from '../../feedback/Spinner';
 
 import { buttonVariants, iconSizes } from './Button.variants';
 

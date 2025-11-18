@@ -1,6 +1,7 @@
 import React from 'react';
 
-import { Text } from '../../typography/Text';
+import { Text } from '@mirai-ui/components/typography/Text';
+
 import { useFieldContext } from '../Field.context';
 import { fieldUtils } from '../Field.utils';
 

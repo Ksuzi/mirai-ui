@@ -1,8 +1,7 @@
 import React from 'react';
 
+import { Spinner } from '@mirai-ui/components/feedback/Spinner';
 import { mergeClassNames } from '@mirai-ui/utils';
-
-import { Spinner } from '../../feedback/Spinner';
 
 import { switchUtils } from './Switch.utils';
 import { switchThumbVariants, switchTrackVariants } from './Switch.variants';
