@@ -3,7 +3,7 @@ import React from 'react';
 import { useFieldContext } from '../Field.context';
 import { fieldUtils } from '../Field.utils';
 
-import type { FieldControlProps } from './FieldControl.types';
+import type { FieldControlInjectedProps, FieldControlProps } from './FieldControl.types';
 
 export const FieldControl = React.memo(
 	React.forwardRef<HTMLDivElement, FieldControlProps>(({ className, children, ...props }, ref) => {
@@ -16,18 +16,16 @@ export const FieldControl = React.memo(
 		const ariaErrorMessage = state === 'error' && error ? messageId : undefined;
 		const ariaProps = fieldUtils.getFieldAriaProps(state, required, ariaDescribedBy, ariaErrorMessage);
 
-		const control = React.cloneElement(
-			children,
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-			{
-				id,
-				size,
-				state,
-				required,
-				disabled,
-				...ariaProps,
-			} as any
-		);
+		const injectedProps: FieldControlInjectedProps = {
+			id,
+			size,
+			state,
+			required,
+			disabled,
+			...ariaProps,
+		};
+
+		const control = React.cloneElement(children, injectedProps as Record<string, unknown>);
 
 		return (
 			<div ref={ref} className={className} {...props}>
