@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.2](https://github.com/Ksuzi/mirai-ui/compare/v0.3.1...v0.3.2) (2025-11-18)
+
+
+### Bug Fixes
+
+* Use react packages as external packages ([cd000fb](https://github.com/Ksuzi/mirai-ui/commit/cd000fbb9f43eb2a2f6471d306f918de55277fbc))
+
 ## [0.3.1](https://github.com/Ksuzi/mirai-ui/compare/v0.3.0...v0.3.1) (2025-11-18)
 
 ### Bug Fixes
