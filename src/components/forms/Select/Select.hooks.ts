@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { useEventListener } from '../../hooks';
+import { useEventListener } from '@mirai-ui/hooks';
 
 /**
  * Hook to handle clicking outside of elements
