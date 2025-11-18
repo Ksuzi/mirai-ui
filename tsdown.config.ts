@@ -4,6 +4,7 @@ import tailwind from '@tailwindcss/postcss';
 
 export default defineConfig({
 	entry: ['src/index.ts'],
+	external: ['react', 'react-dom', 'react/jsx-runtime'],
 	dts: true,
 	outDir: 'dist',
 	plugins: [
