@@ -3,6 +3,7 @@ import React from 'react';
 import { mergeClassNames } from '@mirai-ui/utils';
 
 import { inputVariants } from './Input.variants';
+import { InputIcon } from './InputIcon';
 
 import type { InputProps } from './Input.types';
 
@@ -35,18 +36,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
 
 		return (
 			<div className="relative">
-				{leftIcon && (
-					<div
-						className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none"
-						aria-hidden="true"
-						role="presentation"
-						data-slot="input-left-icon"
-					>
-						<span className="text-muted-400" aria-hidden="true">
-							{leftIcon}
-						</span>
-					</div>
-				)}
+				{leftIcon && <InputIcon position="left">{leftIcon}</InputIcon>}
 
 				<input
 					ref={ref}
@@ -71,18 +61,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
 					{...props}
 				/>
 
-				{rightIcon && (
-					<div
-						className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none"
-						aria-hidden="true"
-						role="presentation"
-						data-slot="input-right-icon"
-					>
-						<span className="text-muted-400" aria-hidden="true">
-							{rightIcon}
-						</span>
-					</div>
-				)}
+				{rightIcon && <InputIcon position="right">{rightIcon}</InputIcon>}
 			</div>
 		);
 	}
