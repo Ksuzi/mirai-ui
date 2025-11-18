@@ -32,6 +32,7 @@
 	"types": "./dist/index.d.ts",
 	"exports": {
 		".": "./dist/index.js",
+		"./styles": "./dist/index.css",
 		"./package.json": "./package.json"
 	},
 	"publishConfig": {

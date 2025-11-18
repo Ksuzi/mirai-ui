@@ -34,6 +34,7 @@ npm install @ksuzi/mirai-ui
 
 ```tsx
 import { Button, Input, Text } from '@ksuzi/mirai-ui';
+import '@ksuzi/mirai-ui/styles'; // Import styles
 
 function App() {
 	return (
@@ -45,6 +46,8 @@ function App() {
 	);
 }
 ```
+
+**Important:** Don't forget to import the styles! The CSS file must be imported in your application's entry point (e.g., `main.tsx`, `index.tsx`, or `App.tsx`) for the components to be styled correctly.
 
 ## License
 
