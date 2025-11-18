@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.3](https://github.com/Ksuzi/mirai-ui/compare/v0.3.2...v0.3.3) (2025-11-18)
+
+
+### Bug Fixes
+
+* Add CSS export and update README for style import instructions ([061e720](https://github.com/Ksuzi/mirai-ui/commit/061e720adfbf3ba07d3973588a0096a16a4a7a92))
+
 ## [0.3.2](https://github.com/Ksuzi/mirai-ui/compare/v0.3.1...v0.3.2) (2025-11-18)
 
 
