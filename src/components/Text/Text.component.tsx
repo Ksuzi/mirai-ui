@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { useDevWarning } from '@mirai-ui/hooks';
 import { mergeClassNames } from '@mirai-ui/utils';
 
 import { textVariants } from './Text.variants';
@@ -14,6 +15,11 @@ export const Text = React.forwardRef<
 		{ variant, colorScheme, size, fontWeight, truncate, lineClamp, align, className, children, as = 'p', ...props },
 		ref
 	) => {
+		useDevWarning(
+			Boolean(truncate && lineClamp !== undefined),
+			'Text: `truncate` and `lineClamp` should not be used together. `lineClamp` will take precedence.'
+		);
+
 		const Component = as as React.ElementType;
 		const variantClasses = textVariants({
 			variant,

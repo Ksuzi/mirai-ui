@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test, vi } from 'vitest';
 
 import { render, screen } from '@mirai-ui/test';
 
@@ -106,6 +106,24 @@ describe('Text', () => {
 		test('renders with text alignment', () => {
 			render(<Text align="center">Centered text</Text>);
 			expect(screen.getByText('Centered text')).toBeInTheDocument();
+		});
+
+		test('warns when truncate and lineClamp are used together', () => {
+			const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {
+				/* empty */
+			});
+
+			render(
+				<Text truncate lineClamp={2}>
+					Text with conflicting props
+				</Text>
+			);
+
+			expect(consoleSpy).toHaveBeenCalledWith(
+				expect.stringContaining('`truncate` and `lineClamp` should not be used together')
+			);
+
+			consoleSpy.mockRestore();
 		});
 	});
 

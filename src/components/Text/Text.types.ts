@@ -1,17 +1,26 @@
 import type { TextVariantProps } from './Text.variants';
 
-type BaseTextProps = {
+type TextElement = 'p' | 'span' | 'div' | 'label';
+
+type ElementProps<T extends TextElement> = T extends 'label'
+	? React.LabelHTMLAttributes<HTMLLabelElement>
+	: T extends 'span'
+		? React.HTMLAttributes<HTMLSpanElement>
+		: T extends 'div'
+			? React.HTMLAttributes<HTMLDivElement>
+			: React.HTMLAttributes<HTMLParagraphElement>;
+
+type TextPropsWithElement<T extends TextElement> = {
 	/**
 	 * The underlying element to render.
 	 * @default 'p'
 	 */
-	as?: 'p' | 'span' | 'div' | 'label';
-} & TextVariantProps;
+	as?: T;
+} & TextVariantProps &
+	Omit<ElementProps<T>, 'as'>;
 
-export type TextProps = BaseTextProps &
-	(
-		| React.HTMLAttributes<HTMLParagraphElement>
-		| React.HTMLAttributes<HTMLSpanElement>
-		| React.HTMLAttributes<HTMLDivElement>
-		| React.LabelHTMLAttributes<HTMLLabelElement>
-	);
+export type TextProps =
+	| TextPropsWithElement<'p'>
+	| TextPropsWithElement<'span'>
+	| TextPropsWithElement<'div'>
+	| TextPropsWithElement<'label'>;
