@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { useDevWarning } from '@mirai-ui/hooks';
 import { mergeClassNames } from '@mirai-ui/utils';
 
 import { Spinner } from '../Spinner';
@@ -33,17 +34,13 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 		const effectiveIconSize = iconSize ?? size;
 		const iconSizeClass = iconSizes[effectiveIconSize as IconSize];
 
-		React.useEffect(() => {
-			if (process.env.NODE_ENV !== 'production') {
-				const isIconOnly = !children && (leftIcon ?? rightIcon);
-				if (isIconOnly && !ariaLabel && !props['aria-labelledby']) {
-					console.warn(
-						'Button: Icon-only buttons must have an accessible label. Provide an `aria-label` or `aria-labelledby` prop.'
-					);
-				}
-			}
-			// eslint-disable-next-line react-hooks/exhaustive-deps
-		}, []);
+		const isIconOnly = !children && (leftIcon ?? rightIcon);
+		const hasAccessibleLabel = Boolean(ariaLabel ?? props['aria-labelledby']);
+
+		useDevWarning(
+			Boolean(isIconOnly && !hasAccessibleLabel),
+			'Button: Icon-only buttons must have an accessible label. Provide an `aria-label` or `aria-labelledby` prop.'
+		);
 
 		const handleKeyDown = React.useCallback(
 			(event: React.KeyboardEvent<HTMLButtonElement>) => {
