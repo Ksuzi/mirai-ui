@@ -22,9 +22,9 @@ const RadioBase = React.memo(
 			const effectiveSize = size ?? context?.size ?? 'md';
 			const effectiveColorScheme = colorScheme ?? context?.colorScheme ?? 'primary';
 			const effectiveDisabled = disabled ?? context?.disabled ?? false;
-			const effectiveName = isInGroup ? context?.name : props.name;
+			const effectiveName = isInGroup ? context.name : props.name;
 
-			const isChecked = isInGroup ? context?.value === value : (checked ?? internalChecked);
+			const isChecked = isInGroup ? context.value === value : (checked ?? internalChecked);
 
 			const handleChange = React.useCallback(
 				(e: React.ChangeEvent<HTMLInputElement>) => {
